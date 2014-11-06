@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="RSBot-6047">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../RSBot-6047.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="http://www.powerbot.org/rsbot/docs/" />
+    </JAVADOC>
+    <SOURCES />
+  </library>
+</component>
