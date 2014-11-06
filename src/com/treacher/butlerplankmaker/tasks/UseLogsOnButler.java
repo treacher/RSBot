@@ -18,8 +18,10 @@ public class UseLogsOnButler extends Task<ClientContext> {
     
     private final Component butlerInteractionWidget = ctx.widgets.component(1188, 2);
     private final Component butlerEnterTextWidget = ctx.widgets.component(1469, 2);
-    private final Component npcResponsewidget = ctx.widgets.component(1184, 13);
+    private final Component npcResponseWidget = ctx.widgets.component(1184, 13);
     private final Component charResponseWidget = ctx.widgets.component(1191, 6);
+
+    private boolean startTheCount = false;
     
     public UseLogsOnButler(ClientContext ctx) {
         super(ctx);
@@ -34,8 +36,16 @@ public class UseLogsOnButler extends Task<ClientContext> {
     
     @Override
     public void execute() {
+        // Going to make the assumption that people are going to be making the most planks they can.
+        if(startTheCount) PlankMaker.PLANKS_MADE += 27;
+
+        // Start the count after the first cycle
+        startTheCount = true;
+
         PlankMaker.STATE = "Using logs on butler";
+
         openBackback();
+
         Item notedPlanks = ctx.backpack.select().id(GameObjectIds.NOTED_OAK_PLANK_ID).poll();
         
         if(notedPlanks.valid()) {
@@ -53,7 +63,7 @@ public class UseLogsOnButler extends Task<ClientContext> {
     }
     
     private boolean isTalkingToButler() {
-        return butlerInteractionWidget.visible() || butlerEnterTextWidget.visible() || npcResponsewidget.visible() || charResponseWidget.visible();
+        return butlerInteractionWidget.visible() || butlerEnterTextWidget.visible() || npcResponseWidget.visible() || charResponseWidget.visible();
     }
     
     private void waitTillTalkingToButler() {
