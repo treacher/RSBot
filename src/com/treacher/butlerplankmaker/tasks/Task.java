@@ -4,11 +4,11 @@ import org.powerbot.script.rt6.ClientContext;
 
 public abstract class Task<C extends ClientContext> extends ClientAccessor<C> {
 
-	public Task(C ctx) {
-		super(ctx);
-	}
-	
-	public abstract boolean activate();
-	public abstract void execute();
+    public Task(C ctx) {
+        super(ctx);
+    }
+    
+    public abstract boolean activate();
+    public abstract void execute();
 
 }
