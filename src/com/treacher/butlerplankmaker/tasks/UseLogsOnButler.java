@@ -46,7 +46,7 @@ public class UseLogsOnButler extends Task<ClientContext> {
 
         openBackBack();
 
-        Item notedPlanks = ctx.backpack.select().id(GameObjectIds.NOTED_OAK_PLANK_ID).poll();
+        Item notedPlanks = ctx.backpack.select().id(PlankMaker.NOTED_LOG_ID).poll();
         
         if(notedPlanks.valid()) {
             notedPlanks.interact("Use");
