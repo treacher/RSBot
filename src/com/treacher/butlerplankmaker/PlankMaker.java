@@ -65,7 +65,6 @@ public class PlankMaker extends PollingScript<ClientContext> implements PaintLis
     public void repaint(Graphics g) {
         g.setColor(Color.black);
         g.fillRect(0, 450, 200, 300);
-
         g.setColor(Color.white);
         g.drawString("treach3rs Butler Plank Maker", 20, 470);
         g.drawString("State: \t" + STATE, 20, 490);
@@ -93,7 +92,7 @@ public class PlankMaker extends PollingScript<ClientContext> implements PaintLis
         final double hourlyLogCost = planksPerHour * ((double)this.logPrice);
         final double totalCost = hourlyWage + hourlySawmillCost + hourlyLogCost;
         final double hourlyRevenue = planksPerHour * ((double)this.plankPrice);
-        
+
         return ((int)(hourlyRevenue - totalCost));
     }
 
