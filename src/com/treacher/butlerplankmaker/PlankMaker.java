@@ -7,6 +7,7 @@ import org.powerbot.script.PollingScript;
 import org.powerbot.script.Script;
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.Component;
+import org.powerbot.script.rt6.GeItem;
 
 import java.awt.*;
 import java.io.IOException;
@@ -32,10 +33,13 @@ public class PlankMaker extends PollingScript<ClientContext> implements PaintLis
 
     public static String STATE = "Starting bot";
 
+    public static int PLANKS_PER_TRIP = 27;
+
     public static int PLANKS_MADE = 0;
 
     @Override
     public void start() {
+        fetchGrandExchangePrices();
         taskList.addAll(Arrays.asList(
                 new AntiBan(ctx),
                 new HandleResponse(ctx),
@@ -44,7 +48,7 @@ public class PlankMaker extends PollingScript<ClientContext> implements PaintLis
                 new SelectOption(ctx,secondOption,validSecondOptions,"2"),
                 new UseLogsOnButler(ctx)
         ));
-        fetchGrandExchangePrices();
+
     }
 
     @Override
@@ -52,7 +56,6 @@ public class PlankMaker extends PollingScript<ClientContext> implements PaintLis
         for(Task<ClientContext> task : taskList){
             if(task.activate()){
                 task.execute();
-                Condition.sleep();
             }
         }
 
@@ -75,19 +78,23 @@ public class PlankMaker extends PollingScript<ClientContext> implements PaintLis
     private int profitPerHour() {
         if(this.logPrice  == 0 || this.plankPrice == 0) return 0;
 
-        final int eightTripWage = 7500;
-        final int sawMillCost = 6500;
+        final double eightTripWage = 7500.0;
+        final double sawMillCost = 6500.0;
+        final double planksPerTrip = (double) PLANKS_PER_TRIP;
 
-        final int chargePerTripWage = eightTripWage / 8;
+        final double planksPerHour = (double) planksPerHour();
+        final double tripsPerHour = planksPerHour / planksPerTrip;
 
-        final int hourlyWage = chargePerTripWage * planksPerHour();
-        final int hourlySawmillCost = sawMillCost * planksPerHour();
+        final double chargePerTripWage = eightTripWage / 8.0;
 
-        final int hourlyLogCost = planksPerHour() * this.logPrice;
-        final int totalCost = hourlyWage + hourlySawmillCost + hourlyLogCost;
-        final int hourlyRevenue = planksPerHour() * this.plankPrice;
+        final double hourlyWage = chargePerTripWage * tripsPerHour;
+        final double hourlySawmillCost = sawMillCost * tripsPerHour;
 
-        return hourlyRevenue - totalCost;
+        final double hourlyLogCost = planksPerHour * ((double)this.logPrice);
+        final double totalCost = hourlyWage + hourlySawmillCost + hourlyLogCost;
+        final double hourlyRevenue = planksPerHour * ((double)this.plankPrice);
+        
+        return ((int)(hourlyRevenue - totalCost));
     }
 
     private int planksPerHour() {
@@ -112,8 +119,8 @@ public class PlankMaker extends PollingScript<ClientContext> implements PaintLis
     }
 
     private void fetchGrandExchangePrices() {
-        this.plankPrice =  GrandExchange.getPrice(GameObjectIds.OAK_PLANK_ID);
-        this.logPrice =  GrandExchange.getPrice(GameObjectIds.OAK_LOG_ID);
+        this.plankPrice =  GeItem.price(GameObjectIds.OAK_PLANK_ID);
+        this.logPrice = GeItem.price(GameObjectIds.OAK_LOG_ID);
     }
 
 }

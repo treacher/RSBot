@@ -37,14 +37,14 @@ public class UseLogsOnButler extends Task<ClientContext> {
     @Override
     public void execute() {
         // Going to make the assumption that people are going to be making the most planks they can.
-        if(startTheCount) PlankMaker.PLANKS_MADE += 27;
+        if(startTheCount) PlankMaker.PLANKS_MADE += PlankMaker.PLANKS_PER_TRIP;
 
         // Start the count after the first cycle
         startTheCount = true;
 
         PlankMaker.STATE = "Using logs on butler";
 
-        openBackback();
+        openBackBack();
 
         Item notedPlanks = ctx.backpack.select().id(GameObjectIds.NOTED_OAK_PLANK_ID).poll();
         
@@ -57,7 +57,7 @@ public class UseLogsOnButler extends Task<ClientContext> {
         }
     }
     
-    private void openBackback() {
+    private void openBackBack() {
         if(!ctx.hud.opened(Window.BACKPACK))
             ctx.hud.open(Window.BACKPACK);
     }
@@ -72,6 +72,6 @@ public class UseLogsOnButler extends Task<ClientContext> {
             public Boolean call() throws Exception {
                 return isTalkingToButler();
             }
-        }, 150, 20);
+        }, 150, 12);
     }
 }

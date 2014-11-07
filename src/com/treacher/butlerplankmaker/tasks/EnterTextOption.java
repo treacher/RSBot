@@ -30,7 +30,7 @@ public class EnterTextOption extends Task<ClientContext>  {
     @Override
     public void execute() {
         PlankMaker.STATE = "Talking with butler";
-        ctx.input.sendln("26");
+        ctx.input.sendln(""+PlankMaker.PLANKS_PER_TRIP);
     }
 
 }
