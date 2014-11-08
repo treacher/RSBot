@@ -1,6 +1,7 @@
 package com.treacher.butlerplankmaker.tasks;
 
 import com.treacher.butlerplankmaker.PlankMaker;
+import com.treacher.butlerplankmaker.enums.LogType;
 import org.powerbot.script.Condition;
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.Component;
@@ -24,9 +25,13 @@ public class UseLogsOnButler extends Task<ClientContext> {
     private final Component charResponseWidget = ctx.widgets.component(1191, 6);
 
     private boolean startTheCount = false;
+    private final PlankMaker plankMaker;
+    private final LogType logType;
     
-    public UseLogsOnButler(ClientContext ctx) {
+    public UseLogsOnButler(ClientContext ctx, PlankMaker plankMaker) {
         super(ctx);
+        this.plankMaker = plankMaker;
+        this.logType = plankMaker.getLogType();
     }
     
     @Override
@@ -39,7 +44,7 @@ public class UseLogsOnButler extends Task<ClientContext> {
     @Override
     public void execute() {
         if(startTheCount) {
-            PlankMaker.PLANKS_MADE += PlankMaker.PLANKS_PER_TRIP;
+            plankMaker.incrementPlankCount();
         } else {
             // Start the count after the first cycle
             startTheCount = true;
@@ -49,15 +54,15 @@ public class UseLogsOnButler extends Task<ClientContext> {
 
         openBackBack();
 
-        Item notedPlanks = ctx.backpack.select().id(PlankMaker.LOG_TYPE.getNotedLogId()).poll();
+        Item notedPlanks = ctx.backpack.select().id(logType.getNotedLogId()).poll();
         
         if(notedPlanks.valid()) {
             notedPlanks.interact("Use");
             butler.hover();
-            if(PlankMaker.LOG_TYPE.name().equals("Normal")){
+            if(logType.name().equals("Normal")){
                 butler.interact("Use", "Logs -> Demon butler");
             } else {
-                butler.interact("Use", PlankMaker.LOG_TYPE.name() + " logs -> Demon butler");
+                butler.interact("Use", logType.name() + " logs -> Demon butler");
             }
         } else {
             ctx.controller.stop();
