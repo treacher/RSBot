@@ -13,6 +13,10 @@ import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.Component;
 import org.powerbot.script.rt6.Hud.Window;
 
+/**
+ * Created by Michael Treacher
+ */
+
 public class AntiBan extends Task<ClientContext> {
 
     long antiBanLastRunTime = System.currentTimeMillis();
@@ -24,7 +28,7 @@ public class AntiBan extends Task<ClientContext> {
 
     @Override
     public boolean activate() {
-        if (System.currentTimeMillis() - antiBanLastRunTime > Random.nextInt(100000, 200000)) {
+        if (System.currentTimeMillis() - antiBanLastRunTime > Random.nextInt(175000, 300000)) {
             antiBanLastRunTime = System.currentTimeMillis();
             return true;
         } else {

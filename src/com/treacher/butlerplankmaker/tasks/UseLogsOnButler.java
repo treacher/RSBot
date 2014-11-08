@@ -1,16 +1,19 @@
 package com.treacher.butlerplankmaker.tasks;
 
-import java.util.concurrent.Callable;
-
+import com.treacher.butlerplankmaker.PlankMaker;
 import org.powerbot.script.Condition;
+import org.powerbot.script.Random;
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.Component;
+import org.powerbot.script.rt6.Hud.Window;
 import org.powerbot.script.rt6.Item;
 import org.powerbot.script.rt6.Npc;
-import org.powerbot.script.rt6.Hud.Window;
 
-import com.treacher.butlerplankmaker.GameObjectIds;
-import com.treacher.butlerplankmaker.PlankMaker;
+import java.util.concurrent.Callable;
+
+/**
+ * Created by Michael Treacher
+ */
 
 public class UseLogsOnButler extends Task<ClientContext> {
     
@@ -30,28 +33,33 @@ public class UseLogsOnButler extends Task<ClientContext> {
     @Override
     public boolean activate() {
         waitTillTalkingToButler();
-        butler = ctx.npcs.select().id(GameObjectIds.BUTLER_ID).poll();
-        return butler.inViewport() && ctx.backpack.id(GameObjectIds.BUTLER_ID).isEmpty() && !isTalkingToButler();
+        butler = ctx.npcs.select().id(PlankMaker.BUTLER_ID).poll();
+        return butler.inViewport() && ctx.backpack.id(PlankMaker.BUTLER_ID).isEmpty() && !isTalkingToButler();
     }
     
     @Override
     public void execute() {
-        // Going to make the assumption that people are going to be making the most planks they can.
-        if(startTheCount) PlankMaker.PLANKS_MADE += PlankMaker.PLANKS_PER_TRIP;
-
-        // Start the count after the first cycle
-        startTheCount = true;
+        if(startTheCount) {
+            PlankMaker.PLANKS_MADE += PlankMaker.PLANKS_PER_TRIP;
+        } else {
+            // Start the count after the first cycle
+            startTheCount = true;
+        }
 
         PlankMaker.STATE = "Using logs on butler";
 
         openBackBack();
 
-        Item notedPlanks = ctx.backpack.select().id(PlankMaker.NOTED_LOG_ID).poll();
+        Item notedPlanks = ctx.backpack.select().id(PlankMaker.LOG_TYPE.getNotedLogId()).poll();
         
         if(notedPlanks.valid()) {
             notedPlanks.interact("Use");
             butler.hover();
-            butler.interact("Use", "Oak logs -> Demon butler");
+            if(PlankMaker.LOG_TYPE.name().equals("Normal")){
+                butler.interact("Use", "Logs -> Demon butler");
+            } else {
+                butler.interact("Use", PlankMaker.LOG_TYPE.name() + " logs -> Demon butler");
+            }
         } else {
             ctx.controller.stop();
         }
@@ -72,6 +80,6 @@ public class UseLogsOnButler extends Task<ClientContext> {
             public Boolean call() throws Exception {
                 return isTalkingToButler();
             }
-        }, 150, 12);
+        }, Random.nextInt(150, 200), 12);
     }
 }

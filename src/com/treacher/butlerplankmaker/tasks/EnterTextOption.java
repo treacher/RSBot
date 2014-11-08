@@ -4,6 +4,9 @@ import org.powerbot.script.rt6.Component;
 
 import com.treacher.butlerplankmaker.PlankMaker;
 
+/**
+ * Created by Michael Treacher
+ */
 
 public class EnterTextOption extends Task<ClientContext>  {
     

@@ -7,12 +7,13 @@ import java.awt.*;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Created by treach3r on 7/11/14.
+ * Created by Michael Treacher
  */
+
 public class Painter implements PaintListener{
 
-    private final int plankPrice = GeItem.price(PlankMaker.PLANK_ID);
-    private final int logPrice = GeItem.price(PlankMaker.LOG_ID);
+    private final int plankPrice = GeItem.price(PlankMaker.LOG_TYPE.getPlankId());
+    private final int logPrice = GeItem.price(PlankMaker.LOG_TYPE.getLogId());
 
     private final long startTime = System.currentTimeMillis();
 
@@ -31,8 +32,9 @@ public class Painter implements PaintListener{
 
     private int profitPerHour() {
         final double eightTripWage = 7500.0;
-        final double sawMillCost = 6500.0;
+
         final double planksPerTrip = (double) PlankMaker.PLANKS_PER_TRIP;
+        final double sawMillCost = PlankMaker.LOG_TYPE.getSawmillCost() * planksPerTrip;
 
         final double planksPerHour = (double) planksPerHour();
         final double tripsPerHour = planksPerHour / planksPerTrip;

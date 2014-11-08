@@ -2,6 +2,10 @@ package com.treacher.butlerplankmaker.tasks;
 import org.powerbot.script.ClientAccessor;
 import org.powerbot.script.rt6.ClientContext;
 
+/**
+ * Created by Michael Treacher
+ */
+
 public abstract class Task<C extends ClientContext> extends ClientAccessor<C> {
 
     public Task(C ctx) {

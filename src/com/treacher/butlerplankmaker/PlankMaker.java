@@ -1,6 +1,7 @@
 package com.treacher.butlerplankmaker;
 
 import com.treacher.butlerplankmaker.tasks.*;
+import org.powerbot.script.Condition;
 import org.powerbot.script.PaintListener;
 import org.powerbot.script.PollingScript;
 import org.powerbot.script.Script;
@@ -11,6 +12,10 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+/**
+ * Created by Michael Treacher
+ */
 
 @Script.Manifest(name = "Butler Plank Maker", description = "Gets planks made using butler.")
 public class PlankMaker extends PollingScript<ClientContext> implements PaintListener {
@@ -24,16 +29,18 @@ public class PlankMaker extends PollingScript<ClientContext> implements PaintLis
 
     public static String STATE = "Starting bot";
 
-    public static int PLANKS_PER_TRIP = 27;
-    public static int PLANKS_MADE = 0;
-    public static int PLANK_ID = GameObjectIds.OAK_PLANK_ID;
-    public static int LOG_ID = GameObjectIds.OAK_LOG_ID;
-    public static int NOTED_LOG_ID = GameObjectIds.NOTED_OAK_PLANK_ID;
+    public static int PLANKS_PER_TRIP = 26;
+    public static int BUTLER_ID = 4243;
+    public static LogType LOG_TYPE = LogType.Normal;
+    public static int PLANKS_MADE;
 
     final Painter painter = new Painter();
 
+    private GUI gui;
+
     @Override
     public void start() {
+        gui = new GUI();
         taskList.addAll(Arrays.asList(
                 new AntiBan(ctx),
                 new HandleResponse(ctx),
@@ -46,8 +53,11 @@ public class PlankMaker extends PollingScript<ClientContext> implements PaintLis
 
     @Override
     public void poll() {
+        if (gui != null && gui.isVisible()) return;
+
         for(Task<ClientContext> task : taskList){
             if(task.activate()){
+                Condition.sleep();
                 task.execute();
             }
         }
@@ -57,6 +67,4 @@ public class PlankMaker extends PollingScript<ClientContext> implements PaintLis
     public void repaint(Graphics g) {
         if (painter != null) painter.repaint(g);
     }
-
-
 }
