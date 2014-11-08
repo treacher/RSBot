@@ -2,7 +2,6 @@ package com.treacher.butlerplankmaker.ui;
 
 import com.treacher.butlerplankmaker.PlankMaker;
 import org.powerbot.script.PaintListener;
-import org.powerbot.script.rt6.GeItem;
 
 import java.awt.*;
 import java.util.concurrent.TimeUnit;
@@ -12,8 +11,6 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class Painter implements PaintListener{
-
-
 
     public static long startTime = System.currentTimeMillis();
 
