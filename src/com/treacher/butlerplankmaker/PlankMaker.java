@@ -60,7 +60,6 @@ public class PlankMaker extends PollingScript<ClientContext> implements PaintLis
 
         for(Task<ClientContext> task : taskList){
             if(task.activate()){
-                Condition.sleep();
                 task.execute();
             }
         }
