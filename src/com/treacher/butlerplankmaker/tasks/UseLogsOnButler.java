@@ -18,11 +18,6 @@ import java.util.concurrent.Callable;
 public class UseLogsOnButler extends Task<ClientContext> {
     
     private Npc butler;
-    
-    private final Component butlerInteractionWidget = ctx.widgets.component(1188, 2);
-    private final Component butlerEnterTextWidget = ctx.widgets.component(1469, 2);
-    private final Component npcResponseWidget = ctx.widgets.component(1184, 13);
-    private final Component charResponseWidget = ctx.widgets.component(1191, 6);
 
     private boolean startTheCount = false;
     private final PlankMaker plankMaker;
@@ -72,16 +67,17 @@ public class UseLogsOnButler extends Task<ClientContext> {
     private void openBackBack() {
         if(!ctx.hud.opened(Window.BACKPACK)) ctx.hud.open(Window.BACKPACK);
     }
-    
+
     private boolean isTalkingToButler() {
-        return butlerInteractionWidget.visible() || butlerEnterTextWidget.visible() || npcResponseWidget.visible() || charResponseWidget.visible();
+        return ctx.chat.chatting();
     }
-    
+
     private void waitTillTalkingToButler() {
         Condition.wait(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
                 return isTalkingToButler();
+
             }
         }, 150, 20);
     }
