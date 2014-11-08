@@ -2,7 +2,6 @@ package com.treacher.butlerplankmaker.tasks;
 
 import com.treacher.butlerplankmaker.PlankMaker;
 import org.powerbot.script.Condition;
-import org.powerbot.script.Random;
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.Component;
 import org.powerbot.script.rt6.Hud.Window;
@@ -80,6 +79,6 @@ public class UseLogsOnButler extends Task<ClientContext> {
             public Boolean call() throws Exception {
                 return isTalkingToButler();
             }
-        }, Random.nextInt(150, 200), 12);
+        }, 150, 20);
     }
 }

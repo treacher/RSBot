@@ -1,4 +1,4 @@
-package com.treacher.butlerplankmaker;
+package com.treacher.butlerplankmaker.enums;
 
 /**
  * Created by Michael Treacher

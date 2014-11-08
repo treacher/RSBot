@@ -1,4 +1,7 @@
-package com.treacher.butlerplankmaker;
+package com.treacher.butlerplankmaker.ui;
+
+import com.treacher.butlerplankmaker.enums.LogType;
+import com.treacher.butlerplankmaker.PlankMaker;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -40,6 +43,7 @@ public class GUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 PlankMaker.LOG_TYPE = LogType.findById(logComboBox.getSelectedIndex());
+                Painter.startTime = System.currentTimeMillis();
                 dispose();
             }
         });

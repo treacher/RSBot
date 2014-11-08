@@ -1,5 +1,6 @@
-package com.treacher.butlerplankmaker;
+package com.treacher.butlerplankmaker.ui;
 
+import com.treacher.butlerplankmaker.PlankMaker;
 import org.powerbot.script.PaintListener;
 import org.powerbot.script.rt6.GeItem;
 
@@ -15,7 +16,7 @@ public class Painter implements PaintListener{
     private final int plankPrice = GeItem.price(PlankMaker.LOG_TYPE.getPlankId());
     private final int logPrice = GeItem.price(PlankMaker.LOG_TYPE.getLogId());
 
-    private final long startTime = System.currentTimeMillis();
+    public static long startTime = System.currentTimeMillis();
 
     @Override
     public void repaint(Graphics g) {
