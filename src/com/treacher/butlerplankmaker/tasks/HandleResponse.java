@@ -14,26 +14,15 @@ public class HandleResponse extends Task<ClientContext> {
         super(ctx);
     }
 
-    private final Component npcResponseWidget = ctx.widgets.component(1184, 13);
-    private final Component charResponseWidget = ctx.widgets.component(1191, 6);
-    
-    public boolean butlerResponse() {
-        return npcResponseWidget.valid() && npcResponseWidget.visible();
-    }
-    
-    public boolean charResponse() {
-        return charResponseWidget.valid() && charResponseWidget.visible();
-    }
-
     @Override
     public boolean activate() {
-        return butlerResponse() || charResponse();
+        return ctx.chat.queryContinue();
     }
 
     @Override
     public void execute() {
         PlankMaker.STATE = "Talking with butler";
-        ctx.input.send(" ");
+        ctx.chat.clickContinue();
     }
 
 }
