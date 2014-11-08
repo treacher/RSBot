@@ -11,6 +11,7 @@ import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.Component;
 import org.powerbot.script.rt6.GeItem;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,7 +43,11 @@ public class PlankMaker extends PollingScript<ClientContext> implements PaintLis
 
     @Override
     public void start() {
-        new GUI(this);
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                new GUI(PlankMaker.this);
+            }
+        });
     }
 
     @Override
