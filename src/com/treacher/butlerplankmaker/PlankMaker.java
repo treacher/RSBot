@@ -59,9 +59,7 @@ public class PlankMaker extends PollingScript<ClientContext> implements PaintLis
         if (gui != null && gui.isVisible()) return;
 
         for(Task<ClientContext> task : taskList){
-            if(task.activate()){
-                task.execute();
-            }
+            if(task.activate()) task.execute();
         }
     }
 

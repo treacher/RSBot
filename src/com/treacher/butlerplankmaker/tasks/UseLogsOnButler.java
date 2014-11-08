@@ -65,8 +65,7 @@ public class UseLogsOnButler extends Task<ClientContext> {
     }
     
     private void openBackBack() {
-        if(!ctx.hud.opened(Window.BACKPACK))
-            ctx.hud.open(Window.BACKPACK);
+        if(!ctx.hud.opened(Window.BACKPACK)) ctx.hud.open(Window.BACKPACK);
     }
     
     private boolean isTalkingToButler() {
