@@ -24,7 +24,7 @@ public class SelectOption extends Task <ClientContext>{
     }
     
     public boolean widgetIsAvailable() {
-        return component != null && component.visible();
+        return component.valid() && component.visible();
     }
     
     public boolean isValidOption() {

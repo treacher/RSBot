@@ -18,11 +18,11 @@ public class HandleResponse extends Task<ClientContext> {
     private final Component charResponseWidget = ctx.widgets.component(1191, 6);
     
     public boolean butlerResponse() {
-        return npcResponseWidget != null && npcResponseWidget.visible();
+        return npcResponseWidget.valid() && npcResponseWidget.visible();
     }
     
     public boolean charResponse() {
-        return charResponseWidget != null && charResponseWidget.visible();
+        return charResponseWidget.valid() && charResponseWidget.visible();
     }
 
     @Override

@@ -17,7 +17,7 @@ public class EnterTextOption extends Task<ClientContext>  {
     private final Component widget = ctx.widgets.component(1469, 2);
     
     public boolean widgetIsAvailable() {
-        return widget != null && widget.visible();
+        return widget.valid() && widget.visible();
     }
     
     public boolean isInputWidget() {
