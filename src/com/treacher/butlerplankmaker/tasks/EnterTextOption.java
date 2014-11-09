@@ -17,7 +17,7 @@ public class EnterTextOption extends Task<ClientContext>  {
     private final Component widget = ctx.widgets.component(1469, 2);
     
     public boolean widgetIsAvailable() {
-        return widget != null && widget.visible();
+        return widget.valid() && widget.visible();
     }
     
     public boolean isInputWidget() {
@@ -32,7 +32,7 @@ public class EnterTextOption extends Task<ClientContext>  {
 
     @Override
     public void execute() {
-        PlankMaker.STATE = "Talking with butler";
+        PlankMaker.STATE = "Entering text: " + PlankMaker.PLANKS_PER_TRIP;
         ctx.input.sendln(String.valueOf(PlankMaker.PLANKS_PER_TRIP));
     }
 

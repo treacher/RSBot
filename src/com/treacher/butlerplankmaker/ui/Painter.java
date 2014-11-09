@@ -2,7 +2,6 @@ package com.treacher.butlerplankmaker.ui;
 
 import com.treacher.butlerplankmaker.PlankMaker;
 import org.powerbot.script.PaintListener;
-import org.powerbot.script.rt6.GeItem;
 
 import java.awt.*;
 import java.util.concurrent.TimeUnit;
@@ -13,10 +12,16 @@ import java.util.concurrent.TimeUnit;
 
 public class Painter implements PaintListener{
 
-    private final int plankPrice = GeItem.price(PlankMaker.LOG_TYPE.getPlankId());
-    private final int logPrice = GeItem.price(PlankMaker.LOG_TYPE.getLogId());
-
     public static long startTime = System.currentTimeMillis();
+
+    private PlankMaker plankMaker;
+
+    private int logPrice, plankPrice;
+    private double sawMillPrice;
+
+    public Painter(PlankMaker plankMaker) {
+        this.plankMaker = plankMaker;
+    }
 
     @Override
     public void repaint(Graphics g) {
@@ -26,16 +31,22 @@ public class Painter implements PaintListener{
         g.drawString("treach3rs Butler Plank Maker", 20, 470);
         g.drawString("State: \t" + PlankMaker.STATE, 20, 490);
         g.drawString("Runtime: \t" + formatTime(millisElapsed()), 20, 510);
-        g.drawString("Planks made: \t" + PlankMaker.PLANKS_MADE, 20, 530);
+        g.drawString("Planks made: \t" + plankMaker.getPlankCount(), 20, 530);
         g.drawString("Planks per hour: \t" + planksPerHour(), 20, 550);
         g.drawString("Profit per hour: \t" + profitPerHour(), 20, 570);
+    }
+
+    public void setPrices(int logPrice, int plankPrice, double sawMillPrice) {
+        this.logPrice = logPrice;
+        this.plankPrice = plankPrice;
+        this.sawMillPrice = sawMillPrice;
     }
 
     private int profitPerHour() {
         final double eightTripWage = 7500.0;
 
         final double planksPerTrip = (double) PlankMaker.PLANKS_PER_TRIP;
-        final double sawMillCost = PlankMaker.LOG_TYPE.getSawmillCost() * planksPerTrip;
+        final double sawMillCost = this.sawMillPrice * planksPerTrip;
 
         final double planksPerHour = (double) planksPerHour();
         final double tripsPerHour = planksPerHour / planksPerTrip;
@@ -53,7 +64,7 @@ public class Painter implements PaintListener{
     }
 
     private int planksPerHour() {
-        return (int) ((3600000.0 / millisElapsed()) * (double)PlankMaker.PLANKS_MADE);
+        return (int) ((3600000.0 / millisElapsed()) * (double)plankMaker.getPlankCount());
     }
 
     private long millisElapsed() {

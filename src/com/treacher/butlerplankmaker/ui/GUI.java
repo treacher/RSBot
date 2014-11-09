@@ -18,11 +18,13 @@ public class GUI extends JFrame {
     private final Container contentPane;
     private JPanel centerPanel;
     private JComboBox logComboBox;
+    private PlankMaker plankMaker;
 
-    public GUI() {
+    public GUI(PlankMaker plankMaker) {
         setTitle("Treach3r's butler plank maker.");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.contentPane = getContentPane();
+        this.plankMaker = plankMaker;
         buildGUI();
         pack();
         setLocationRelativeTo(null);
@@ -42,8 +44,10 @@ public class GUI extends JFrame {
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                PlankMaker.LOG_TYPE = LogType.findById(logComboBox.getSelectedIndex());
+                plankMaker.setLogType(LogType.findById(logComboBox.getSelectedIndex()));
                 Painter.startTime = System.currentTimeMillis();
+                plankMaker.addTasks();
+                plankMaker.setPrices();
                 dispose();
             }
         });
