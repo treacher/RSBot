@@ -8,7 +8,6 @@ import org.powerbot.script.PaintListener;
 import org.powerbot.script.PollingScript;
 import org.powerbot.script.Script;
 import org.powerbot.script.rt6.ClientContext;
-import org.powerbot.script.rt6.Component;
 import org.powerbot.script.rt6.GeItem;
 
 import javax.swing.*;
@@ -24,13 +23,6 @@ import java.util.List;
 @Script.Manifest(name = "Butler Plank Maker", description = "Gets planks made using butler.")
 public class PlankMaker extends PollingScript<ClientContext> implements PaintListener {
     private List<Task<ClientContext>> taskList = new ArrayList<Task<ClientContext>>();
-
-    private List<String> validChatOptions = Arrays.asList(
-            "Un-cert",
-            "Take them back to the bank",
-            "Send logs to sawmill",
-            "Pay servant 7500 coins and don't ask again."
-    );
 
     public static String STATE = "Starting bot";
 
@@ -91,7 +83,10 @@ public class PlankMaker extends PollingScript<ClientContext> implements PaintLis
                 new AntiBan(ctx),
                 new HandleResponse(ctx),
                 new EnterTextOption(ctx),
-                new SelectOption(ctx, validChatOptions),
+                new SelectOption(ctx, "Un-cert"),
+                new SelectOption(ctx, "Take them back to the bank"),
+                new SelectOption(ctx, "Send logs to sawmill"),
+                new SelectOption(ctx, "Pay servant 7500 coins and don't ask again."),
                 new UseLogsOnButler(ctx, this)
         ));
     }

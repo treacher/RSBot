@@ -22,6 +22,9 @@ public class UseLogsOnButler extends Task<ClientContext> {
     private boolean startTheCount = false;
     private final PlankMaker plankMaker;
     private final LogType logType;
+
+    /* entering text does not seem to be considered chatting with the butler so need this for now.*/
+    private final Component butlerEnterTextWidget = ctx.widgets.component(1469, 2);
     
     public UseLogsOnButler(ClientContext ctx, PlankMaker plankMaker) {
         super(ctx);
@@ -69,7 +72,7 @@ public class UseLogsOnButler extends Task<ClientContext> {
     }
 
     private boolean isTalkingToButler() {
-        return ctx.chat.chatting();
+        return ctx.chat.chatting() || butlerEnterTextWidget.valid() && butlerEnterTextWidget.visible();
     }
 
     private void waitTillTalkingToButler() {

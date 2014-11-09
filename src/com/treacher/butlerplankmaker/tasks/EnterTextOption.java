@@ -27,6 +27,8 @@ public class EnterTextOption extends Task<ClientContext>  {
     
     @Override
     public boolean activate() {
+        System.out.println("Enter Amount chat thing:" + ctx.chat.text("Enter amount:").poll().toString());
+        System.out.println("valid?:" + ctx.chat.text("Enter amount:").poll().valid());
         return widgetIsAvailable() && isInputWidget();
     }
 
