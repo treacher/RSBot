@@ -27,14 +27,12 @@ public class EnterTextOption extends Task<ClientContext>  {
     
     @Override
     public boolean activate() {
-        System.out.println("Enter Amount chat thing:" + ctx.chat.text("Enter amount:").poll().toString());
-        System.out.println("valid?:" + ctx.chat.text("Enter amount:").poll().valid());
         return widgetIsAvailable() && isInputWidget();
     }
 
     @Override
     public void execute() {
-        PlankMaker.STATE = "Talking with butler";
+        PlankMaker.STATE = "Entering text: " + PlankMaker.PLANKS_PER_TRIP;
         ctx.input.sendln(String.valueOf(PlankMaker.PLANKS_PER_TRIP));
     }
 

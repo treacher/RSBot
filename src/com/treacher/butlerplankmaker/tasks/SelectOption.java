@@ -31,7 +31,7 @@ public class SelectOption extends Task <ClientContext>{
 
     @Override
     public void execute() {
-        PlankMaker.STATE = "Talking with butler";
+        PlankMaker.STATE = "Selecting:" + chatText;
         chatOption.select();
     }
 }
