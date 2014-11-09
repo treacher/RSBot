@@ -72,7 +72,7 @@ public class UseLogsOnButler extends Task<ClientContext> {
     }
 
     private boolean isTalkingToButler() {
-        return ctx.chat.chatting() || butlerEnterTextWidget.valid() && butlerEnterTextWidget.visible();
+        return ctx.chat.chatting() || (butlerEnterTextWidget.valid() && butlerEnterTextWidget.visible());
     }
 
     private void waitTillTalkingToButler() {
