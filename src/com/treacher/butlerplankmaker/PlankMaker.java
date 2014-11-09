@@ -20,7 +20,7 @@ import java.util.List;
  * Created by Michael Treacher
  */
 
-@Script.Manifest(name = "Butler Plank Maker", description = "Gets planks made using butler.")
+@Script.Manifest(name = "Treach3rs Butler Plank Maker", description = "Makes any plank using the demon butler.", properties = "topic=1227653")
 public class PlankMaker extends PollingScript<ClientContext> implements PaintListener {
     private List<Task<ClientContext>> taskList = new ArrayList<Task<ClientContext>>();
 

@@ -54,7 +54,7 @@ public class UseLogsOnButler extends Task<ClientContext> {
 
         Item notedPlanks = ctx.backpack.select().id(logType.getNotedLogId()).poll();
         
-        if(notedPlanks.valid()) {
+        if(notedPlanks.valid() && ctx.backpack.moneyPouchCount() > 100000) {
             notedPlanks.interact("Use");
             butler.hover();
             if(logType.name().equals("Normal")){
@@ -82,6 +82,6 @@ public class UseLogsOnButler extends Task<ClientContext> {
                 return isTalkingToButler();
 
             }
-        }, 150, 20);
+        }, 200, 20);
     }
 }
