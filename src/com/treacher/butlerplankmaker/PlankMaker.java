@@ -25,11 +25,12 @@ import java.util.List;
 public class PlankMaker extends PollingScript<ClientContext> implements PaintListener {
     private List<Task<ClientContext>> taskList = new ArrayList<Task<ClientContext>>();
 
-    private List<String> validFirstOptions = Arrays.asList("Un-cert", "Take them back to the bank");
-    private List<String> validSecondOptions = Arrays.asList("Send logs to sawmill", "Pay servant 7500 coins and don't ask again.");
-
-    private final Component firstOption = ctx.widgets.component(1188, 12);
-    private final Component secondOption = ctx.widgets.component(1188, 18);
+    private List<String> validChatOptions = Arrays.asList(
+            "Un-cert",
+            "Take them back to the bank",
+            "Send logs to sawmill",
+            "Pay servant 7500 coins and don't ask again."
+    );
 
     public static String STATE = "Starting bot";
 
@@ -90,8 +91,7 @@ public class PlankMaker extends PollingScript<ClientContext> implements PaintLis
                 new AntiBan(ctx),
                 new HandleResponse(ctx),
                 new EnterTextOption(ctx),
-                new SelectOption(ctx, firstOption, validFirstOptions, "1"),
-                new SelectOption(ctx, secondOption, validSecondOptions, "2"),
+                new SelectOption(ctx, validChatOptions),
                 new UseLogsOnButler(ctx, this)
         ));
     }

@@ -1,6 +1,7 @@
 package com.treacher.butlerplankmaker.tasks;
 import java.util.List;
 
+import org.powerbot.script.rt6.ChatOption;
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.Component;
 
@@ -11,44 +12,33 @@ import com.treacher.butlerplankmaker.PlankMaker;
  */
 
 public class SelectOption extends Task <ClientContext>{
-    
-    private Component component;
+
     private List<String> validOptions;
-    private String keyPress;
     
-    public SelectOption(ClientContext ctx, Component component, List<String> validOptions, String keyPress) {
+    public SelectOption(ClientContext ctx, List<String> validOptions) {
         super(ctx);
         this.validOptions = validOptions;
-        this.keyPress = keyPress;
-        this.component = component;
-    }
-    
-    public boolean widgetIsAvailable() {
-        return component.valid() && component.visible();
-    }
-    
-    public boolean isValidOption() {
-        boolean containsWidgetText = false;
-    
-        final String widgetText = component.text();
-    
-        //Fuzzy widget text search
-        for(String option : validOptions) {
-            containsWidgetText = widgetText.contains(option);
-            if(containsWidgetText) break;
-        }
-
-        return widgetText != null && containsWidgetText;
     }
     
     @Override
     public boolean activate() {
-        return widgetIsAvailable() && isValidOption();
+        return ctx.chat.chatting() && ctx.chat.get().size() > 0;
     }
 
     @Override
     public void execute() {
         PlankMaker.STATE = "Talking with butler";
-        ctx.input.send(keyPress);
+
+        List<ChatOption> options = ctx.chat.get();
+
+        for(ChatOption option : options) {
+            for(String validOptionText : validOptions) {
+                if(option.text().contains(validOptionText)) {
+                    option.select();
+                    return;
+                }
+            }
+
+        }
     }
 }
