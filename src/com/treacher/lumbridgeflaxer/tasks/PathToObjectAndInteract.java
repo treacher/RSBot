@@ -10,14 +10,16 @@ import org.powerbot.script.rt6.GameObject;
  */
 public class PathToObjectAndInteract extends Task<ClientContext> {
 
-    private int gameObjectId;
+    private int gameObjectId, minPitch, maxPitch;
     private String interaction;
     private final LumbridgeFlaxer lumbridgeFlaxer;
 
-    public PathToObjectAndInteract(ClientContext ctx, int gameObjectId, String interaction, LumbridgeFlaxer lumbridgeFlaxer) {
+    public PathToObjectAndInteract(ClientContext ctx, int gameObjectId, String interaction, int minPitch, int maxPitch, LumbridgeFlaxer lumbridgeFlaxer) {
         super(ctx);
         this.gameObjectId = gameObjectId;
         this.interaction = interaction;
+        this.minPitch = minPitch;
+        this.maxPitch = maxPitch;
         this.lumbridgeFlaxer = lumbridgeFlaxer;
     }
 
@@ -40,7 +42,7 @@ public class PathToObjectAndInteract extends Task<ClientContext> {
         lumbridgeFlaxer.setCurrentGameObjectInteraction(interaction);
 
         ctx.camera.turnTo(gameObject);
-        ctx.camera.pitch(Random.nextInt(40, 60));
+        ctx.camera.pitch(Random.nextInt(minPitch, maxPitch));
 
         gameObject.interact(interaction);
     }

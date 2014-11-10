@@ -33,7 +33,7 @@ public class PathCorrecter extends Task<ClientContext> {
         GameObject gameObject = ctx.objects.select().id(lumbridgeFlaxer.getCurrentGameObjectId()).poll();
 
         ctx.camera.turnTo(gameObject);
-        ctx.camera.pitch(Random.nextInt(40, 60));
+        ctx.camera.pitch(Random.nextInt(40, 55));
 
         /* BUGFIX: For some reason when opening the bank it gets caught in this task. We want to break if we get into that
                    Situation

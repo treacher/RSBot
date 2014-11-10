@@ -53,13 +53,13 @@ public class LumbridgeFlaxer extends PollingScript<ClientContext> implements Pai
         final int bankId = 12308;
 
         taskList.addAll(Arrays.asList(
-                pathToObjectAndInteract(basementLadderId, "Climb-up", bankTile, flaxId),
-                pathToObjectAndInteract(groundFloorStaircaseId, "Climb-up", groundFloorTileToSpinWheel, flaxId),
-                pathToObjectAndInteract(spinningWheelId, "Spin", secondFloorTileToSpinWheel, flaxId),
+                pathToObjectAndInteract(basementLadderId, "Climb-up", bankTile, flaxId, 25, 40),
+                pathToObjectAndInteract(groundFloorStaircaseId, "Climb-up", groundFloorTileToSpinWheel, flaxId, 25, 45),
+                pathToObjectAndInteract(spinningWheelId, "Spin", secondFloorTileToSpinWheel, flaxId, 25, 65),
                 new SpinTheWheel(ctx, flaxId),
-                pathToObjectAndInteract(secondFloorStaircaseId, "Climb-down", spinningWheelTile, bowStringId),
-                pathToObjectAndInteract(trapdoorId, "Climb-down", groundFloorTileToBank, bowStringId),
-                pathToObjectAndInteract(bankId, "Bank", basementFloorTileToBank, bowStringId),
+                pathToObjectAndInteract(secondFloorStaircaseId, "Climb-down", spinningWheelTile, bowStringId, 20, 65),
+                pathToObjectAndInteract(trapdoorId, "Climb-down", groundFloorTileToBank, bowStringId, 40, 55),
+                pathToObjectAndInteract(bankId, "Bank", basementFloorTileToBank, bowStringId, 25, 42),
                 new Banker(ctx, bankTile, this),
                 new PathCorrecter(ctx, this),
                 new AntiBan(ctx, new Tile[]{bankTile, spinningWheelTile})
@@ -116,8 +116,8 @@ public class LumbridgeFlaxer extends PollingScript<ClientContext> implements Pai
         return this.bowStringsCount;
     }
 
-    public PathToObjectAndInteract pathToObjectAndInteract(int objectId, String interaction, final Tile tile, final int inventoryItemId) {
-        return new PathToObjectAndInteract(ctx, objectId, interaction, this) {
+    public PathToObjectAndInteract pathToObjectAndInteract(int objectId, String interaction, final Tile tile, final int inventoryItemId, int minPitch, int maxPitch) {
+        return new PathToObjectAndInteract(ctx, objectId, interaction, minPitch, maxPitch, this) {
             @Override
             public boolean activate() {
                 waitTillPlayerIsNotMoving();
