@@ -8,7 +8,7 @@ import org.powerbot.script.rt6.Component;
 import java.util.concurrent.Callable;
 
 /**
- * Created by Michael Treacher on 8/11/14.
+ * Created by Michael Treacher
  */
 public class SpinTheWheel extends Task<ClientContext> {
 

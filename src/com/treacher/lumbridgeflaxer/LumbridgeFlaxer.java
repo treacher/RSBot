@@ -22,12 +22,10 @@ public class LumbridgeFlaxer extends PollingScript<ClientContext> implements Pai
     private final int flaxId = 1779;
     private final int bowStringId = 1777;
 
-    private final Tile bankTile = new Tile(3218,9623,0);
-    private final Tile groundFloorTileToSpinWheel = new Tile(3210,3216,0);
+    private final Tile bankTile = new Tile(3208,3220,2);
     private final Tile secondFloorTileToSpinWheel = new Tile(3205,3209,1);
     private final Tile spinningWheelTile = new Tile(3209,3213,1);
-    private final Tile groundFloorTileToBank = new Tile(3205,3209,0);
-    private final Tile basementFloorTileToBank = new Tile(3208,9616,0);
+    private final Tile topFloorTileToBank = new Tile(3205,3209,2);
 
     private List<Task<ClientContext>> taskList = new ArrayList<Task<ClientContext>>();
 
@@ -45,21 +43,17 @@ public class LumbridgeFlaxer extends PollingScript<ClientContext> implements Pai
     public void start() {
         setPrices();
 
-        final int basementLadderId = 29355;
-        final int groundFloorStaircaseId = 36773;
         final int spinningWheelId = 36970;
         final int secondFloorStaircaseId = 36774;
-        final int trapdoorId = 36687;
-        final int bankId = 12308;
+        final int topFloorStaircaseId = 36775;
+        final int bankId = 36786;
 
         taskList.addAll(Arrays.asList(
-                pathToObjectAndInteract(basementLadderId, "Climb-up", bankTile, flaxId, 25, 40),
-                pathToObjectAndInteract(groundFloorStaircaseId, "Climb-up", groundFloorTileToSpinWheel, flaxId, 25, 45),
+                pathToObjectAndInteract(topFloorStaircaseId, "Climb-down", bankTile, flaxId, 34, 48),
                 pathToObjectAndInteract(spinningWheelId, "Spin", secondFloorTileToSpinWheel, flaxId, 25, 65),
                 new SpinTheWheel(ctx, flaxId),
-                pathToObjectAndInteract(secondFloorStaircaseId, "Climb-down", spinningWheelTile, bowStringId, 20, 65),
-                pathToObjectAndInteract(trapdoorId, "Climb-down", groundFloorTileToBank, bowStringId, 40, 55),
-                pathToObjectAndInteract(bankId, "Bank", basementFloorTileToBank, bowStringId, 25, 42),
+                pathToObjectAndInteract(secondFloorStaircaseId, "Climb-up", spinningWheelTile, bowStringId, 20, 65),
+                pathToObjectAndInteract(bankId, "Bank", topFloorTileToBank, bowStringId, 25, 42),
                 new Banker(ctx, bankTile, this),
                 new PathCorrecter(ctx, this),
                 new AntiBan(ctx, new Tile[]{bankTile, spinningWheelTile})

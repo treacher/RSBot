@@ -3,9 +3,10 @@ package com.treacher.lumbridgeflaxer.tasks;
 import com.treacher.lumbridgeflaxer.LumbridgeFlaxer;
 import org.powerbot.script.Tile;
 import org.powerbot.script.rt6.ClientContext;
+import org.powerbot.script.rt6.Hud;
 
 /**
- * Created by Michael Treacher on 8/11/14.
+ * Created by Michael Treacher
  */
 public class Banker extends Task<ClientContext> {
 
@@ -28,7 +29,16 @@ public class Banker extends Task<ClientContext> {
     public void execute() {
         LumbridgeFlaxer.STATE = "Banking";
         LumbridgeFlaxer.timeSinceLastMovement = -1;
-        if(ctx.bank.open()) ctx.bank.presetGear1();
+
+        if(!ctx.hud.opened(Hud.Window.BACKPACK))
+            ctx.hud.open(Hud.Window.BACKPACK);
+
+        if(ctx.bank.select().id(lumbridgeFlaxer.getFlaxId()).isEmpty())
+            ctx.controller.stop();
+
+        if(ctx.bank.open())
+            ctx.bank.presetGear1();
+
         incrementBowStringsCount();
     }
 

@@ -6,7 +6,7 @@ import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.GameObject;
 
 /**
- * Created by Michael Treacher on 8/11/14.
+ * Created by Michael Treacher
  */
 public class PathToObjectAndInteract extends Task<ClientContext> {
 
