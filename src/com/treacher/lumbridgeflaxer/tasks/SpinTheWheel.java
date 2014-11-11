@@ -18,9 +18,12 @@ public class SpinTheWheel extends Task<ClientContext> {
 
     private final int flaxId;
 
-    public SpinTheWheel(ClientContext ctx, int flaxId) {
+    private final LumbridgeFlaxer lumbridgeFlaxer;
+
+    public SpinTheWheel(ClientContext ctx, int flaxId, LumbridgeFlaxer lumbridgeFlaxer) {
         super(ctx);
         this.flaxId = flaxId;
+        this.lumbridgeFlaxer = lumbridgeFlaxer;
     }
 
     @Override
@@ -33,7 +36,7 @@ public class SpinTheWheel extends Task<ClientContext> {
         LumbridgeFlaxer.STATE = FlaxerState.SPINNING;
         spinTheWheelComponent.click();
         waitTilSpinningHasStarted();
-
+        lumbridgeFlaxer.triggerAntiBanCheck();
     }
 
     private void waitTilSpinningHasStarted() {

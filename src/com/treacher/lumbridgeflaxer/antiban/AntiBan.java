@@ -1,4 +1,4 @@
-package com.treacher.lumbridgeflaxer.tasks;
+package com.treacher.lumbridgeflaxer.antiban;
 
 import java.awt.Point;
 import java.util.Arrays;
@@ -9,7 +9,6 @@ import com.treacher.lumbridgeflaxer.LumbridgeFlaxer;
 import com.treacher.lumbridgeflaxer.enums.FlaxerState;
 import org.powerbot.script.Condition;
 import org.powerbot.script.Random;
-import org.powerbot.script.Tile;
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.Component;
 import org.powerbot.script.rt6.Hud.Window;
@@ -18,40 +17,25 @@ import org.powerbot.script.rt6.Hud.Window;
  * Created by Michael Treacher
  */
 
-public class AntiBan extends Task<ClientContext> {
+public class AntiBan {
 
     private long lastTimeAFKing = System.currentTimeMillis();
     private long lastTimeRandomEvent = System.currentTimeMillis();
 
-    private final Tile[] tilesToAntiBanOn;
+    private final ClientContext ctx;
 
-    public AntiBan(ClientContext ctx, Tile[] tilesToAntiBanOn) {
-        super(ctx);
-        this.tilesToAntiBanOn = tilesToAntiBanOn;
+    public AntiBan(ClientContext ctx) {
+        this.ctx = ctx;
     }
 
-    @Override
-    public boolean activate() {
-        return ctx.players.local().animation() == -1 && isAntiBanTile();
-    }
-
-    @Override
     public void execute() {
         if(timeForRandomEvent()) triggerRandomEvent();
         if(timeForAFK()) goAFK();
     }
 
-    private boolean isAntiBanTile() {
-        for(Tile tile : tilesToAntiBanOn)
-            if(ctx.players.local().tile().equals(tile)) return true;
-        return false;
-    }
-
-    // AFK every 20 minutes
+    // AFK every 60 minutes
     private boolean timeForAFK() {
-        System.out.println(System.currentTimeMillis() - lastTimeAFKing);
-        System.out.println((System.currentTimeMillis() - lastTimeAFKing) > (Random.nextInt(50000,70000) * 15));
-        return (System.currentTimeMillis() - lastTimeAFKing) > (Random.nextInt(50000,70000) * 15);
+        return (System.currentTimeMillis() - lastTimeAFKing) > (Random.nextInt(50000,70000) * 60);
     }
 
     private boolean timeForRandomEvent() {
@@ -85,7 +69,7 @@ public class AntiBan extends Task<ClientContext> {
         lastTimeAFKing = System.currentTimeMillis();
         LumbridgeFlaxer.STATE = FlaxerState.ANTIBAN;
 
-        Condition.sleep(Random.nextInt(10000, 15000));
+        Condition.sleep(Random.nextInt(60000, 120000));
     }
 
     /*

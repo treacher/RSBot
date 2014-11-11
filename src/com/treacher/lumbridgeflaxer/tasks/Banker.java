@@ -37,6 +37,7 @@ public class Banker extends Task<ClientContext> {
             ctx.bank.presetGear1();
 
         incrementBowStringsCount();
+        lumbridgeFlaxer.triggerAntiBanCheck();
     }
 
     private void incrementBowStringsCount() {

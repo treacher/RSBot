@@ -1,5 +1,6 @@
 package com.treacher.lumbridgeflaxer;
 
+import com.treacher.lumbridgeflaxer.antiban.AntiBan;
 import com.treacher.lumbridgeflaxer.enums.FlaxerState;
 import com.treacher.lumbridgeflaxer.tasks.*;
 import com.treacher.lumbridgeflaxer.ui.Painter;
@@ -41,6 +42,8 @@ public class LumbridgeFlaxer extends PollingScript<ClientContext> implements Pai
 
     public static long timeSinceLastMovement = 0;
 
+    public final AntiBan antiBan = new AntiBan(ctx);
+
     @Override
     public void start() {
         setPrices();
@@ -53,12 +56,11 @@ public class LumbridgeFlaxer extends PollingScript<ClientContext> implements Pai
         taskList.addAll(Arrays.asList(
                 pathToObjectAndInteract(topFloorStaircaseId, "Climb-down", bankTile, flaxId, 35, 50),
                 pathToObjectAndInteract(spinningWheelId, "Spin", secondFloorTileToSpinWheel, flaxId, 45, 72),
-                new SpinTheWheel(ctx, flaxId),
+                new SpinTheWheel(ctx, flaxId, this),
                 pathToObjectAndInteract(secondFloorStaircaseId, "Climb-up", spinningWheelTile, bowStringId, 45, 72),
                 pathToObjectAndInteract(bankId, "Bank", topFloorTileToBank, bowStringId, 30, 45),
                 new Banker(ctx, bankTile, this),
-                new PathCorrecter(ctx, this),
-                new AntiBan(ctx, new Tile[]{bankTile, spinningWheelTile})
+                new PathCorrecter(ctx, this)
         ));
     }
 
@@ -80,7 +82,11 @@ public class LumbridgeFlaxer extends PollingScript<ClientContext> implements Pai
         final int flaxPrice = GeItem.price(flaxId);
         final int bowStringPrice =  GeItem.price(bowStringId);
 
-        painter.setPrices(flaxPrice, bowStringPrice);
+        this.painter.setPrices(flaxPrice, bowStringPrice);
+    }
+
+    public void triggerAntiBanCheck() {
+        antiBan.execute();
     }
 
     public int getCurrentGameObjectId() {
@@ -88,7 +94,7 @@ public class LumbridgeFlaxer extends PollingScript<ClientContext> implements Pai
     }
 
     public void setCurrentGameObjectId(int objectId) {
-        this.currentGameObjectId = objectId;
+        currentGameObjectId = objectId;
     }
 
     public String getCurrentGameObjectInteraction() {
@@ -96,7 +102,7 @@ public class LumbridgeFlaxer extends PollingScript<ClientContext> implements Pai
     }
 
     public void setCurrentGameObjectInteraction(String interaction) {
-        this.currentGameObjectInteraction = interaction;
+        currentGameObjectInteraction = interaction;
     }
 
     public int getFlaxId(){
@@ -104,11 +110,11 @@ public class LumbridgeFlaxer extends PollingScript<ClientContext> implements Pai
     }
 
     public void incrementBowStringsCount() {
-        this.bowStringsCount += 28;
+        bowStringsCount += 28;
     }
 
     public int getBowStringsCount() {
-        return this.bowStringsCount;
+        return bowStringsCount;
     }
 
     public PathToObjectAndInteract pathToObjectAndInteract(int objectId, String interaction, final Tile tile, final int inventoryItemId, int minPitch, int maxPitch) {
@@ -129,7 +135,7 @@ public class LumbridgeFlaxer extends PollingScript<ClientContext> implements Pai
         Condition.wait(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return ctx.players.local().animation() == -1;
+                return ctx.players.local().idle();
             }
         },150 , 20);
     }
