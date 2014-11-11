@@ -6,24 +6,25 @@ package com.treacher.runespan.enums;
 
 public enum Platform {
 
-    MISSILE_PLATFORM(70489,new int[]{24221}),
-    VINE_PLATFORM(70490, new int[]{24214,24216,24220}),
-    COMET_PLATFORM(70493, new int[]{24224,24222,24223});
+    MISSILE_PLATFORM(70489,new Rune[]{Rune.CHAOS}),
+    VINE_PLATFORM(70490, new Rune[]{Rune.WATER, Rune.EARTH, Rune.NATURE}),
+    COMET_PLATFORM(70493, new Rune[]{Rune.ASTRAL, Rune.LAW, Rune.FIRE}),
+    MIST_PLATFORM(70491, new Rune[]{Rune.WATER, Rune.NATURE, Rune.BODY});
 
-    private int platformId;
-    private int[] platformRequirementRuneIds;
+    private final int platformId;
+    private final Rune[] platformRequirementRunes;
 
-    Platform(int platformId, int[] platformRequirementRuneIds) {
+    private Platform(int platformId, Rune[] platformRequirementRunes) {
         this.platformId = platformId;
-        this.platformRequirementRuneIds = platformRequirementRuneIds;
+        this.platformRequirementRunes = platformRequirementRunes;
     }
 
     public int getPlatformId() {
         return platformId;
     }
 
-    public int[] getPlatformRequirementRuneIds(){
-        return platformRequirementRuneIds;
+    public Rune[] getPlatformRequirementRunes(){
+        return platformRequirementRunes;
     }
 
 }
