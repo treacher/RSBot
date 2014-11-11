@@ -48,7 +48,6 @@ public class PathCorrecter extends Task<ClientContext> {
         ctx.camera.pitch(Random.nextInt(45, 50));
 
         if(ctx.bank.opened()) return;
-        System.out.println("just checking");
 
         gameObject.interact(lumbridgeFlaxer.getCurrentGameObjectInteraction());
     }
