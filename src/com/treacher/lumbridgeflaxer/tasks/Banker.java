@@ -33,12 +33,8 @@ public class Banker extends Task<ClientContext> {
         if(!ctx.hud.opened(Hud.Window.BACKPACK))
             ctx.hud.open(Hud.Window.BACKPACK);
 
-        if(ctx.bank.open()) {
+        if(ctx.bank.open())
             ctx.bank.presetGear1();
-            if(ctx.bank.select().id(lumbridgeFlaxer.getFlaxId()).isEmpty())
-                ctx.controller.stop();
-        }
-
 
         incrementBowStringsCount();
     }

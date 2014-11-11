@@ -42,7 +42,7 @@ public class PathToObjectAndInteract extends Task<ClientContext> {
         lumbridgeFlaxer.setCurrentGameObjectInteraction(interaction);
 
         ctx.camera.turnTo(gameObject);
-        ctx.camera.pitch(Random.nextInt(minPitch, maxPitch));
+        ctx.camera.pitch(Random.nextInt(40, 60));
 
         gameObject.interact(interaction);
     }
