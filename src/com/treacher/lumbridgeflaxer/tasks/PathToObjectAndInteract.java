@@ -1,6 +1,7 @@
 package com.treacher.lumbridgeflaxer.tasks;
 
 import com.treacher.lumbridgeflaxer.LumbridgeFlaxer;
+import com.treacher.lumbridgeflaxer.enums.FlaxerState;
 import org.powerbot.script.Random;
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.GameObject;
@@ -35,14 +36,14 @@ public class PathToObjectAndInteract extends Task<ClientContext> {
 
         final GameObject gameObject = ctx.objects.select().id(gameObjectId).poll();
 
-        LumbridgeFlaxer.STATE = "Heading to: " + gameObject.name();
+        LumbridgeFlaxer.STATE = FlaxerState.WALKING;
 
         // Keep track of current path so that we can correct it if need be.
         lumbridgeFlaxer.setCurrentGameObjectId(gameObjectId);
         lumbridgeFlaxer.setCurrentGameObjectInteraction(interaction);
 
         ctx.camera.turnTo(gameObject);
-        ctx.camera.pitch(Random.nextInt(40, 60));
+        ctx.camera.pitch(Random.nextInt(minPitch, maxPitch));
 
         gameObject.interact(interaction);
     }

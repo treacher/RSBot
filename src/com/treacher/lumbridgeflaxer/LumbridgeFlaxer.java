@@ -1,5 +1,6 @@
 package com.treacher.lumbridgeflaxer;
 
+import com.treacher.lumbridgeflaxer.enums.FlaxerState;
 import com.treacher.lumbridgeflaxer.tasks.*;
 import com.treacher.lumbridgeflaxer.ui.Painter;
 import org.powerbot.script.*;
@@ -36,7 +37,8 @@ public class LumbridgeFlaxer extends PollingScript<ClientContext> implements Pai
     private int currentGameObjectId;
     private String currentGameObjectInteraction;
 
-    public static String STATE = "Starting up";
+    public static FlaxerState STATE = FlaxerState.STARTING;
+
     public static long timeSinceLastMovement = 0;
 
     @Override
@@ -49,11 +51,11 @@ public class LumbridgeFlaxer extends PollingScript<ClientContext> implements Pai
         final int bankId = 36786;
 
         taskList.addAll(Arrays.asList(
-                pathToObjectAndInteract(topFloorStaircaseId, "Climb-down", bankTile, flaxId, 34, 48),
-                pathToObjectAndInteract(spinningWheelId, "Spin", secondFloorTileToSpinWheel, flaxId, 25, 65),
+                pathToObjectAndInteract(topFloorStaircaseId, "Climb-down", bankTile, flaxId, 35, 50),
+                pathToObjectAndInteract(spinningWheelId, "Spin", secondFloorTileToSpinWheel, flaxId, 45, 72),
                 new SpinTheWheel(ctx, flaxId),
-                pathToObjectAndInteract(secondFloorStaircaseId, "Climb-up", spinningWheelTile, bowStringId, 20, 65),
-                pathToObjectAndInteract(bankId, "Bank", topFloorTileToBank, bowStringId, 25, 42),
+                pathToObjectAndInteract(secondFloorStaircaseId, "Climb-up", spinningWheelTile, bowStringId, 45, 72),
+                pathToObjectAndInteract(bankId, "Bank", topFloorTileToBank, bowStringId, 30, 45),
                 new Banker(ctx, bankTile, this),
                 new PathCorrecter(ctx, this),
                 new AntiBan(ctx, new Tile[]{bankTile, spinningWheelTile})
@@ -75,7 +77,6 @@ public class LumbridgeFlaxer extends PollingScript<ClientContext> implements Pai
     }
 
     public void setPrices(){
-        STATE = "Setting prices";
         final int flaxPrice = GeItem.price(flaxId);
         final int bowStringPrice =  GeItem.price(bowStringId);
 

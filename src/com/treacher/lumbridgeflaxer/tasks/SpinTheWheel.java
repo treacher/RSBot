@@ -1,6 +1,7 @@
 package com.treacher.lumbridgeflaxer.tasks;
 
 import com.treacher.lumbridgeflaxer.LumbridgeFlaxer;
+import com.treacher.lumbridgeflaxer.enums.FlaxerState;
 import org.powerbot.script.Condition;
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.Component;
@@ -29,8 +30,7 @@ public class SpinTheWheel extends Task<ClientContext> {
 
     @Override
     public void execute() {
-        LumbridgeFlaxer.STATE = "Spinning the wheel!";
-        LumbridgeFlaxer.timeSinceLastMovement = -1;
+        LumbridgeFlaxer.STATE = FlaxerState.SPINNING;
         spinTheWheelComponent.click();
         waitTilSpinningHasStarted();
 

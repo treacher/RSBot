@@ -1,6 +1,7 @@
 package com.treacher.lumbridgeflaxer.tasks;
 
 import com.treacher.lumbridgeflaxer.LumbridgeFlaxer;
+import com.treacher.lumbridgeflaxer.enums.FlaxerState;
 import org.powerbot.script.Tile;
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.Hud;
@@ -27,8 +28,7 @@ public class Banker extends Task<ClientContext> {
 
     @Override
     public void execute() {
-        LumbridgeFlaxer.STATE = "Banking";
-        LumbridgeFlaxer.timeSinceLastMovement = -1;
+        LumbridgeFlaxer.STATE = FlaxerState.BANKING;
 
         if(!ctx.hud.opened(Hud.Window.BACKPACK))
             ctx.hud.open(Hud.Window.BACKPACK);

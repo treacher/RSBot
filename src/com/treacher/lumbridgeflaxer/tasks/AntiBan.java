@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.treacher.lumbridgeflaxer.LumbridgeFlaxer;
+import com.treacher.lumbridgeflaxer.enums.FlaxerState;
 import org.powerbot.script.Condition;
 import org.powerbot.script.Random;
 import org.powerbot.script.Tile;
@@ -19,7 +20,9 @@ import org.powerbot.script.rt6.Hud.Window;
 
 public class AntiBan extends Task<ClientContext> {
 
-    private long antiBanLastRunTime = System.currentTimeMillis();
+    private long lastTimeAFKing = System.currentTimeMillis();
+    private long lastTimeRandomEvent = System.currentTimeMillis();
+
     private final Tile[] tilesToAntiBanOn;
 
     public AntiBan(ClientContext ctx, Tile[] tilesToAntiBanOn) {
@@ -29,46 +32,60 @@ public class AntiBan extends Task<ClientContext> {
 
     @Override
     public boolean activate() {
-        if (System.currentTimeMillis() - antiBanLastRunTime > Random.nextInt(100000, 150000)) {
-            antiBanLastRunTime = System.currentTimeMillis();
-            return ctx.players.local().animation() == -1 && isAntiBanTile();
-        } else {
-            return false;
-        }
+        return ctx.players.local().animation() == -1 && isAntiBanTile();
     }
 
     @Override
     public void execute() {
-        int randomNumber = Random.nextInt(1,12);
-
-        // No pathing in Anti-ban so
-        LumbridgeFlaxer.timeSinceLastMovement = -1;
-
-        switch(randomNumber) {
-            case 1:
-                LumbridgeFlaxer.STATE = "AntiBan: Checking friends list";
-                checkFriendsList();
-                break;
-            case 2:
-                LumbridgeFlaxer.STATE = "AntiBan: Checking crafting skill";
-                checkSkill();
-                break;
-            case 3:
-                LumbridgeFlaxer.STATE = "AntiBan: Moving mouse";
-                moveMouse();
-                break;
-            case 4:
-                goAFK();
-                break;
-            default:
-                break;
-        }
+        if(timeForRandomEvent()) triggerRandomEvent();
+        if(timeForAFK()) goAFK();
     }
 
     private boolean isAntiBanTile() {
         for(Tile tile : tilesToAntiBanOn)
             if(ctx.players.local().tile().equals(tile)) return true;
         return false;
+    }
+
+    // AFK every hour roughly
+    private boolean timeForAFK() {
+        System.out.println(System.currentTimeMillis() - lastTimeAFKing);
+        System.out.println((System.currentTimeMillis() - lastTimeAFKing) > (Random.nextInt(50000,70000) * 60));
+        return (System.currentTimeMillis() - lastTimeAFKing) > (Random.nextInt(50000,70000) * 60);
+    }
+
+    private boolean timeForRandomEvent() {
+        return (System.currentTimeMillis() - lastTimeRandomEvent) > (Random.nextInt(50000,70000) * 10);
+    }
+
+    private void triggerRandomEvent() {
+        LumbridgeFlaxer.STATE = FlaxerState.ANTIBAN;
+
+        lastTimeRandomEvent = System.currentTimeMillis();
+
+        int randomNumber = Random.nextInt(1,3);
+
+        switch(randomNumber) {
+            case 1:
+                checkFriendsList();
+                break;
+            case 2:
+                checkSkill();
+                break;
+            case 3:
+                moveMouse();
+                break;
+            default:
+                break;
+        }
+    }
+
+    // Don't really want to go AFK all that often.
+    private void goAFK(){
+        lastTimeAFKing = System.currentTimeMillis();
+        LumbridgeFlaxer.STATE = FlaxerState.ANTIBAN;
+
+        Condition.sleep(Random.nextInt(60000, 180000));
     }
 
     /*
@@ -126,15 +143,6 @@ public class AntiBan extends Task<ClientContext> {
 
     private void moveMouse() {
         ctx.input.move(Random.nextInt(100, 400), Random.nextInt(100, 400));
-    }
-
-    // Don't really want to go AFK all that often.
-    private void goAFK(){
-        final int randomChanceDraw = Random.nextInt(0,12);
-        if(randomChanceDraw % 3 == 0) {
-            LumbridgeFlaxer.STATE = "AntiBan: AFKing";
-            Condition.sleep(Random.nextInt(60000, 120000));
-        }
     }
 
     /*

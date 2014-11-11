@@ -2,6 +2,7 @@ package com.treacher.lumbridgeflaxer.tasks;
 
 import com.treacher.lumbridgeflaxer.LumbridgeFlaxer;
 
+import com.treacher.lumbridgeflaxer.enums.FlaxerState;
 import org.powerbot.script.Random;
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.GameObject;
@@ -13,6 +14,7 @@ public class PathCorrecter extends Task<ClientContext> {
 
     private final LumbridgeFlaxer lumbridgeFlaxer;
     private int retryCount = 0;
+    private long idleTime = -1;
 
     public PathCorrecter(ClientContext ctx, LumbridgeFlaxer lumbridgeFlaxer) {
         super(ctx);
@@ -21,25 +23,31 @@ public class PathCorrecter extends Task<ClientContext> {
 
     @Override
     public boolean activate() {
-        retryCount = 0;
-        return LumbridgeFlaxer.timeSinceLastMovement != -1
-                && (System.currentTimeMillis() - LumbridgeFlaxer.timeSinceLastMovement) > 15000;
+        final boolean active = ctx.players.local().idle()
+                && (LumbridgeFlaxer.STATE == FlaxerState.WALKING || LumbridgeFlaxer.STATE == FlaxerState.CORRECTING);
+
+        if(active && idleTime == -1) {
+            idleTime = System.currentTimeMillis();
+        } else if(!active) {
+            idleTime = -1;
+        }
+
+        return active;
     }
 
     @Override
     public void execute() {
-        LumbridgeFlaxer.STATE = "Trying to resolve issue finding way to Spinning wheel";
+        // If idle for greater than 20 seconds try correct it.
+        if((System.currentTimeMillis() - idleTime) <= 20000) return;
 
-        GameObject gameObject = ctx.objects.select().id(lumbridgeFlaxer.getCurrentGameObjectId()).poll();
+        LumbridgeFlaxer.STATE = FlaxerState.CORRECTING;
+
+        final GameObject gameObject = ctx.objects.select().id(lumbridgeFlaxer.getCurrentGameObjectId()).poll();
 
         ctx.camera.turnTo(gameObject);
-        ctx.camera.pitch(Random.nextInt(40, 55));
+        ctx.camera.pitch(Random.nextInt(45, 50));
 
-        /* BUGFIX: For some reason when opening the bank it gets caught in this task. We want to break if we get into that
-                   Situation
-        */
-        if(ctx.bank.opened())
-            return;
+        if(ctx.bank.opened()) return;
 
         if(!gameObject.interact(lumbridgeFlaxer.getCurrentGameObjectInteraction())) {
             // If we can't correct the path. The script should be stopped.
