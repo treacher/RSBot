@@ -1,5 +1,7 @@
 package com.treacher.runespan.util;
 
+import com.treacher.runespan.enums.Platform;
+
 /**
  * Created by treach3r on 10/11/14.
  */

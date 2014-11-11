@@ -1,4 +1,4 @@
-package com.treacher.runespan.util;
+package com.treacher.runespan.enums;
 
 /**
  * Created by Michael Treacher

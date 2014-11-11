@@ -1,7 +1,7 @@
 package com.treacher.runespan;
 
 import com.treacher.runespan.util.FloatingIsland;
-import com.treacher.runespan.util.Platform;
+import com.treacher.runespan.enums.Platform;
 import com.treacher.runespan.util.PlatformConnection;
 import org.powerbot.script.Condition;
 import org.powerbot.script.PollingScript;
