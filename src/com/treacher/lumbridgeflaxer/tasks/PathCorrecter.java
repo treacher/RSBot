@@ -48,16 +48,8 @@ public class PathCorrecter extends Task<ClientContext> {
         ctx.camera.pitch(Random.nextInt(45, 50));
 
         if(ctx.bank.opened()) return;
+        System.out.println("just checking");
 
-        if(!gameObject.interact(lumbridgeFlaxer.getCurrentGameObjectInteraction())) {
-            // If we can't correct the path. The script should be stopped.
-            if(retryCount > 5) {
-                this.execute();
-                retryCount++;
-            } else {
-                ctx.controller.stop();
-                retryCount = 0;
-            }
-        }
+        gameObject.interact(lumbridgeFlaxer.getCurrentGameObjectInteraction());
     }
 }
