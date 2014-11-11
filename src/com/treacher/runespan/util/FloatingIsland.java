@@ -37,6 +37,10 @@ public class FloatingIsland {
         return title;
     }
 
+    public List<PlatformConnection> getConnections() {
+        return connections;
+    }
+
     public void addConnection(PlatformConnection connection) {
         connections.add(connection);
     }
