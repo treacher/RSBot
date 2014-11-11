@@ -101,7 +101,7 @@ public class AntiBan {
                 // Only slightly vary the y coordinate
                 final int yVariance = friendsComponents.get(i).centerPoint().y += Random.nextInt(-2, 2);
                 ctx.input.move(firstPoint.x, yVariance);
-                Condition.sleep(Random.nextInt(800, 1200));
+                Condition.sleep(Random.nextInt(1400, 2000));
             }
         }
 
