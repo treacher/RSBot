@@ -65,17 +65,26 @@ public class Runespan extends PollingScript<ClientContext> {
                 new Tile(4130,6051,1)
         );
 
+        FloatingIsland island6 = new FloatingIsland("Island 6",
+                new Tile(4125,6031,1),
+                new Tile(4132,6022,1),
+                new Tile(4133,6024,1),
+                new Tile(4123,6028,1)
+        );
+
         island1.addConnection(new PlatformConnection(island2, Platform.COMET_PLATFORM));
         island2.addConnection(new PlatformConnection(island1, Platform.COMET_PLATFORM));
         island2.addConnection(new PlatformConnection(island3, Platform.VINE_PLATFORM));
         island2.addConnection(new PlatformConnection(island4, Platform.COMET_PLATFORM));
         island2.addConnection(new PlatformConnection(island5, Platform.COMET_PLATFORM));
+        island6.addConnection(new PlatformConnection(island5, Platform.MIST_PLATFORM));
 
         floatingIslands.add(island1);
         floatingIslands.add(island2);
         floatingIslands.add(island3);
         floatingIslands.add(island4);
         floatingIslands.add(island5);
+        floatingIslands.add(island6);
     }
 
     @Override
