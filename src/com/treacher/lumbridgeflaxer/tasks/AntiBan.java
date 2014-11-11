@@ -47,11 +47,11 @@ public class AntiBan extends Task<ClientContext> {
         return false;
     }
 
-    // AFK every hour roughly
+    // AFK every 20 minutes
     private boolean timeForAFK() {
         System.out.println(System.currentTimeMillis() - lastTimeAFKing);
-        System.out.println((System.currentTimeMillis() - lastTimeAFKing) > (Random.nextInt(50000,70000) * 60));
-        return (System.currentTimeMillis() - lastTimeAFKing) > (Random.nextInt(50000,70000) * 60);
+        System.out.println((System.currentTimeMillis() - lastTimeAFKing) > (Random.nextInt(50000,70000) * 15));
+        return (System.currentTimeMillis() - lastTimeAFKing) > (Random.nextInt(50000,70000) * 15);
     }
 
     private boolean timeForRandomEvent() {
@@ -85,7 +85,7 @@ public class AntiBan extends Task<ClientContext> {
         lastTimeAFKing = System.currentTimeMillis();
         LumbridgeFlaxer.STATE = FlaxerState.ANTIBAN;
 
-        Condition.sleep(Random.nextInt(60000, 180000));
+        Condition.sleep(Random.nextInt(10000, 15000));
     }
 
     /*

@@ -23,8 +23,8 @@ public class PathCorrecter extends Task<ClientContext> {
 
     @Override
     public boolean activate() {
-        final boolean active = ctx.players.local().idle()
-                && (LumbridgeFlaxer.STATE == FlaxerState.WALKING || LumbridgeFlaxer.STATE == FlaxerState.CORRECTING);
+        System.out.println(ctx.players.local().idle());
+        final boolean active = ctx.players.local().idle() && LumbridgeFlaxer.STATE != FlaxerState.SPINNING;
 
         if(active && idleTime == -1) {
             idleTime = System.currentTimeMillis();
@@ -37,12 +37,15 @@ public class PathCorrecter extends Task<ClientContext> {
 
     @Override
     public void execute() {
+        System.out.println(System.currentTimeMillis() - idleTime);
         // If idle for greater than 20 seconds try correct it.
-        if((System.currentTimeMillis() - idleTime) <= 20000) return;
+        if((System.currentTimeMillis() - idleTime) <= 45000) return;
 
         LumbridgeFlaxer.STATE = FlaxerState.CORRECTING;
 
         final GameObject gameObject = ctx.objects.select().id(lumbridgeFlaxer.getCurrentGameObjectId()).poll();
+
+        System.out.println(gameObject);
 
         ctx.camera.turnTo(gameObject);
         ctx.camera.pitch(Random.nextInt(45, 50));
