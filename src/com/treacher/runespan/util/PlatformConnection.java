@@ -22,4 +22,8 @@ public class PlatformConnection {
     public FloatingIsland getConnection(){
         return connection;
     }
+
+    public String toString() {
+        return "Floating Island: " + connection.getTitle() + ", Platform: " + platform.name();
+    }
 }
