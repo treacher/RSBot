@@ -45,7 +45,7 @@ public class PathToObjectAndInteract extends Task<ClientContext> {
         ctx.camera.turnTo(gameObject);
         ctx.camera.pitch(Random.nextInt(minPitch, maxPitch));
 
-        gameObject.interact(interaction);
+        gameObject.interact(false, interaction);
     }
 
 }

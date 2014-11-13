@@ -37,7 +37,7 @@ public class PathCorrecter extends Task<ClientContext> {
     @Override
     public void execute() {
         // If idle for greater than 20 seconds try correct it.
-        if((System.currentTimeMillis() - idleTime) <= 45000) return;
+        if((System.currentTimeMillis() - idleTime) <= 20000) return;
 
         LumbridgeFlaxer.STATE = FlaxerState.CORRECTING;
 
@@ -48,6 +48,6 @@ public class PathCorrecter extends Task<ClientContext> {
 
         if(ctx.bank.opened()) return;
 
-        gameObject.interact(lumbridgeFlaxer.getCurrentGameObjectInteraction());
+        gameObject.interact(false, lumbridgeFlaxer.getCurrentGameObjectInteraction());
     }
 }
