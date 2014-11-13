@@ -1,5 +1,6 @@
 package com.treacher.runespan.util;
 
+import org.powerbot.script.Area;
 import org.powerbot.script.Tile;
 
 import java.util.*;
@@ -21,7 +22,6 @@ public class FloatingIsland {
         this.connections = new ArrayList<PlatformConnection>();
         this.floor = t1.floor();
         this.title = title;
-
         interpolateIslandTiles();
     }
 
@@ -40,6 +40,7 @@ public class FloatingIsland {
     public List<PlatformConnection> getConnections() {
         return connections;
     }
+
 
     public void addConnection(PlatformConnection connection) {
         connections.add(connection);

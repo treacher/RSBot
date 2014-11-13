@@ -1,5 +1,9 @@
 package com.treacher.runespan.enums;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Created by treach3r on 11/11/14.
  */
@@ -21,6 +25,17 @@ public enum Rune {
     SOUL(24226);
 
     private final int gameObjectId;
+    private static final List<Rune> highPriorityRunes = new ArrayList<Rune>(
+            Arrays.asList(
+                    SOUL,
+                    BLOOD,
+                    DEATH,
+                    ASTRAL,
+                    LAW,
+                    NATURE,
+                    CHAOS
+            )
+    );
 
     private Rune(int gameObjectId) {
         this.gameObjectId = gameObjectId;
@@ -28,5 +43,9 @@ public enum Rune {
 
     public int getGameObjectId() {
         return gameObjectId;
+    }
+
+    public boolean removable() {
+        return !highPriorityRunes.contains(this);
     }
 }
