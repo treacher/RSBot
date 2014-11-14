@@ -54,11 +54,11 @@ public class LumbridgeFlaxer extends PollingScript<ClientContext> implements Pai
         final int bankId = 36786;
 
         taskList.addAll(Arrays.asList(
-                pathToObjectAndInteract(topFloorStaircaseId, "Climb-down", bankTile, flaxId, 35, 50),
-                pathToObjectAndInteract(spinningWheelId, "Spin", secondFloorTileToSpinWheel, flaxId, 45, 72),
+                pathToObjectAndInteract(topFloorStaircaseId, "Climb-down", bankTile, flaxId, 28),
+                pathToObjectAndInteract(spinningWheelId, "Spin", secondFloorTileToSpinWheel, flaxId, 28),
                 new SpinTheWheel(ctx, flaxId, this),
-                pathToObjectAndInteract(secondFloorStaircaseId, "Climb-up", spinningWheelTile, bowStringId, 45, 72),
-                pathToObjectAndInteract(bankId, "Bank", topFloorTileToBank, bowStringId, 30, 45),
+                pathToObjectAndInteract(secondFloorStaircaseId, "Climb-up", spinningWheelTile, flaxId, 0),
+                pathToObjectAndInteract(bankId, "Bank", topFloorTileToBank, flaxId, 0),
                 new Banker(ctx, bankTile, this),
                 new PathCorrecter(ctx, this)
         ));
@@ -117,18 +117,27 @@ public class LumbridgeFlaxer extends PollingScript<ClientContext> implements Pai
         return bowStringsCount;
     }
 
-    public PathToObjectAndInteract pathToObjectAndInteract(int objectId, String interaction, final Tile tile, final int inventoryItemId, int minPitch, int maxPitch) {
-        return new PathToObjectAndInteract(ctx, objectId, interaction, minPitch, maxPitch, this) {
+    /**
+     * Generates PathToObjectAndInteract tasks and overrides the activate method with an isOnTileWithInventoryCountOfItem check
+     * @param objectId Object to interact with
+     * @param interaction Interaction to be had with object
+     * @param tileToBeOn Tile that you need to be on for this task to be triggered
+     * @param itemId Item we are looking for in inventory
+     * @param inventoryCount Count that we expect in the inventory as a prerequisite for triggering the task
+     * @return PathToObjectAndInteract task
+     */
+    public PathToObjectAndInteract pathToObjectAndInteract(int objectId, String interaction, final Tile tileToBeOn, final int itemId, final int inventoryCount) {
+        return new PathToObjectAndInteract(ctx, objectId, interaction, this) {
             @Override
             public boolean activate() {
                 waitTillPlayerIsNotMoving();
-                return isOnTileWithFullInventoryOfItem(tile, inventoryItemId);
+                return isOnTileWithInventoryCountOfItem(tileToBeOn, itemId, inventoryCount);
             }
         };
     }
 
-    public boolean isOnTileWithFullInventoryOfItem(Tile tile, int itemId){
-        return ctx.players.local().tile().equals(tile) && ctx.backpack.select().id(itemId).count() == 28;
+    public boolean isOnTileWithInventoryCountOfItem(Tile tile, int itemId, int inventoryCount){
+        return ctx.players.local().tile().equals(tile) && ctx.backpack.select().id(itemId).count() == inventoryCount;
     }
 
     public void waitTillPlayerIsNotMoving() {
