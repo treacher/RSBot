@@ -44,7 +44,6 @@ public class SearchForBetterNodes extends Task<ClientContext> {
         Condition.wait(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                System.out.println(ctx.players.local().idle());
                 return !ctx.players.local().idle();
             }
         }, 1000, 2);
