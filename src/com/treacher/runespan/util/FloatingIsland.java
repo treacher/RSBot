@@ -1,74 +1,74 @@
 package com.treacher.runespan.util;
 
-import org.powerbot.script.Area;
+import com.treacher.runespan.Runespan;
+import com.treacher.runespan.enums.Platform;
 import org.powerbot.script.Tile;
+import org.powerbot.script.rt6.ClientContext;
 
 import java.util.*;
 
 /**
- * Created by Michael Treacher on 10/11/14.
+ * Created by Michael Treacher
  */
 public class FloatingIsland {
 
-    private final List<Tile> interpolationTiles;
-    private final List<Tile> interpolatedTiles;
     private final List<PlatformConnection> connections;
-    private final int floor;
-    private final String title;
+    private Set<Tile> tiles = new HashSet<Tile>();
+    private ClientContext ctx;
+    private final int currentFloor;
+    private final Runespan runespan;
 
-    public FloatingIsland(String title, Tile t1, Tile t2, Tile t3, Tile t4) {
-        this.interpolationTiles = Arrays.asList(t1,t2,t3,t4);
-        this.interpolatedTiles = new ArrayList<Tile>();
+    public FloatingIsland(ClientContext ctx, Runespan runespan) {
         this.connections = new ArrayList<PlatformConnection>();
-        this.floor = t1.floor();
-        this.title = title;
-        interpolateIslandTiles();
+        this.ctx = ctx;
+        this.currentFloor = ctx.players.local().tile().floor();
+        this.runespan = runespan;
+        floodFillTilesFromTile(ctx.players.local().tile());
     }
 
-    public boolean onIsland(Tile t) {
-        return interpolatedTiles.contains(t);
+    public boolean onIsland(Tile tile) {
+        return tiles.contains(tile);
     }
 
-    public List<Tile> getTiles() {
-        return interpolatedTiles;
+    public boolean containsPlatformTile(Tile tile) {
+        for(PlatformConnection con : connections)
+            if(con.getPlatformTile().equals(tile)) return true;
+        return false;
     }
 
-    public String getTitle() {
-        return title;
-    }
+    public PlatformConnection nextPlatform() {
+        final List<PlatformConnection> connectionsClone = new ArrayList<PlatformConnection>(connections);
 
-    public List<PlatformConnection> getConnections() {
-        return connections;
-    }
-
-
-    public void addConnection(PlatformConnection connection) {
-        connections.add(connection);
-    }
-
-    private void interpolateIslandTiles() {
-        final List<Integer> xValues = new ArrayList<Integer>();
-        final List<Integer> yValues = new ArrayList<Integer>();
-
-        for(Tile tile : interpolationTiles) {
-            xValues.add(tile.x());
-            yValues.add(tile.y());
-        }
-
-        List<Integer> xRange = generateRange(Collections.min(xValues), Collections.max(xValues));
-        List<Integer> yRange = generateRange(Collections.min(yValues), Collections.max(yValues));
-
-        for(Integer x : xRange) {
-            for(Integer y: yRange) {
-                interpolatedTiles.add(new Tile(x,y,floor));
+        Collections.sort(connectionsClone, new Comparator<PlatformConnection>() {
+            @Override
+            public int compare(PlatformConnection o1, PlatformConnection o2) {
+                return o1.compareTo(o2);
             }
-        }
+        });
+
+        // If there is more than one option for platforms choose one other than the one we came from.
+        for(PlatformConnection c : connectionsClone)
+            if(runespan.getPreviousPlatform().equals(c) && connections.size() > 1)
+                connectionsClone.remove(c);
+
+        if(!connectionsClone.isEmpty())
+            return connectionsClone.get(0);
+        return null;
     }
 
-    private List<Integer> generateRange(int min, int max) {
-        List<Integer> range = new ArrayList<Integer>();
-        for(int i = min; i <= max; i++)
-            range.add(i);
-        return range;
+    private void floodFillTilesFromTile(Tile tile) {
+        if(tiles.contains(tile) || containsPlatformTile(tile)) return;
+        final int gameObjectId = ctx.objects.select().at(tile).peek().id();
+        if(Platform.hasPlatform(gameObjectId)) {
+            connections.add(new PlatformConnection(Platform.getPlatform(gameObjectId), tile, ctx, runespan));
+            tiles.add(tile);
+        }
+        if(ctx.movement.reachable(ctx.players.local().tile(), tile)) {
+            tiles.add(tile);
+            floodFillTilesFromTile(new Tile(tile.x() + 1, tile.y(), currentFloor));
+            floodFillTilesFromTile(new Tile(tile.x() - 1, tile.y(), currentFloor));
+            floodFillTilesFromTile(new Tile(tile.x(), tile.y() + 1, currentFloor));
+            floodFillTilesFromTile(new Tile(tile.x(), tile.y() - 1, currentFloor));
+        }
     }
 }

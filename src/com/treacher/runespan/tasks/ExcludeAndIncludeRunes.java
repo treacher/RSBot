@@ -6,38 +6,40 @@ import com.treacher.util.Task;
 import org.powerbot.script.rt6.ClientContext;
 
 /**
- * Created by treach3r on 14/11/14.
+ * Created by Michael treacher
  */
 public class ExcludeAndIncludeRunes extends Task<ClientContext> {
 
     private long lastChecked = System.currentTimeMillis();
+    private boolean firstCheck = true;
+    private Runespan runespan;
 
-    public ExcludeAndIncludeRunes(ClientContext ctx) {
+    public ExcludeAndIncludeRunes(ClientContext ctx, Runespan runespan)
+    {
         super(ctx);
+        this.runespan = runespan;
     }
 
     @Override
     public boolean activate() {
-        if((System.currentTimeMillis() - lastChecked) <= 60000) return false;
-        return !ctx.players.local().idle();
+        return (((System.currentTimeMillis() - lastChecked) > 20000) && !ctx.players.local().idle()) || firstCheck;
     }
 
     @Override
     public void execute() {
+        System.out.println("Exclude And Include Runes");
 
+        firstCheck = false;
         lastChecked = System.currentTimeMillis();
 
         for(Rune rune : Rune.values()) {
-            if(!rune.removable()) continue;;
+            if(!rune.removable()) continue;
             final int stackSize = ctx.backpack.select().id(rune.getGameObjectId()).poll().stackSize();
 
-            System.out.println("Rune: " + rune.name() + " Count: " + stackSize);
             if(stackSize > 20) {
-                System.out.println("adding rune: " + rune.name());
-                Runespan.addRuneToExclusionList(rune);
+                runespan.addRuneToExclusionList(rune);
             } else {
-                System.out.println("Removing rune: " + rune.name());
-                Runespan.removeRuneFromExclusionList(rune);
+                runespan.removeRuneFromExclusionList(rune);
             }
         }
     }

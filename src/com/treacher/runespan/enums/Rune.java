@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Created by treach3r on 11/11/14.
+ * Created by Michael Treacher
  */
 public enum Rune {
     FIRE(24213),
@@ -19,7 +19,7 @@ public enum Rune {
     ESSENCE(24227),
     ASTRAL(24224),
     EARTH(24216),
-    MIND(25217),
+    MIND(24217),
     DEATH(24219),
     BLOOD(24225),
     SOUL(24226);

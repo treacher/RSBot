@@ -2,21 +2,20 @@ package com.treacher.runespan.tasks;
 
 import com.treacher.runespan.Runespan;
 import com.treacher.runespan.enums.ElementalNode;
-import com.treacher.runespan.enums.Rune;
+import com.treacher.runespan.util.RunespanQuery;
 import com.treacher.util.Task;
-import org.powerbot.script.Condition;
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.GameObject;
-
-import java.util.concurrent.Callable;
 
 /**
  * Created by Michael Treacher
  */
 public class SearchForBetterNodes extends Task<ClientContext> {
 
-    private Runespan runespan;
+    private final Runespan runespan;
     private GameObject betterNode;
+    private long lastChecked = System.currentTimeMillis();
+    private RunespanQuery runespanQuery;
 
     public SearchForBetterNodes(ClientContext ctx, Runespan runespan) {
         super(ctx);
@@ -25,35 +24,29 @@ public class SearchForBetterNodes extends Task<ClientContext> {
 
     @Override
     public boolean activate() {
-        int essenceStackSize = ctx.backpack.select().id(Rune.ESSENCE.getGameObjectId()).poll().stackSize();
-        return essenceStackSize > 100 && runespan.hasNodes() && !ctx.players.local().idle() && betterNodeAvailable();
+        runespanQuery = new RunespanQuery(ctx, runespan.currentIsland());
+
+        if((System.currentTimeMillis() - lastChecked) > 3000) {
+            lastChecked = System.currentTimeMillis();
+
+            return !ctx.players.local().idle()
+                    && betterNodeAvailable()
+                    && runespanQuery.essenceStackSize() > 100;
+        }
+        return false;
     }
 
     @Override
     public void execute() {
-        if(betterNode.valid()) {
-            ctx.camera.turnTo(betterNode);
-            ctx.movement.findPath(betterNode).traverse();
-            betterNode.hover();
-            betterNode.interact("Siphon");
-            waitTillSiphoning();
-        }
-    }
-
-    private void waitTillSiphoning() {
-        Condition.wait(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return !ctx.players.local().idle();
-            }
-        }, 1000, 2);
+        System.out.println("Search for better nodes");
+        ElementalNode.siphonNode(betterNode, ctx, runespan);
     }
 
     private boolean betterNodeAvailable() {
-        GameObject nodeObject = runespan.highestPriorityNode();
-        ElementalNode currentNode = ElementalNode.findNodeByGameObjectId(runespan.getCurrentNodeId());
-        ElementalNode newNode = ElementalNode.findNodeByGameObjectId(nodeObject.id());
+        final GameObject nodeObject = runespanQuery.highestPriorityNode();
+        final ElementalNode currentNode = ElementalNode.findNodeByGameObjectId(runespan.getCurrentNodeId());
+        final ElementalNode newNode = ElementalNode.findNodeByGameObjectId(nodeObject.id());
         betterNode = nodeObject;
-        return currentNode != null && nodeObject!= null && currentNode.getXp() < newNode.getXp();
+        return currentNode != null && nodeObject.valid() && currentNode.getXp() < newNode.getXp();
     }
 }

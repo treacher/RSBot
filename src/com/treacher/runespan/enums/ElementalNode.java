@@ -1,8 +1,11 @@
 package com.treacher.runespan.enums;
 
 import com.treacher.runespan.Runespan;
+import org.powerbot.script.Condition;
+import org.powerbot.script.rt6.ClientContext;
+import org.powerbot.script.rt6.GameObject;
 
-import java.util.List;
+import java.util.concurrent.Callable;
 
 /**
  * Created by Michael Treacher
@@ -47,6 +50,33 @@ public enum ElementalNode {
         for(ElementalNode node : ElementalNode.values())
             if(node.gameObjectId == id && !node.excluded()) return node;
         return null;
+    }
+
+    public static void siphonNode(final GameObject node, final ClientContext ctx, final Runespan runespan) {
+        if(!node.valid()) return;
+        runespan.setCurrentNodeId(node.id());
+        ctx.camera.turnTo(node);
+        ctx.camera.pitch(60);
+
+        // Wait till interacting with monster
+
+        Condition.wait(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                boolean siphoningNode = node.interact(false, "Siphon");
+                if (!siphoningNode)
+                    ctx.movement.findPath(node).traverse();
+                return siphoningNode;
+            }
+        }, 1000, 10);
+
+        // Wait till siphoning the node
+        Condition.wait(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                return !ctx.players.local().idle();
+            }
+        }, 1500, 2);
     }
 
     private boolean excluded() {

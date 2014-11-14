@@ -1,41 +1,44 @@
 package com.treacher.runespan;
 
-import com.treacher.runespan.enums.ElementalNode;
 import com.treacher.runespan.enums.Rune;
 import com.treacher.runespan.tasks.*;
-import com.treacher.runespan.util.RunespanIslandCreator;
-import com.treacher.util.Task;
-import com.treacher.runespan.enums.EssenceMonsters;
+import com.treacher.runespan.ui.Painter;
 import com.treacher.runespan.util.FloatingIsland;
-import org.powerbot.script.*;
+import com.treacher.runespan.util.PlatformConnection;
+import com.treacher.util.Task;
+import org.powerbot.script.PaintListener;
+import org.powerbot.script.PollingScript;
+import org.powerbot.script.Script;
 import org.powerbot.script.rt6.ClientContext;
-import org.powerbot.script.rt6.GameObject;
-import org.powerbot.script.rt6.MobileIdNameQuery;
-import org.powerbot.script.rt6.Npc;
-
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 /**
  * Created by Michael Treacher
  */
 @Script.Manifest(name = "Runespan", description = "Trains runecrafting in the runespan.", properties = "topic=1227888")
-public class Runespan extends PollingScript<ClientContext> {
+public class Runespan extends PollingScript<ClientContext> implements PaintListener{
 
-    private List<FloatingIsland> floatingIslands = RunespanIslandCreator.createIslands();
+    private List<FloatingIsland> floatingIslands = new ArrayList<FloatingIsland>();
     private List<Task<ClientContext>> taskList = new ArrayList<Task<ClientContext>>();
     private static Set<Rune> runesToExclude = new HashSet<Rune>();
     private int currentNodeId;
+    private Painter painter = new Painter(ctx);
+    private FloatingIsland previousIsland;
+    private PlatformConnection previousPlatform;
 
     @Override
     public void start() {
         taskList.addAll(
                 Arrays.asList(
-                        new MoveIslands(ctx, this),
-                        new ExcludeAndIncludeRunes(ctx),
+                        new ExcludeAndIncludeRunes(ctx, this),
+                        new GenerateFloatingIsland(ctx,this),
                         new SearchForBetterNodes(ctx, this),
                         new CollectRunes(ctx, this),
                         new BuildUpEssence(ctx, this),
-                        new GetEssence(ctx)
+                        new GetEssence(ctx),
+                        new MoveIslands(ctx, this)
                 )
         );
     }
@@ -49,39 +52,56 @@ public class Runespan extends PollingScript<ClientContext> {
         }
     }
 
+    @Override
+    public void repaint(Graphics g) {
+        painter.repaint(g);
+    }
+
     public FloatingIsland currentIsland() {
         for (FloatingIsland island : floatingIslands) {
-            if (island.onIsland(ctx.players.local().tile())) return island;
+            if (island.onIsland(ctx.players.local().tile())) {
+                return island;
+            }
         }
         return null;
     }
 
-    public Npc highestPriorityEssenceMonster() {
-        return highestPriorityEssenceMonsterQuery().peek();
-    }
-
-    public boolean hasEssenceMonsters() {
-        return !highestPriorityEssenceMonsterQuery().isEmpty();
-    }
-
-    public GameObject highestPriorityNode() {
-        return highestPriorityNodeQuery().peek();
-    }
-
-    public boolean hasNodes() {
-        return !highestPriorityNodeQuery().isEmpty();
-    }
-
-    public static void addRuneToExclusionList(Rune rune) {
+    public void addRuneToExclusionList(Rune rune) {
         runesToExclude.add(rune);
     }
 
-    public static void removeRuneFromExclusionList(Rune rune) {
+    public void removeRuneFromExclusionList(Rune rune) {
         runesToExclude.remove(rune);
     }
 
     public static Set<Rune> getExclusionList() {
         return runesToExclude;
+    }
+
+    public void setPreviousIsland(FloatingIsland floatingIsland) {
+        this.previousIsland = floatingIsland;
+    }
+
+    public void setPreviousPlatform(PlatformConnection platformConnection) {
+        this.previousPlatform = platformConnection;
+    }
+
+    public FloatingIsland getPreviousIsland() {
+        return this.previousIsland;
+    }
+
+    public PlatformConnection getPreviousPlatform() {
+        return this.previousPlatform;
+    }
+
+    public void buildIsland() {
+        final PlatformConnection prevPlatform = getPreviousPlatform();
+        final FloatingIsland newIsland = new FloatingIsland(ctx, this);
+
+        if(prevPlatform != null)
+            prevPlatform.setConnection(newIsland);
+
+        floatingIslands.add(newIsland);
     }
 
     public void setCurrentNodeId(int nodeId) {
@@ -90,37 +110,5 @@ public class Runespan extends PollingScript<ClientContext> {
 
     public int getCurrentNodeId() {
         return currentNodeId;
-    }
-
-    private MobileIdNameQuery<GameObject> highestPriorityNodeQuery() {
-        return ctx.objects.select().select(new Filter<GameObject>() {
-            @Override
-            public boolean accept(GameObject gameObject) {
-                return currentIsland().onIsland(gameObject.tile()) && ElementalNode.hasNode(gameObject.id());
-            }
-        }).sort(new Comparator<GameObject>() {
-            @Override
-            public int compare(GameObject o1, GameObject o2) {
-                ElementalNode n1 = ElementalNode.findNodeByGameObjectId(o1.id());
-                ElementalNode n2 = ElementalNode.findNodeByGameObjectId(o2.id());
-                return new Double(n2.getXp()).compareTo(n1.getXp());
-            }
-        });
-    }
-
-    private MobileIdNameQuery<Npc> highestPriorityEssenceMonsterQuery() {
-        return ctx.npcs.select().select(new Filter<Npc>() {
-            @Override
-            public boolean accept(Npc npc) {
-                return currentIsland().onIsland(npc.tile()) && EssenceMonsters.hasMonster(npc.id());
-            }
-        }).sort(new Comparator<Npc>() {
-            @Override
-            public int compare(Npc o1, Npc o2) {
-                EssenceMonsters m1 = EssenceMonsters.findMonsterByGameObjectId(o1.id());
-                EssenceMonsters m2 = EssenceMonsters.findMonsterByGameObjectId(o2.id());
-                return new Double(m2.getXp()).compareTo(m1.getXp());
-            }
-        });
     }
 }

@@ -1,16 +1,10 @@
 package com.treacher.runespan.tasks;
 
 import com.treacher.runespan.Runespan;
-import com.treacher.runespan.enums.EssenceMonsters;
-import com.treacher.runespan.enums.Rune;
+import com.treacher.runespan.enums.ElementalNode;
+import com.treacher.runespan.util.RunespanQuery;
 import com.treacher.util.Task;
-import org.powerbot.script.Condition;
-import org.powerbot.script.Random;
 import org.powerbot.script.rt6.ClientContext;
-import org.powerbot.script.rt6.GameObject;
-import org.powerbot.script.rt6.Npc;
-
-import java.util.concurrent.Callable;
 
 /**
  * Created by Michael Treacher
@@ -18,6 +12,7 @@ import java.util.concurrent.Callable;
 public class CollectRunes extends Task<ClientContext> {
 
     private Runespan runespan;
+    private RunespanQuery runespanQuery;
 
     public CollectRunes(ClientContext ctx, Runespan runespan) {
         super(ctx);
@@ -26,29 +21,13 @@ public class CollectRunes extends Task<ClientContext> {
 
     @Override
     public boolean activate() {
-        int essenceStackSize = ctx.backpack.select().id(Rune.ESSENCE.getGameObjectId()).poll().stackSize();
-        return essenceStackSize > 100 && runespan.hasNodes() && ctx.players.local().idle();
+        runespanQuery = new RunespanQuery(ctx, runespan.currentIsland());
+        return ctx.players.local().idle() && runespanQuery.essenceStackSize() > 100 && runespanQuery.hasNodes();
     }
 
     @Override
     public void execute() {
-        GameObject node = runespan.highestPriorityNode();
-        if(node.valid()) {
-            runespan.setCurrentNodeId(node.id());
-            ctx.camera.turnTo(node);
-            ctx.camera.pitch(60);
-            ctx.movement.findPath(node).traverse();
-            node.interact("Siphon");
-            waitTillSiphoning();
-        }
-    }
-
-    private void waitTillSiphoning() {
-        Condition.wait(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return !ctx.players.local().idle();
-            }
-        }, 1000, 2);
+        System.out.println("Collect Runes");
+        ElementalNode.siphonNode(runespanQuery.highestPriorityNode(), ctx, runespan);
     }
 }
