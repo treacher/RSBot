@@ -8,6 +8,7 @@ import org.powerbot.script.*;
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.GeItem;
 
+import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,22 +47,28 @@ public class LumbridgeFlaxer extends PollingScript<ClientContext> implements Pai
 
     @Override
     public void start() {
-        setPrices();
+        if(!isVIP()) {
+            ctx.controller.stop();
+            JOptionPane.showMessageDialog(null, "This script has now become VIP only due to the effect the script is having on the market.");
+        } else {
 
-        final int spinningWheelId = 36970;
-        final int secondFloorStaircaseId = 36774;
-        final int topFloorStaircaseId = 36775;
-        final int bankId = 36786;
+            setPrices();
 
-        taskList.addAll(Arrays.asList(
-                pathToObjectAndInteract(topFloorStaircaseId, "Climb-down", bankTile, flaxId, 28),
-                pathToObjectAndInteract(spinningWheelId, "Spin", secondFloorTileToSpinWheel, flaxId, 28),
-                new SpinTheWheel(ctx, flaxId, this),
-                pathToObjectAndInteract(secondFloorStaircaseId, "Climb-up", spinningWheelTile, flaxId, 0),
-                pathToObjectAndInteract(bankId, "Bank", topFloorTileToBank, flaxId, 0),
-                new Banker(ctx, bankTile, this),
-                new PathCorrecter(ctx, this)
-        ));
+            final int spinningWheelId = 36970;
+            final int secondFloorStaircaseId = 36774;
+            final int topFloorStaircaseId = 36775;
+            final int bankId = 36786;
+
+            taskList.addAll(Arrays.asList(
+                    pathToObjectAndInteract(topFloorStaircaseId, "Climb-down", bankTile, flaxId, 28),
+                    pathToObjectAndInteract(spinningWheelId, "Spin", secondFloorTileToSpinWheel, flaxId, 28),
+                    new SpinTheWheel(ctx, flaxId, this),
+                    pathToObjectAndInteract(secondFloorStaircaseId, "Climb-up", spinningWheelTile, flaxId, 0),
+                    pathToObjectAndInteract(bankId, "Bank", topFloorTileToBank, flaxId, 0),
+                    new Banker(ctx, bankTile, this),
+                    new PathCorrecter(ctx, this)
+            ));
+        }
     }
 
     @Override
@@ -83,6 +90,10 @@ public class LumbridgeFlaxer extends PollingScript<ClientContext> implements Pai
         final int bowStringPrice =  GeItem.price(bowStringId);
 
         this.painter.setPrices(flaxPrice, bowStringPrice);
+    }
+
+    public boolean isVIP() {
+        return Boolean.valueOf(ctx.properties.getProperty("user.vip"));
     }
 
     public void triggerAntiBanCheck() {
