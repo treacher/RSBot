@@ -27,7 +27,7 @@ public class MoveIslands extends Task<ClientContext> {
 
     @Override
     public void execute() {
-        System.out.println("Move islands");
+        Runespan.STATE = "Moving islands";
 
         final FloatingIsland currentIsland = runespan.currentIsland();
         final PlatformConnection nextPlatform = currentIsland.nextPlatform();

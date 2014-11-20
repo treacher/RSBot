@@ -27,13 +27,11 @@ public class ExcludeAndIncludeRunes extends Task<ClientContext> {
 
     @Override
     public void execute() {
-        System.out.println("Exclude And Include Runes");
-
         firstCheck = false;
         lastChecked = System.currentTimeMillis();
 
         for(Rune rune : Rune.values()) {
-            if(!rune.removable()) continue;
+            if(!rune.removable(runespan)) continue;
             final int stackSize = ctx.backpack.select().id(rune.getGameObjectId()).poll().stackSize();
 
             if(stackSize > 20) {

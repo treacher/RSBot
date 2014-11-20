@@ -7,6 +7,8 @@ import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.GameObject;
 import org.powerbot.script.rt6.Npc;
 
+import javax.swing.plaf.nimbus.State;
+
 /**
  * Created by Michael Treacher
  */
@@ -28,14 +30,13 @@ public class GenerateFloatingIsland extends Task<ClientContext> {
 
     @Override
     public void execute() {
-        System.out.println("Generate floating island");
-
         siphonNearestObject();
-
+        runespan.triggerAntiBan();
         runespan.buildIsland();
     }
 
     private void siphonNearestObject() {
+        Runespan.STATE = "Collecting Runes";
         // Fake it till you make it. Choose the nearest thing to extract runes from while we build the island
         final GameObject nearestNode = runespanQuery.nearestHighestPriorityNode();
 

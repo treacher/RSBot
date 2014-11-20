@@ -27,7 +27,7 @@ public class CollectRunes extends Task<ClientContext> {
 
     @Override
     public void execute() {
-        System.out.println("Collect Runes");
+        Runespan.STATE = "Collecting Runes";
         ElementalNode.siphonNode(runespanQuery.highestPriorityNode(), ctx, runespan);
     }
 }

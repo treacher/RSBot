@@ -7,7 +7,6 @@ import org.powerbot.script.Tile;
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.GameObject;
 
-import java.util.List;
 import java.util.concurrent.Callable;
 
 /**
@@ -34,12 +33,12 @@ public class PlatformConnection {
         this.connection = connection;
     }
 
-    public FloatingIsland getConnection(){
-        return this.connection;
-    }
-
     public Tile getPlatformTile() {
         return platformTile;
+    }
+
+    public Platform getPlatform() {
+        return platform;
     }
 
     public Tile getReachableTile(GameObject gameObject) {
@@ -95,8 +94,14 @@ public class PlatformConnection {
         Condition.wait(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return ctx.players.local().idle() && !runespan.getPreviousIsland().onIsland(ctx.players.local().tile());
+                return ctx.players.local().idle()
+                        && !runespan.getPreviousIsland().onIsland(ctx.players.local().tile())
+                        && playerOnPlatform();
             }
-        }, 1000,10);
+        }, 1500,10);
+    }
+
+    private boolean playerOnPlatform() {
+        return Platform.hasPlatform(ctx.objects.select().at(ctx.players.local().tile()).peek().id(), ctx);
     }
 }

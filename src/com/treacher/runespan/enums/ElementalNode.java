@@ -3,6 +3,7 @@ package com.treacher.runespan.enums;
 import com.treacher.runespan.Runespan;
 import org.powerbot.script.Condition;
 import org.powerbot.script.rt6.ClientContext;
+import org.powerbot.script.rt6.Constants;
 import org.powerbot.script.rt6.GameObject;
 
 import java.util.concurrent.Callable;
@@ -11,44 +12,42 @@ import java.util.concurrent.Callable;
  * Created by Michael Treacher
  */
 public enum ElementalNode {
-    JUMPER(70466,107.8, new Rune[]{Rune.LAW}),
-    SHIFTER(70465,86.8, new Rune[]{Rune.NATURE}),
-    NEBULA(70464,77, new Rune[]{Rune.COSMIC, Rune.ASTRAL}),
-    CHAOTIC_CLOUD(70463,61.6,new Rune[]{Rune.CHAOS}),
-    FIRE_STORM(70462,35,new Rune[]{Rune.AIR, Rune.FIRE}),
-    FLESHY_GROWTH(70461,46.2, new Rune[]{Rune.BODY}),
-    FIREBALL(70459, 34.8,new Rune[]{Rune.FIRE}),
-    VINE(70460,30.3, new Rune[]{Rune.WATER, Rune.EARTH}),
-    ROCK_FRAGMENT(70458, 28.6,new Rune[]{Rune.EARTH}),
-    WATER_POOL(70457,25.3, new Rune[]{Rune.WATER}),
-    MIND_STORM(70456,20, new Rune[]{Rune.MIND}),
-    CYCLONE(70455,19, new Rune[]{Rune.AIR});
+    JUMPER(70466,107.8, new Rune[]{Rune.LAW}, 54),
+    SHIFTER(70465,86.8, new Rune[]{Rune.NATURE}, 44),
+    NEBULA(70464,77, new Rune[]{Rune.COSMIC, Rune.ASTRAL}, 40),
+    CHAOTIC_CLOUD(70463,61.6,new Rune[]{Rune.CHAOS}, 35),
+    FIRE_STORM(70462,35,new Rune[]{Rune.AIR, Rune.FIRE}, 27),
+    FLESHY_GROWTH(70461,46.2, new Rune[]{Rune.BODY}, 20),
+    VINE(70460,30.3, new Rune[]{Rune.WATER, Rune.EARTH}, 17),
+    FIREBALL(70459, 34.8,new Rune[]{Rune.FIRE}, 14),
+    ROCK_FRAGMENT(70458, 28.6,new Rune[]{Rune.EARTH},9),
+    WATER_POOL(70457,25.3, new Rune[]{Rune.WATER},5),
+    MIND_STORM(70456,20, new Rune[]{Rune.MIND},1),
+    CYCLONE(70455,19, new Rune[]{Rune.AIR}, 1);
 
     private final int gameObjectId;
     private final double xp;
     private final Rune[] runes;
+    private int levelRequirement;
 
-    private ElementalNode(int gameObjectId, double xp, Rune[] runes) {
+    private ElementalNode(int gameObjectId, double xp, Rune[] runes, int levelRequirement) {
         this.gameObjectId = gameObjectId;
         this.xp = xp;
         this.runes = runes;
-    }
-
-    public int getGameObjectId() {
-        return gameObjectId;
+        this.levelRequirement = levelRequirement;
     }
 
     public double getXp() {
         return xp;
     }
 
-    public static boolean hasNode(int id) {
-        return (findNodeByGameObjectId(id) != null);
+    public static boolean hasNode(int id, ClientContext ctx) {
+        return (findNodeByGameObjectId(id,ctx) != null);
     }
 
-    public static ElementalNode findNodeByGameObjectId(int id) {
+    public static ElementalNode findNodeByGameObjectId(int id, ClientContext ctx) {
         for(ElementalNode node : ElementalNode.values())
-            if(node.gameObjectId == id && !node.excluded()) return node;
+            if(node.gameObjectId == id && !node.excluded(ctx)) return node;
         return null;
     }
 
@@ -68,7 +67,7 @@ public enum ElementalNode {
                     ctx.movement.findPath(node).traverse();
                 return siphoningNode;
             }
-        }, 1000, 10);
+        }, 1000, 4);
 
         // Wait till siphoning the node
         Condition.wait(new Callable<Boolean>() {
@@ -76,15 +75,19 @@ public enum ElementalNode {
             public Boolean call() throws Exception {
                 return !ctx.players.local().idle();
             }
-        }, 1500, 2);
+        }, 2000, 2);
+
+        runespan.triggerAntiBan();
     }
 
-    private boolean excluded() {
+    private boolean excluded(ClientContext ctx) {
         boolean excluded = false;
 
         for(Rune rune : this.runes) {
             excluded = Runespan.getExclusionList().contains(rune);
         }
+
+        if(ctx.skills.level(Constants.SKILLS_RUNECRAFTING) < this.levelRequirement) excluded = true;
 
         return excluded;
     }

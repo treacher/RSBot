@@ -3,6 +3,7 @@ package com.treacher.runespan;
 import com.treacher.runespan.enums.Rune;
 import com.treacher.runespan.tasks.*;
 import com.treacher.runespan.ui.Painter;
+import com.treacher.runespan.util.AntiBan;
 import com.treacher.runespan.util.FloatingIsland;
 import com.treacher.runespan.util.PlatformConnection;
 import com.treacher.util.Task;
@@ -27,13 +28,16 @@ public class Runespan extends PollingScript<ClientContext> implements PaintListe
     private Painter painter = new Painter(ctx);
     private FloatingIsland previousIsland;
     private PlatformConnection previousPlatform;
+    private AntiBan antiBan = new AntiBan(ctx);
+
+    public static String STATE = "Collecting Runes";
 
     @Override
     public void start() {
         taskList.addAll(
                 Arrays.asList(
-                        new ExcludeAndIncludeRunes(ctx, this),
                         new GenerateFloatingIsland(ctx,this),
+                        new ExcludeAndIncludeRunes(ctx, this),
                         new SearchForBetterNodes(ctx, this),
                         new CollectRunes(ctx, this),
                         new BuildUpEssence(ctx, this),
@@ -64,6 +68,10 @@ public class Runespan extends PollingScript<ClientContext> implements PaintListe
             }
         }
         return null;
+    }
+
+    public void triggerAntiBan() {
+        antiBan.execute();
     }
 
     public void addRuneToExclusionList(Rune rune) {

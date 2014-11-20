@@ -1,9 +1,10 @@
 package com.treacher.runespan.ui;
 
 
+import com.treacher.runespan.Runespan;
 import org.powerbot.script.PaintListener;
 import org.powerbot.script.rt6.ClientContext;
-import org.powerbot.script.rt6.Skills;
+import org.powerbot.script.rt6.Constants;
 
 import java.awt.*;
 import java.util.concurrent.TimeUnit;
@@ -23,22 +24,23 @@ public class Painter implements PaintListener {
     public Painter(ClientContext ctx)
     {
         this.ctx = ctx;
-        this.startXp = ctx.skills.experience(Skills.RUNECRAFTING);
+        this.startXp = ctx.skills.experience(Constants.SKILLS_RUNECRAFTING);
     }
 
     @Override
     public void repaint(Graphics g) {
         g.setColor(Color.black);
-        g.fillRect(0, 450, 200, 300);
+        g.fillRect(0, 450, 200, 350);
         g.setColor(Color.white);
         g.drawString("treach3rs Runespan", 20, 470);
         g.drawString("Runtime: \t" + formatTime(millisElapsed()), 20, 490);
         g.drawString("XP gained: \t " + xpGained(),20, 510);
         g.drawString("XP per hour: \t " + xpPerHour(), 20, 530);
+        g.drawString("State: \t " + Runespan.STATE, 20, 550);
     }
 
     private int xpGained() {
-        return ctx.skills.experience(Skills.RUNECRAFTING) - startXp;
+        return ctx.skills.experience(Constants.SKILLS_RUNECRAFTING) - startXp;
     }
 
     private int xpPerHour() {

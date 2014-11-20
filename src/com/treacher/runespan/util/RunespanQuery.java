@@ -36,7 +36,7 @@ public class RunespanQuery {
     }
 
     public boolean needLawRunes() {
-        return highestPriorityEssenceMonster().id() == EssenceMonster.LAW_ESSHOUND.getGameObjectId()
+        return highestPriorityEssenceMonster().id() == EssenceMonster.LAW_ESSHOUND_FLOOR_1.getGameObjectId()
                 && ctx.backpack.select().id(Rune.LAW.getGameObjectId()).poll().stackSize() <= 20;
     }
 
@@ -56,13 +56,13 @@ public class RunespanQuery {
         return ctx.objects.select().select(new Filter<GameObject>() {
             @Override
             public boolean accept(GameObject gameObject) {
-                return ElementalNode.hasNode(gameObject.id());
+                return ElementalNode.hasNode(gameObject.id(), ctx);
             }
         }).sort(new Comparator<GameObject>() {
             @Override
             public int compare(GameObject o1, GameObject o2) {
-                ElementalNode n1 = ElementalNode.findNodeByGameObjectId(o1.id());
-                ElementalNode n2 = ElementalNode.findNodeByGameObjectId(o2.id());
+                ElementalNode n1 = ElementalNode.findNodeByGameObjectId(o1.id(), ctx);
+                ElementalNode n2 = ElementalNode.findNodeByGameObjectId(o2.id(), ctx);
                 return new Double(n2.getXp()).compareTo(n1.getXp());
             }
         }).nearest().peek();
@@ -72,13 +72,13 @@ public class RunespanQuery {
         return ctx.npcs.select().select(new Filter<Npc>() {
             @Override
             public boolean accept(Npc npc) {
-                return EssenceMonster.hasMonster(npc.id());
+                return EssenceMonster.hasMonster(npc.id(), ctx);
             }
         }).sort(new Comparator<Npc>() {
             @Override
             public int compare(Npc o1, Npc o2) {
-                EssenceMonster m1 = EssenceMonster.findMonsterByGameObjectId(o1.id());
-                EssenceMonster m2 = EssenceMonster.findMonsterByGameObjectId(o2.id());
+                EssenceMonster m1 = EssenceMonster.findMonsterByGameObjectId(o1.id(), ctx);
+                EssenceMonster m2 = EssenceMonster.findMonsterByGameObjectId(o2.id(), ctx);
                 return new Double(m2.getXp()).compareTo(m1.getXp());
             }
         }).nearest().peek();
@@ -90,13 +90,13 @@ public class RunespanQuery {
             public boolean accept(GameObject gameObject) {
                 return currentIsland != null
                         && currentIsland.onIsland(gameObject.tile())
-                        && ElementalNode.hasNode(gameObject.id());
+                        && ElementalNode.hasNode(gameObject.id(), ctx);
             }
         }).sort(new Comparator<GameObject>() {
             @Override
             public int compare(GameObject o1, GameObject o2) {
-                ElementalNode n1 = ElementalNode.findNodeByGameObjectId(o1.id());
-                ElementalNode n2 = ElementalNode.findNodeByGameObjectId(o2.id());
+                ElementalNode n1 = ElementalNode.findNodeByGameObjectId(o1.id(), ctx);
+                ElementalNode n2 = ElementalNode.findNodeByGameObjectId(o2.id(), ctx);
                 return new Double(n2.getXp()).compareTo(n1.getXp());
             }
         });
@@ -108,13 +108,13 @@ public class RunespanQuery {
             public boolean accept(Npc npc) {
                 return currentIsland != null
                         && currentIsland.onIsland(npc.tile())
-                        && EssenceMonster.hasMonster(npc.id());
+                        && EssenceMonster.hasMonster(npc.id(), ctx);
             }
         }).sort(new Comparator<Npc>() {
             @Override
             public int compare(Npc o1, Npc o2) {
-                EssenceMonster m1 = EssenceMonster.findMonsterByGameObjectId(o1.id());
-                EssenceMonster m2 = EssenceMonster.findMonsterByGameObjectId(o2.id());
+                EssenceMonster m1 = EssenceMonster.findMonsterByGameObjectId(o1.id(), ctx);
+                EssenceMonster m2 = EssenceMonster.findMonsterByGameObjectId(o2.id(), ctx);
                 return new Double(m2.getXp()).compareTo(m1.getXp());
             }
         });

@@ -22,16 +22,16 @@ public class BuildUpEssence extends Task<ClientContext> {
     @Override
     public boolean activate() {
         runespanQuery = new RunespanQuery(ctx, runespan.currentIsland());
-
+        final boolean hasNoNodes = !runespanQuery.hasNodes();
         return  ctx.players.local().idle()
                 && runespanQuery.essenceStackSize() >= 25
-                && (runespanQuery.essenceStackSize() < 100 || !runespanQuery.hasNodes())
-                && runespanQuery.hasEssenceMonsters();
+                && (runespanQuery.essenceStackSize() < 100 || hasNoNodes)
+                && (runespanQuery.hasEssenceMonsters());
     }
 
     @Override
     public void execute() {
-        System.out.println("Build Up Essence");
-        EssenceMonster.siphonMonster(runespanQuery.highestPriorityEssenceMonster(), ctx);
+        Runespan.STATE = "Building up essence";
+        EssenceMonster.siphonMonster(runespanQuery.highestPriorityEssenceMonster(), ctx, runespan);
     }
 }

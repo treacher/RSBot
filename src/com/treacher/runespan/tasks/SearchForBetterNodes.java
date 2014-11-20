@@ -38,14 +38,14 @@ public class SearchForBetterNodes extends Task<ClientContext> {
 
     @Override
     public void execute() {
-        System.out.println("Search for better nodes");
+        Runespan.STATE = "Searching for better nodes";
         ElementalNode.siphonNode(betterNode, ctx, runespan);
     }
 
     private boolean betterNodeAvailable() {
         final GameObject nodeObject = runespanQuery.highestPriorityNode();
-        final ElementalNode currentNode = ElementalNode.findNodeByGameObjectId(runespan.getCurrentNodeId());
-        final ElementalNode newNode = ElementalNode.findNodeByGameObjectId(nodeObject.id());
+        final ElementalNode currentNode = ElementalNode.findNodeByGameObjectId(runespan.getCurrentNodeId(), ctx);
+        final ElementalNode newNode = ElementalNode.findNodeByGameObjectId(nodeObject.id(), ctx);
         betterNode = nodeObject;
         return currentNode != null && nodeObject.valid() && currentNode.getXp() < newNode.getXp();
     }

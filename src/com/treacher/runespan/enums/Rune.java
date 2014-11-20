@@ -1,5 +1,7 @@
 package com.treacher.runespan.enums;
 
+import com.treacher.runespan.Runespan;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -45,7 +47,7 @@ public enum Rune {
         return gameObjectId;
     }
 
-    public boolean removable() {
-        return !highPriorityRunes.contains(this);
+    public boolean removable(Runespan runespan) {
+        return runespan.currentIsland().floor() != 0 && !highPriorityRunes.contains(this);
     }
 }
