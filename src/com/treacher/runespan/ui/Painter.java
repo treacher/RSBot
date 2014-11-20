@@ -30,7 +30,7 @@ public class Painter implements PaintListener {
     @Override
     public void repaint(Graphics g) {
         g.setColor(Color.black);
-        g.fillRect(0, 450, 200, 450);
+        g.fillRect(0, 450, 350, 300);
         g.setColor(Color.white);
         g.drawString("treach3rs Runespan", 20, 470);
         g.drawString("Runtime: \t" + formatTime(millisElapsed()), 20, 490);
