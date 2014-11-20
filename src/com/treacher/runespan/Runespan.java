@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * Created by Michael Treacher
  */
-@Script.Manifest(name = "Runespan", description = "Trains runecrafting in the runespan.", properties = "topic=1227888")
+@Script.Manifest(name = "Runespan", description = "Trains rune crafting in the Runepan.", properties = "topic=1229948")
 public class Runespan extends PollingScript<ClientContext> implements PaintListener{
 
     private List<FloatingIsland> floatingIslands = new ArrayList<FloatingIsland>();

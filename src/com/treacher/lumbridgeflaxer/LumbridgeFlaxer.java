@@ -19,7 +19,7 @@ import java.util.concurrent.Callable;
  * Created by Michael Treacher
  */
 
-@Script.Manifest(name = "Lumbridge Flaxer", description = "Makes bowstrings in lumbridge castle.", properties = "topic=1227888")
+@Script.Manifest(name = "Lumbridge Flaxer", description = "Makes bowstrings in lumbridge castle. VIP+ only.", properties = "topic=1227888")
 public class LumbridgeFlaxer extends PollingScript<ClientContext> implements PaintListener {
 
     private final int flaxId = 1779;
