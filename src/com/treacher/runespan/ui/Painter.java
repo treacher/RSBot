@@ -30,13 +30,13 @@ public class Painter implements PaintListener {
     @Override
     public void repaint(Graphics g) {
         g.setColor(Color.black);
-        g.fillRect(0, 450, 200, 350);
+        g.fillRect(0, 450, 200, 450);
         g.setColor(Color.white);
         g.drawString("treach3rs Runespan", 20, 470);
         g.drawString("Runtime: \t" + formatTime(millisElapsed()), 20, 490);
         g.drawString("XP gained: \t " + xpGained(),20, 510);
         g.drawString("XP per hour: \t " + xpPerHour(), 20, 530);
-        g.drawString("State: \t " + Runespan.STATE, 20, 550);
+        g.drawString("Last State: \t " + Runespan.STATE, 20, 550);
     }
 
     private int xpGained() {

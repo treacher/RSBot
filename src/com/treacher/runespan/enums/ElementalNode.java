@@ -23,7 +23,12 @@ public enum ElementalNode {
     ROCK_FRAGMENT(70458, 28.6,new Rune[]{Rune.EARTH},9),
     WATER_POOL(70457,25.3, new Rune[]{Rune.WATER},5),
     MIND_STORM(70456,20, new Rune[]{Rune.MIND},1),
-    CYCLONE(70455,19, new Rune[]{Rune.AIR}, 1);
+    CYCLONE(70455,19, new Rune[]{Rune.AIR}, 1),
+    SKULLS(70467,120,new Rune[]{Rune.DEATH}, 65),
+    BLOOD_POOL(70468,146.3,new Rune[]{Rune.BLOOD}, 77),
+    BLOODY_SKULLS(70469,175.5,new Rune[]{Rune.BLOOD, Rune.DEATH}, 83),
+    LIVING_SOUL(70470,213,new Rune[]{Rune.SOUL}, 90),
+    UNDEAD_SOULS(70471,255.5,new Rune[]{Rune.SOUL, Rune.DEATH}, 95);
 
     private final int gameObjectId;
     private final double xp;

@@ -27,7 +27,10 @@ public enum EssenceMonster {
     ASTRAL_ESSHOUND_FLOOR_1(15411, Rune.ASTRAL, 35.5, 40),
     CHAOS_ESSHOUND_FLOOR_1(15410, Rune.CHAOS, 30.8, 35),
     COSMIC_ESSHOUND_FLOOR_1(15409, Rune.COSMIC, 26.5, 27),
-    BODY_ESSHOUND_FLOOR_1(15408, Rune.BODY, 23.13, 20);
+    BODY_ESSHOUND_FLOOR_1(15408, Rune.BODY, 23.13, 20),
+    DEATH_ESSWRAITH(15414,Rune.DEATH, 60, 65),
+    BLOOD_ESSWRAITH(15415,Rune.BLOOD, 73, 77),
+    SOUL_ESSWRAITH(15416,Rune.SOUL, 106.5, 90);
 
     private final int gameObjectId;
     private final Rune rune;

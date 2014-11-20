@@ -1,6 +1,7 @@
 package com.treacher.runespan.enums;
 
 import com.treacher.runespan.Runespan;
+import com.treacher.runespan.util.FloatingIsland;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,6 +49,12 @@ public enum Rune {
     }
 
     public boolean removable(Runespan runespan) {
-        return runespan.currentIsland().floor() != 0 && !highPriorityRunes.contains(this);
+        final FloatingIsland currentIsland = runespan.currentIsland();
+        if(currentIsland != null) {
+            if(runespan.currentIsland().floor() == 0) return false;
+            return !highPriorityRunes.contains(this);
+        } else {
+            return false;
+        }
     }
 }

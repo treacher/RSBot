@@ -15,7 +15,8 @@ import org.powerbot.script.rt6.Hud.Window;
 public class AntiBan {
 
     private long lastTimeAFKing = System.currentTimeMillis();
-    private long lastTimeRandomEvent = System.currentTimeMillis();
+    private long lastTimeCheckingSkill = System.currentTimeMillis();
+    private long lastTimeMovingMouse = System.currentTimeMillis();
 
     private final ClientContext ctx;
 
@@ -24,7 +25,8 @@ public class AntiBan {
     }
 
     public void execute() {
-        if(timeForRandomEvent()) triggerRandomEvent();
+        if(timeForMouseMovement()) triggerMouseEvent();
+        if(timeForCheckSkill()) checkSkill();
         if(timeForAFK()) goAFK();
     }
 
@@ -33,14 +35,18 @@ public class AntiBan {
         return (System.currentTimeMillis() - lastTimeAFKing) > (Random.nextInt(50000,70000) * 60);
     }
 
-    private boolean timeForRandomEvent() {
-        return (System.currentTimeMillis() - lastTimeRandomEvent) > (Random.nextInt(50000,70000) * 15);
+    private boolean timeForCheckSkill() {
+        return (System.currentTimeMillis() - lastTimeCheckingSkill) > (Random.nextInt(50000,70000) * 30);
     }
 
-    private void triggerRandomEvent() {
-        Runespan.STATE = "Anti Ban: Random event";
+    private boolean timeForMouseMovement() {
+        return (System.currentTimeMillis() - lastTimeMovingMouse) > (Random.nextInt(50000,70000) * 2.5);
+    }
 
-        lastTimeRandomEvent = System.currentTimeMillis();
+    private void triggerMouseEvent() {
+        Runespan.STATE = "Anti Ban: Moving Mouse";
+
+        lastTimeMovingMouse = System.currentTimeMillis();
 
         int randomNumber = Random.nextInt(1,3);
 
@@ -49,9 +55,6 @@ public class AntiBan {
                 moveMouse();
                 break;
             case 2:
-                checkSkill();
-                break;
-            case 3:
                 mouseOffScreen();
                 break;
             default:
@@ -70,6 +73,8 @@ public class AntiBan {
      * Opens up skill list and randomly selects a few skills to check the experience of. Once finished checking it goes back to your backpack.
      */
     private void checkSkill() {
+        lastTimeCheckingSkill = System.currentTimeMillis();
+
         ctx.hud.open(Window.SKILLS);
 
         final int skillId = Constants.SKILLS_RUNECRAFTING;
