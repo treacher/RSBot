@@ -34,7 +34,7 @@ public class GetEssence extends Task<ClientContext> {
             Condition.wait(new Callable<Boolean>() {
                 @Override
                 public Boolean call() throws Exception {
-                    boolean siphonEssence = runeEssenceNpc.interact("Siphon");
+                    boolean siphonEssence = runeEssenceNpc.interact("Collect");
                     if(!siphonEssence)
                         ctx.movement.findPath(runeEssenceNpc).traverse();
                     return siphonEssence;
