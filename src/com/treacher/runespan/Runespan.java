@@ -7,11 +7,17 @@ import com.treacher.runespan.util.AntiBan;
 import com.treacher.runespan.util.FloatingIsland;
 import com.treacher.runespan.util.PlatformConnection;
 import com.treacher.util.Task;
+import org.powerbot.script.BotMenuListener;
 import org.powerbot.script.PaintListener;
 import org.powerbot.script.PollingScript;
 import org.powerbot.script.Script;
 import org.powerbot.script.rt6.ClientContext;
+
+import javax.swing.*;
+import javax.swing.event.MenuEvent;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.*;
 import java.util.List;
 
@@ -19,16 +25,17 @@ import java.util.List;
  * Created by Michael Treacher
  */
 @Script.Manifest(name = "Runespan", description = "Trains rune crafting in the Runepan. P2P only.", properties = "topic=1229948")
-public class Runespan extends PollingScript<ClientContext> implements PaintListener{
+public class Runespan extends PollingScript<ClientContext> implements PaintListener, BotMenuListener{
 
     private List<FloatingIsland> floatingIslands = new ArrayList<FloatingIsland>();
     private List<Task<ClientContext>> taskList = new ArrayList<Task<ClientContext>>();
     private static Set<Rune> runesToExclude = new HashSet<Rune>();
     private int currentNodeId;
-    private Painter painter = new Painter(ctx);
+    private Painter painter = new Painter(ctx, this);
     private FloatingIsland previousIsland;
     private PlatformConnection previousPlatform;
     private AntiBan antiBan = new AntiBan(ctx);
+    private boolean antiBanSwitch = true;
 
     public static String STATE = "Collecting Runes";
 
@@ -70,8 +77,35 @@ public class Runespan extends PollingScript<ClientContext> implements PaintListe
         return null;
     }
 
+    @Override
+    public void menuSelected(MenuEvent e) {
+        final JMenu menu = (JMenu) e.getSource();
+        final String switchState = antiBanSwitch ? "Off" : "On";
+        final JCheckBoxMenuItem antiBanMenuItem = new JCheckBoxMenuItem("Turn off anti-ban");
+
+        antiBanMenuItem.setText("Turn anti-ban " + switchState);
+
+        antiBanMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                antiBanSwitch = !antiBanSwitch;
+            }
+        });
+        menu.add(antiBanMenuItem);
+    }
+
+    @Override
+    public void menuDeselected(MenuEvent e) {}
+
+    @Override
+    public void menuCanceled(MenuEvent e) {}
+
     public void triggerAntiBan() {
-        antiBan.execute();
+        if(antiBanSwitch) antiBan.execute();
+    }
+
+    public boolean getAntiBanSwitch() {
+        return antiBanSwitch;
     }
 
     public void addRuneToExclusionList(Rune rune) {

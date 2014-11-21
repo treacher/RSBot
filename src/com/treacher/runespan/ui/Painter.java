@@ -21,10 +21,13 @@ public class Painter implements PaintListener {
 
     private final int startXp;
 
-    public Painter(ClientContext ctx)
+    private final Runespan runespan;
+
+    public Painter(ClientContext ctx, Runespan runespan)
     {
         this.ctx = ctx;
         this.startXp = ctx.skills.experience(Constants.SKILLS_RUNECRAFTING);
+        this.runespan = runespan;
     }
 
     @Override
@@ -37,6 +40,7 @@ public class Painter implements PaintListener {
         g.drawString("XP gained: \t " + xpGained(),20, 510);
         g.drawString("XP per hour: \t " + xpPerHour(), 20, 530);
         g.drawString("Last State: \t " + Runespan.STATE, 20, 550);
+        g.drawString("AntiBan: \t " + (runespan.getAntiBanSwitch() ? "enabled" : "disabled"), 20, 570);
     }
 
     private int xpGained() {
