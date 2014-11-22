@@ -58,7 +58,12 @@ public enum ElementalNode {
 
     public static void siphonNode(final GameObject node, final ClientContext ctx, final Runespan runespan) {
         if(!node.valid()) return;
-        runespan.setCurrentNodeId(node.id());
+
+        final ElementalNode elementalNode = ElementalNode.findNodeByGameObjectId(node.id(), ctx);
+
+        if(elementalNode != null)
+            runespan.setCurrentXpRate(elementalNode.getXp());
+
         ctx.camera.turnTo(node);
         ctx.camera.pitch(60);
 

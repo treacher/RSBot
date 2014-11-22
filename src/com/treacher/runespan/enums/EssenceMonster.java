@@ -54,18 +54,24 @@ public enum EssenceMonster {
         return null;
     }
 
-    public static void siphonMonster(final Npc essenceMonster, final ClientContext ctx, Runespan runespan) {
-        if(!essenceMonster.valid()) return;
-        ctx.camera.turnTo(essenceMonster);
+    public static void siphonMonster(final Npc npc, final ClientContext ctx, Runespan runespan) {
+        if(!npc.valid()) return;
+
+        final EssenceMonster essenceMonster = EssenceMonster.findMonsterByGameObjectId(npc.id(), ctx);
+
+        if(essenceMonster != null)
+            runespan.setCurrentXpRate(essenceMonster.getXp());
+
+        ctx.camera.turnTo(npc);
         ctx.camera.pitch(60);
 
         // Wait till interacting with monster
         Condition.wait(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                boolean siphoningMonster = essenceMonster.interact(false, "Siphon");
+                boolean siphoningMonster = npc.interact(false, "Siphon");
                 if (!siphoningMonster)
-                    ctx.movement.findPath(essenceMonster).traverse();
+                    ctx.movement.findPath(npc).traverse();
                 return siphoningMonster;
             }
         }, 1000, 4);

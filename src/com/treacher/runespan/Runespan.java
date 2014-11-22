@@ -30,7 +30,7 @@ public class Runespan extends PollingScript<ClientContext> implements PaintListe
     private List<FloatingIsland> floatingIslands = new ArrayList<FloatingIsland>();
     private List<Task<ClientContext>> taskList = new ArrayList<Task<ClientContext>>();
     private static Set<Rune> runesToExclude = new HashSet<Rune>();
-    private int currentNodeId;
+    private double currentXpRate;
     private Painter painter = new Painter(ctx, this);
     private FloatingIsland previousIsland;
     private PlatformConnection previousPlatform;
@@ -42,15 +42,15 @@ public class Runespan extends PollingScript<ClientContext> implements PaintListe
     @Override
     public void start() {
         taskList.addAll(
-                Arrays.asList(
-                        new GetEssence(ctx),
-                        new GenerateFloatingIsland(ctx,this),
-                        new ExcludeAndIncludeRunes(ctx, this),
-                        new SearchForBetterNodes(ctx, this),
-                        new CollectRunes(ctx, this),
-                        new BuildUpEssence(ctx, this),
-                        new MoveIslands(ctx, this)
-                )
+            Arrays.asList(
+                    new GenerateFloatingIsland(ctx,this),
+                    new BuildUpEssence(ctx, this),
+                    new CollectRunes(ctx, this),
+                    new SearchForBetter(ctx, this),
+                    new GetEssence(ctx),
+                    new ExcludeAndIncludeRunes(ctx, this),
+                    new MoveIslands(ctx, this)
+            )
         );
     }
 
@@ -146,11 +146,11 @@ public class Runespan extends PollingScript<ClientContext> implements PaintListe
         floatingIslands.add(newIsland);
     }
 
-    public void setCurrentNodeId(int nodeId) {
-        this.currentNodeId = nodeId;
+    public void setCurrentXpRate(double xpRate) {
+        this.currentXpRate = xpRate;
     }
 
-    public int getCurrentNodeId() {
-        return currentNodeId;
+    public double getCurrentXpRate() {
+        return currentXpRate;
     }
 }
