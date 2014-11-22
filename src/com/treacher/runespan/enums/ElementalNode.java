@@ -6,6 +6,8 @@ import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.Constants;
 import org.powerbot.script.rt6.GameObject;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 /**
@@ -34,6 +36,11 @@ public enum ElementalNode {
     private final double xp;
     private final Rune[] runes;
     private int levelRequirement;
+    private static List<ElementalNode> exceptionNodes = Arrays.asList(
+            FLESHY_GROWTH,
+            VINE,
+            FIRE_STORM
+    );
 
     private ElementalNode(int gameObjectId, double xp, Rune[] runes, int levelRequirement) {
         this.gameObjectId = gameObjectId;
@@ -98,6 +105,8 @@ public enum ElementalNode {
         }
 
         if(ctx.skills.level(Constants.SKILLS_RUNECRAFTING) < this.levelRequirement) excluded = true;
+
+        if(exceptionNodes.contains(this)) excluded = false;
 
         return excluded;
     }

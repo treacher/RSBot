@@ -6,7 +6,10 @@ import com.treacher.runespan.ui.Painter;
 import com.treacher.runespan.util.AntiBan;
 import com.treacher.runespan.util.FloatingIsland;
 import com.treacher.runespan.util.PlatformConnection;
+import com.treacher.tasks.HandleResponse;
+import com.treacher.tasks.SelectOption;
 import com.treacher.util.Task;
+import org.powerbot.bot.rt6.client.input.Mouse;
 import org.powerbot.script.BotMenuListener;
 import org.powerbot.script.PaintListener;
 import org.powerbot.script.PollingScript;
@@ -43,6 +46,9 @@ public class Runespan extends PollingScript<ClientContext> implements PaintListe
     public void start() {
         taskList.addAll(
             Arrays.asList(
+                    new BuyRunes(ctx),
+                    new HandleResponse(ctx),
+                    new SelectOption(ctx,"Yes"),
                     new GenerateFloatingIsland(ctx,this),
                     new BuildUpEssence(ctx, this),
                     new CollectRunes(ctx, this),

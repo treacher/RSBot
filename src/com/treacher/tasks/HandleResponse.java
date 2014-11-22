@@ -1,4 +1,5 @@
-package com.treacher.butlerplankmaker.tasks;
+package com.treacher.tasks;
+import com.treacher.util.Task;
 import org.powerbot.script.rt6.ClientContext;
 
 import com.treacher.butlerplankmaker.PlankMaker;
@@ -20,7 +21,6 @@ public class HandleResponse extends Task<ClientContext> {
 
     @Override
     public void execute() {
-        PlankMaker.STATE = "Handling Responses";
         ctx.chat.clickContinue(true);
     }
 

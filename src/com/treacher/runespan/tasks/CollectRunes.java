@@ -22,7 +22,9 @@ public class CollectRunes extends Task<ClientContext> {
     @Override
     public boolean activate() {
         runespanQuery = new RunespanQuery(ctx, runespan.currentIsland());
-        return ctx.players.local().idle() && runespanQuery.essenceStackSize() > 100 && runespanQuery.hasNodes();
+        return ctx.players.local().idle()
+                && runespanQuery.essenceStackSize() > 100
+                && runespanQuery.hasNodes();
     }
 
     @Override

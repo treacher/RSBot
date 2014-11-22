@@ -36,6 +36,7 @@ public class GenerateFloatingIsland extends Task<ClientContext> {
     }
 
     private void siphonNearestObject() {
+        if(runespanQuery.essenceStackSize() <= 0) return;
         Runespan.STATE = "Collecting Runes";
         // Fake it till you make it. Choose the nearest thing to extract runes from while we build the island
         final GameObject nearestNode = runespanQuery.nearestHighestPriorityNode();

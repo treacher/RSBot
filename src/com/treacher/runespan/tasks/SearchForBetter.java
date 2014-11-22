@@ -34,7 +34,7 @@ public class SearchForBetter extends Task<ClientContext> {
 
             return !ctx.players.local().idle()
                     && betterNodeAvailable()
-                    && runespanQuery.essenceStackSize() > 100;
+                    && runespanQuery.essenceStackSize() > 300;
         }
         return false;
     }
@@ -67,6 +67,6 @@ public class SearchForBetter extends Task<ClientContext> {
             }
         }
 
-        return betterNode != null || betterMonster != null;
+        return betterNode != null || (betterMonster != null && !runespanQuery.hasTooMuchEssence());
     }
 }

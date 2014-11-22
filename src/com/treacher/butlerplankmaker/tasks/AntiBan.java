@@ -1,17 +1,17 @@
 package com.treacher.butlerplankmaker.tasks;
 
-import java.awt.Point;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import com.treacher.butlerplankmaker.PlankMaker;
-
+import com.treacher.util.Task;
 import org.powerbot.script.Condition;
 import org.powerbot.script.Random;
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.Component;
 import org.powerbot.script.rt6.Hud.Window;
+
+import java.awt.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by Michael Treacher

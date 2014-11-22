@@ -2,7 +2,9 @@ package com.treacher.runespan.ui;
 
 
 import com.treacher.runespan.Runespan;
+import org.powerbot.bot.rt6.client.input.Mouse;
 import org.powerbot.script.PaintListener;
+import org.powerbot.script.Random;
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.Constants;
 
@@ -23,6 +25,8 @@ public class Painter implements PaintListener {
 
     private final Runespan runespan;
 
+    private final MouseTrail mousetrail = new MouseTrail();
+
     public Painter(ClientContext ctx, Runespan runespan)
     {
         this.ctx = ctx;
@@ -41,6 +45,44 @@ public class Painter implements PaintListener {
         g.drawString("XP per hour: \t " + xpPerHour(), 20, 530);
         g.drawString("Last State: \t " + Runespan.STATE, 20, 550);
         g.drawString("AntiBan: \t " + (runespan.getAntiBanSwitch() ? "enabled" : "disabled"), 20, 570);
+        mousetrail.add(ctx.input.getLocation());
+        mousetrail.draw(g);
+        drawMouse(g);
+    }
+
+
+    private void drawMouse(final Graphics g) {
+        g.setColor(Color.GREEN);
+        g.fillRect(ctx.input.getLocation().x - 5, ctx.input.getLocation().y - 5, 3, 3);
+    }
+
+    private final static class MouseTrail {
+        private final int SIZE = 25;
+        private final double ALPHA_STEP = (255.0 / SIZE);
+        private final Point[] points;
+        private int index;
+
+        public MouseTrail() {
+            points = new Point[SIZE];
+            index = 0;
+        }
+
+        public void add(final Point p) {
+            points[index++] = p;
+            index %= SIZE;
+        }
+
+        public void draw(final Graphics g) {
+            double alpha = 0;
+
+            for (int i = index; i != (index == 0 ? SIZE - 1 : index - 1); i = (i + 1) % SIZE) {
+                if (points[i] != null && points[(i + 1) % SIZE] != null) {
+                    g.setColor(new Color(Random.nextInt(0,255), Random.nextInt(0,255), Random.nextInt(0,255), (int) alpha));
+                    g.drawLine(points[i].x, points[i].y, points[(i + 1) % SIZE].x, points[(i + 1) % SIZE].y);
+                    alpha += ALPHA_STEP;
+                }
+            }
+        }
     }
 
     private int xpGained() {

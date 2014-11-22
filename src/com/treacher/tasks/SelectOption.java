@@ -1,5 +1,6 @@
-package com.treacher.butlerplankmaker.tasks;
+package com.treacher.tasks;
 
+import com.treacher.util.Task;
 import org.powerbot.script.rt6.ChatOption;
 import org.powerbot.script.rt6.ClientContext;
 
@@ -9,7 +10,7 @@ import com.treacher.butlerplankmaker.PlankMaker;
  * Created by Michael Treacher
  */
 
-public class SelectOption extends Task <ClientContext>{
+public class SelectOption extends Task<ClientContext> {
 
     private String chatText;
     private ChatOption chatOption;
@@ -31,7 +32,6 @@ public class SelectOption extends Task <ClientContext>{
 
     @Override
     public void execute() {
-        PlankMaker.STATE = "Selecting:" + chatText;
         chatOption.select();
     }
 }

@@ -22,7 +22,9 @@ public class MoveIslands extends Task<ClientContext> {
     @Override
     public boolean activate() {
         final RunespanQuery runespanQuery = new RunespanQuery(ctx, runespan.currentIsland());
-        return !runespanQuery.hasNodes() && !runespanQuery.hasEssenceMonsters() && runespan.currentIsland() != null;
+        return !runespanQuery.hasNodes()
+                && !runespanQuery.hasEssenceMonsters()
+                && runespan.currentIsland() != null;
     }
 
     @Override
