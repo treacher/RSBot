@@ -15,14 +15,14 @@ public class FloatingIsland {
     private final List<PlatformConnection> connections;
     private Set<Tile> tiles = new HashSet<Tile>();
     private ClientContext ctx;
-    private final int currentFloor;
+    private static int currentFloor;
     private final Runespan runespan;
 
     public FloatingIsland(ClientContext ctx, Runespan runespan) {
         this.connections = new ArrayList<PlatformConnection>();
         this.ctx = ctx;
         this.runespan = runespan;
-        this.currentFloor = setCurrentFloor();
+        currentFloor = setCurrentFloor();
         floodFillTilesFromTile(ctx.players.local().tile());
     }
 
@@ -61,7 +61,7 @@ public class FloatingIsland {
         return null;
     }
 
-    public int floor() {
+    public static int floor() {
         return currentFloor;
     }
 

@@ -25,7 +25,7 @@ public class GenerateFloatingIsland extends Task<ClientContext> {
 
     @Override
     public boolean activate() {
-        return ctx.players.local().idle() && runespan.currentIsland() == null;
+        return ctx.players.local().idle() && runespan.currentIsland() == null && !ctx.chat.chatting();
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.treacher.runespan.enums;
 
 import com.treacher.runespan.Runespan;
+import com.treacher.runespan.util.FloatingIsland;
 import org.powerbot.script.Condition;
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.Constants;
@@ -36,10 +37,14 @@ public enum ElementalNode {
     private final double xp;
     private final Rune[] runes;
     private int levelRequirement;
-    private static List<ElementalNode> exceptionNodes = Arrays.asList(
+    private static List<ElementalNode> exceptionNodesLevel1 = Arrays.asList(
             FLESHY_GROWTH,
             VINE,
             FIRE_STORM
+    );
+
+    private static List<ElementalNode> exceptionNodesLevel2 = Arrays.asList(
+            FLESHY_GROWTH
     );
 
     private ElementalNode(int gameObjectId, double xp, Rune[] runes, int levelRequirement) {
@@ -106,7 +111,13 @@ public enum ElementalNode {
 
         if(ctx.skills.level(Constants.SKILLS_RUNECRAFTING) < this.levelRequirement) excluded = true;
 
-        if(exceptionNodes.contains(this)) excluded = false;
+        if(FloatingIsland.floor() == 1) {
+            if(exceptionNodesLevel1.contains(this))
+                excluded = false;
+        } else if(FloatingIsland.floor() == 2) {
+            if(exceptionNodesLevel2.contains(this))
+                excluded = false;
+        }
 
         return excluded;
     }

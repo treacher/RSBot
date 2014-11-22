@@ -26,7 +26,8 @@ public class BuildUpEssence extends Task<ClientContext> {
         return  ctx.players.local().idle()
                 && runespanQuery.essenceStackSize() >= 25
                 && (runespanQuery.essenceStackSize() < 100 || hasNoNodes)
-                && (runespanQuery.hasEssenceMonsters());
+                && (runespanQuery.hasEssenceMonsters())
+                && !ctx.chat.chatting();
     }
 
     @Override

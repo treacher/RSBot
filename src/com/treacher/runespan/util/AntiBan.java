@@ -8,6 +8,8 @@ import org.powerbot.script.rt6.Component;
 import org.powerbot.script.rt6.Constants;
 import org.powerbot.script.rt6.Hud.Window;
 
+import java.util.concurrent.Callable;
+
 /**
  * Created by Michael Treacher
  */
@@ -76,6 +78,13 @@ public class AntiBan {
         lastTimeCheckingSkill = System.currentTimeMillis();
 
         ctx.hud.open(Window.SKILLS);
+
+        Condition.wait(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                return ctx.hud.opened(Window.SKILLS);
+            }
+        }, 1000, 4);
 
         final int skillId = Constants.SKILLS_RUNECRAFTING;
 

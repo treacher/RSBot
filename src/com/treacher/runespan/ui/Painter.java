@@ -2,7 +2,6 @@ package com.treacher.runespan.ui;
 
 
 import com.treacher.runespan.Runespan;
-import org.powerbot.bot.rt6.client.input.Mouse;
 import org.powerbot.script.PaintListener;
 import org.powerbot.script.Random;
 import org.powerbot.script.rt6.ClientContext;
