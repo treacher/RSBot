@@ -115,7 +115,7 @@ public class RunespanQuery {
             public int compare(Npc o1, Npc o2) {
                 EssenceMonster m1 = EssenceMonster.findMonsterByGameObjectId(o1.id(), ctx);
                 EssenceMonster m2 = EssenceMonster.findMonsterByGameObjectId(o2.id(), ctx);
-                return new Double(m2.getXp()).compareTo(m1.getXp());
+                return new Double(m1.getXp()).compareTo(m2.getXp());
             }
         });
     }

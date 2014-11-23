@@ -2,6 +2,7 @@ package com.treacher.runespan.enums;
 
 import com.treacher.runespan.Runespan;
 import com.treacher.runespan.util.FloatingIsland;
+import org.powerbot.script.rt6.ClientContext;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,6 +41,21 @@ public enum Rune {
             )
     );
 
+    private static final List<Rune> membersRunes = new ArrayList<Rune>(
+            Arrays.asList(
+                    SOUL,
+                    BLOOD,
+                    DEATH,
+                    ASTRAL,
+                    LAW,
+                    NATURE,
+                    CHAOS,
+                    NATURE,
+                    COSMIC,
+                    ASTRAL
+            )
+    );
+
     private Rune(int gameObjectId) {
         this.gameObjectId = gameObjectId;
     }
@@ -50,9 +66,14 @@ public enum Rune {
 
     public boolean removable(Runespan runespan) {
         final FloatingIsland currentIsland = runespan.currentIsland();
+
         if(currentIsland != null) {
-            if(runespan.currentIsland().floor() == 0) return false;
-            return !highPriorityRunes.contains(this);
+            if(runespan.members()) {
+                if (runespan.currentIsland().floor() == 0) return false;
+                return !highPriorityRunes.contains(this);
+            } else {
+                return membersRunes.contains(this);
+            }
         } else {
             return false;
         }

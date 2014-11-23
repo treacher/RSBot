@@ -20,7 +20,9 @@ public class GetEssence extends Task<ClientContext> {
 
     @Override
     public boolean activate() {
-        return ctx.players.local().idle() && ctx.backpack.select().id(Rune.ESSENCE.getGameObjectId()).poll().stackSize() < 10;
+        return ctx.players.local().idle()
+                && ctx.backpack.select().id(Rune.ESSENCE.getGameObjectId()).poll().stackSize() < 10
+                && !ctx.chat.chatting();
     }
 
     @Override

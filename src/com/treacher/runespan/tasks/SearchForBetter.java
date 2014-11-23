@@ -29,7 +29,7 @@ public class SearchForBetter extends Task<ClientContext> {
     public boolean activate() {
         runespanQuery = new RunespanQuery(ctx, runespan.currentIsland());
 
-        if((System.currentTimeMillis() - lastChecked) > 5000) {
+        if((System.currentTimeMillis() - lastChecked) > 6000) {
             lastChecked = System.currentTimeMillis();
 
             return !ctx.players.local().idle()
@@ -59,15 +59,8 @@ public class SearchForBetter extends Task<ClientContext> {
         if(potentialNode.valid() && potentialElementalNode != null &&
                 potentialElementalNode.getXp() > runespan.getCurrentXpRate()) {
             betterNode = potentialNode;
-        } else {
-            final Npc potentialNpc = runespanQuery.highestPriorityEssenceMonster();
-            final EssenceMonster potentialEssenceMonster = EssenceMonster.findMonsterByGameObjectId(potentialNpc.id(), ctx);
-            if(potentialNpc.valid() && potentialEssenceMonster != null
-                    && potentialEssenceMonster.getXp() > runespan.getCurrentXpRate()) {
-                betterMonster = potentialNpc;
-            }
         }
 
-        return betterNode != null || (betterMonster != null && !runespanQuery.hasTooMuchEssence());
+        return betterNode != null;
     }
 }

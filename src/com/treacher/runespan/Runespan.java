@@ -2,6 +2,7 @@ package com.treacher.runespan;
 
 import com.treacher.runespan.enums.Rune;
 import com.treacher.runespan.tasks.*;
+import com.treacher.runespan.ui.GUI;
 import com.treacher.runespan.ui.Painter;
 import com.treacher.runespan.util.AntiBan;
 import com.treacher.runespan.util.FloatingIsland;
@@ -9,7 +10,6 @@ import com.treacher.runespan.util.PlatformConnection;
 import com.treacher.tasks.HandleResponse;
 import com.treacher.tasks.SelectOption;
 import com.treacher.util.Task;
-import org.powerbot.bot.rt6.client.input.Mouse;
 import org.powerbot.script.BotMenuListener;
 import org.powerbot.script.PaintListener;
 import org.powerbot.script.PollingScript;
@@ -39,25 +39,17 @@ public class Runespan extends PollingScript<ClientContext> implements PaintListe
     private PlatformConnection previousPlatform;
     private AntiBan antiBan = new AntiBan(ctx);
     private boolean antiBanSwitch = true;
+    private String gameType;
 
     public static String STATE = "Collecting Runes";
 
     @Override
     public void start() {
-        taskList.addAll(
-            Arrays.asList(
-                    new BuyRunes(ctx),
-                    new HandleResponse(ctx),
-                    new SelectOption(ctx,"Yes"),
-                    new GenerateFloatingIsland(ctx,this),
-                    new BuildUpEssence(ctx, this),
-                    new CollectRunes(ctx, this),
-                    new SearchForBetter(ctx, this),
-                    new GetEssence(ctx),
-                    new ExcludeAndIncludeRunes(ctx, this),
-                    new MoveIslands(ctx, this)
-            )
-        );
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                new GUI(Runespan.this);
+            }
+        });
     }
 
     @Override
@@ -100,11 +92,41 @@ public class Runespan extends PollingScript<ClientContext> implements PaintListe
         menu.add(antiBanMenuItem);
     }
 
+    public boolean members() {
+        return gameType.equals("P2P");
+    }
+
     @Override
     public void menuDeselected(MenuEvent e) {}
 
     @Override
     public void menuCanceled(MenuEvent e) {}
+
+    public void addTasks() {
+        taskList.addAll(
+                Arrays.asList(
+                        new BuyRunes(ctx),
+                        new HandleResponse(ctx),
+                        new SelectOption(ctx,"Yes", ctx.widgets.component(1188,14), "Do you want to buy some runes?"),
+                        new SelectOption(ctx,"No", ctx.widgets.component(1188,14), "Would you like to subscribe?"),
+                        new GenerateFloatingIsland(ctx,this),
+                        new BuildUpEssence(ctx, this),
+                        new CollectRunes(ctx, this),
+                        new SearchForBetter(ctx, this),
+                        new GetEssence(ctx),
+                        new ExcludeAndIncludeRunes(ctx, this),
+                        new MoveIslands(ctx, this)
+                )
+        );
+    }
+
+    public void setGameType(String gameType) {
+        this.gameType = gameType;
+    }
+
+    public ClientContext getContext() {
+        return ctx;
+    }
 
     public void triggerAntiBan() {
         if(antiBanSwitch) antiBan.execute();

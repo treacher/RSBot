@@ -88,10 +88,10 @@ public class PlankMaker extends PollingScript<ClientContext> implements PaintLis
                 new AntiBan(ctx),
                 new HandleResponse(ctx),
                 new EnterTextOption(ctx),
-                new SelectOption(ctx, "Un-cert"),
-                new SelectOption(ctx, "Take them back to the bank"),
-                new SelectOption(ctx, "Send logs to sawmill"),
-                new SelectOption(ctx, "Pay servant 7500 coins and don't ask again."),
+                new SelectOption(ctx, "Un-cert", null, null),
+                new SelectOption(ctx, "Take them back to the bank", null, null),
+                new SelectOption(ctx, "Send logs to sawmill", null, null),
+                new SelectOption(ctx, "Pay servant 7500 coins and don't ask again.", null, null),
                 new UseLogsOnButler(ctx, this)
         ));
     }
