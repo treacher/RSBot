@@ -34,7 +34,7 @@ public class SearchForBetter extends Task<ClientContext> {
 
             return !ctx.players.local().idle()
                     && betterNodeAvailable()
-                    && runespanQuery.essenceStackSize() > 100
+                    && runespanQuery.essenceStackSize() >= 100
                     && !ctx.chat.chatting();
         }
         return false;
