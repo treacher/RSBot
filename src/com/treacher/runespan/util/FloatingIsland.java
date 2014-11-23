@@ -26,7 +26,6 @@ public class FloatingIsland {
         this.runespan = runespan;
         currentFloor = setCurrentFloor();
         floodFillTilesFromTile(ctx.players.local().tile());
-        System.out.println(tiles.size());
     }
 
     public boolean onIsland(Tile tile) {
