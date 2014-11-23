@@ -25,10 +25,8 @@ public class FloatingIsland {
         this.ctx = ctx;
         this.runespan = runespan;
         currentFloor = setCurrentFloor();
-        final long before = System.currentTimeMillis();
         floodFillTilesFromTile(ctx.players.local().tile());
-        final long after = System.currentTimeMillis();
-        System.out.println(((after - before)*60.0) + "Seconds");
+        System.out.println(tiles.size());
     }
 
     public boolean onIsland(Tile tile) {
@@ -89,45 +87,6 @@ public class FloatingIsland {
             }
         }
         return true;
-    }
-
-    private void floodFillScanLine(Tile firstTile) {
-        final List<Tile> checkedTiles = new ArrayList<Tile>();
-        final Stack<Tile> tilesToCheck = new Stack<Tile>();
-
-        tilesToCheck.add(firstTile);
-
-        while(!tilesToCheck.empty()) {
-            final Tile currentTile = tilesToCheck.pop();
-            tiles.add(currentTile); // Add to the list of tiles
-            checkedTiles.add(currentTile); // Add to the list of checked tiles
-
-            // Add all the surrounding tiles to the tilesToCheck stack unless we have already checked it.
-            for(Tile surroundingTile : validSurroundingTiles(currentTile)) {
-                if(!checkedTiles.contains(surroundingTile))
-                    tilesToCheck.add(surroundingTile);
-            }
-        }
-
-
-    }
-
-    private List<Tile> validSurroundingTiles(Tile tile){
-        Tile[] surroundingTiles = new Tile[]{
-                new Tile(tile.x() + 1, tile.y(), tile.floor()),
-                new Tile(tile.x() - 1, tile.y(), tile.floor()),
-                new Tile(tile.x(), tile.y() + 1, tile.floor()),
-                new Tile(tile.x(), tile.y() - 1, tile.floor())
-        };
-
-        List<Tile> validSurroundingTiles = new ArrayList<Tile>();
-
-        for(Tile t : surroundingTiles) {
-            if(ctx.movement.reachable(ctx.players.local().tile(), t)) {
-                validSurroundingTiles.add(t);
-            }
-        }
-        return validSurroundingTiles;
     }
 
     private void floodFillTilesFromTile(Tile tile) {
