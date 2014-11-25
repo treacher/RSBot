@@ -34,7 +34,7 @@ public class ExcludeAndIncludeRunes extends Task<ClientContext> {
             if(!rune.removable(runespan)) continue;
             final int stackSize = ctx.backpack.select().id(rune.getGameObjectId()).poll().stackSize();
 
-            if(stackSize > 20 || !runespan.members()) {
+            if(stackSize >= 10 || !runespan.members()) {
                 runespan.addRuneToExclusionList(rune);
             } else {
                 runespan.removeRuneFromExclusionList(rune);

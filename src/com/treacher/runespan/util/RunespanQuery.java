@@ -41,7 +41,7 @@ public class RunespanQuery {
     }
 
     public boolean hasTooMuchEssence() {
-        return essenceStackSize() >= 300;
+        return essenceStackSize() >= 150;
     }
 
     public GameObject highestPriorityNode() {

@@ -43,10 +43,6 @@ public enum ElementalNode {
             FIRE_STORM
     );
 
-    private static List<ElementalNode> exceptionNodesLevel2 = Arrays.asList(
-            FLESHY_GROWTH
-    );
-
     private ElementalNode(int gameObjectId, double xp, Rune[] runes, int levelRequirement) {
         this.gameObjectId = gameObjectId;
         this.xp = xp;
@@ -114,11 +110,7 @@ public enum ElementalNode {
         if(FloatingIsland.floor() == 1) {
             if(exceptionNodesLevel1.contains(this))
                 excluded = false;
-        } else if(FloatingIsland.floor() == 2) {
-            if(exceptionNodesLevel2.contains(this))
-                excluded = false;
         }
-
         return excluded;
     }
 }

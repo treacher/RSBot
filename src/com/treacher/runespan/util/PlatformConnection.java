@@ -98,7 +98,7 @@ public class PlatformConnection {
                         && !runespan.getPreviousIsland().onIsland(ctx.players.local().tile())
                         && playerOnPlatform();
             }
-        }, 1500,5);
+        }, 1500,7);
     }
 
     private boolean playerOnPlatform() {
