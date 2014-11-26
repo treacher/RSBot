@@ -3,11 +3,13 @@ package com.treacher.runespan.tasks;
 import com.treacher.runespan.Runespan;
 import com.treacher.runespan.util.RunespanQuery;
 import com.treacher.util.Task;
+import org.powerbot.script.Condition;
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.GameObject;
 import org.powerbot.script.rt6.Npc;
 
 import javax.swing.plaf.nimbus.State;
+import java.util.concurrent.Callable;
 
 /**
  * Created by Michael Treacher
@@ -49,6 +51,14 @@ public class GenerateFloatingIsland extends Task<ClientContext> {
                 nearestMonster.interact("Siphon");
             }
         }
+
+        // Wait till siphoning
+        Condition.wait(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                return !ctx.players.local().idle();
+            }
+        }, 2000, 2);
     }
 
 

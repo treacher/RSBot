@@ -78,7 +78,7 @@ public class PlatformConnection {
                         return false;
                     }
                 }
-            }, 2000, 8);
+            }, 750, 15);
         }
     }
 
