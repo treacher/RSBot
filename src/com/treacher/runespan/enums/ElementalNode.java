@@ -85,7 +85,7 @@ public enum ElementalNode {
                     ctx.movement.findPath(node).traverse();
                 return siphoningNode;
             }
-        }, 1000, 4);
+        }, 500, 8);
 
         // Wait till siphoning the node
         Condition.wait(new Callable<Boolean>() {

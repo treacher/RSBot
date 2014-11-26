@@ -24,8 +24,8 @@ public class BuildUpEssence extends Task<ClientContext> {
         runespanQuery = new RunespanQuery(ctx, runespan.currentIsland());
         final boolean hasNoNodes = !runespanQuery.hasNodes();
         return  ctx.players.local().idle()
-                && runespanQuery.essenceStackSize() >= 1
-                && (runespanQuery.essenceStackSize() <= 50 || hasNoNodes)
+                && runespanQuery.essenceStackSize() > -1
+                && (runespanQuery.essenceStackSize() < 50 || hasNoNodes)
                 && (runespanQuery.hasEssenceMonsters())
                 && !ctx.chat.chatting();
     }

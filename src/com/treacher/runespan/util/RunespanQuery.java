@@ -36,12 +36,12 @@ public class RunespanQuery {
     }
 
     public boolean needLawRunes() {
-        return highestPriorityEssenceMonster().id() == EssenceMonster.LAW_ESSHOUND_FLOOR_1.getGameObjectId()
-                && ctx.backpack.select().id(Rune.LAW.getGameObjectId()).poll().stackSize() <= 20;
+        return EssenceMonster.LAW_ESSHOUND.hasGameObjectId(highestPriorityEssenceMonster().id())
+                && ctx.backpack.select().id(Rune.LAW.getGameObjectId()).poll().stackSize() <= 10;
     }
 
     public boolean hasTooMuchEssence() {
-        return essenceStackSize() >= 150;
+        return essenceStackSize() > 200;
     }
 
     public GameObject highestPriorityNode() {
@@ -72,7 +72,7 @@ public class RunespanQuery {
         return ctx.npcs.select().select(new Filter<Npc>() {
             @Override
             public boolean accept(Npc npc) {
-                return EssenceMonster.hasMonster(npc.id(), ctx);
+                return EssenceMonster.hasMonster(npc.id(), ctx) && npc.animation() == -1;
             }
         }).sort(new Comparator<Npc>() {
             @Override
@@ -108,7 +108,8 @@ public class RunespanQuery {
             public boolean accept(Npc npc) {
                 return currentIsland != null
                         && currentIsland.onIsland(npc.tile())
-                        && EssenceMonster.hasMonster(npc.id(), ctx);
+                        && EssenceMonster.hasMonster(npc.id(), ctx)
+                        && npc.animation() == -1;
             }
         }).sort(new Comparator<Npc>() {
             @Override

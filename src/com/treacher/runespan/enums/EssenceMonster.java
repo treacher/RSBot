@@ -13,32 +13,31 @@ import java.util.concurrent.Callable;
  */
 public enum EssenceMonster {
 
-    FIRE_ESSLING_FLOOR_0(15407, Rune.FIRE, 17.4, 14),
-    EARTH_ESSLING_FLOOR_0(15406, Rune.EARTH, 14.5, 9),
-    WATER_ESSLING_FLOOR_0(15405, Rune.WATER, 12.6, 5),
-    MIND_ESSLING_FLOOR_0(15404, Rune.MIND, 10, 1),
-    AIR_ESSLING_FLOOR_0(15403, Rune.AIR, 9.5, 1),
-    EARTH_ESSLING_FLOOR_1(15276, Rune.EARTH, 14.5, 9),
-    WATER_ESSLING_FLOOR_1(15275, Rune.WATER, 12.6, 5),
-    MIND_ESSLING_FLOOR_1(15274, Rune.MIND, 10, 1),
-    AIR_ESSLING_FLOOR_1(15273, Rune.AIR, 9.5, 1),
-    LAW_ESSHOUND_FLOOR_1(15413, Rune.LAW, 54 , 54),
-    NATURE_ESSHOUND_FLOOR_1(15412, Rune.NATURE, 43.33, 44),
-    ASTRAL_ESSHOUND_FLOOR_1(15411, Rune.ASTRAL, 35.5, 40),
-    CHAOS_ESSHOUND_FLOOR_1(15410, Rune.CHAOS, 30.8, 35),
-    COSMIC_ESSHOUND_FLOOR_1(15409, Rune.COSMIC, 26.5, 27),
-    BODY_ESSHOUND_FLOOR_1(15408, Rune.BODY, 23.13, 20),
-    DEATH_ESSWRAITH(15414,Rune.DEATH, 60, 65),
-    BLOOD_ESSWRAITH(15415,Rune.BLOOD, 73, 77),
-    SOUL_ESSWRAITH(15416,Rune.SOUL, 106.5, 90);
+    AIR_ESSLING(new int[]{15403, 15273}, Rune.AIR, 9.5, 1),
+    MIND_ESSLING(new int[]{15404, 15274}, Rune.MIND, 10, 1),
+    WATER_ESSLING(new int[]{15405, 15275}, Rune.WATER, 12.6, 5),
+    EARTH_ESSLING(new int[]{15406, 15276}, Rune.EARTH, 14.5, 9),
+    FIRE_ESSLING(new int[]{15407}, Rune.FIRE, 17.4, 14),
 
-    private final int gameObjectId;
+
+    BODY_ESSHOUND(new int[]{15408}, Rune.BODY, 23.13, 20),
+    COSMIC_ESSHOUND(new int[]{15409}, Rune.COSMIC, 26.5, 27),
+    CHAOS_ESSHOUND(new int[]{15410}, Rune.CHAOS, 30.8, 35),
+    ASTRAL_ESSHOUND(new int[]{15411}, Rune.ASTRAL, 35.5, 40),
+    NATURE_ESSHOUND(new int[]{15412}, Rune.NATURE, 43.33, 44),
+    LAW_ESSHOUND(new int[]{15413}, Rune.LAW, 54 , 54),
+
+    DEATH_ESSWRAITH(new int[]{15414},Rune.DEATH, 60, 65),
+    BLOOD_ESSWRAITH(new int[]{15415},Rune.BLOOD, 73, 77),
+    SOUL_ESSWRAITH(new int[]{15416},Rune.SOUL, 106.5, 90);
+
+    private final int[] gameObjectIds;
     private final Rune rune;
     private final double xp;
     private int levelRequirement;
 
-    private EssenceMonster(int gameObjectId, Rune rune, double xp, int levelRequirement) {
-        this.gameObjectId = gameObjectId;
+    private EssenceMonster(int[] gameObjectIds, Rune rune, double xp, int levelRequirement) {
+        this.gameObjectIds = gameObjectIds;
         this.rune = rune;
         this.xp = xp;
         this.levelRequirement = levelRequirement;
@@ -50,8 +49,15 @@ public enum EssenceMonster {
 
     public static EssenceMonster findMonsterByGameObjectId(int id, ClientContext ctx) {
         for(EssenceMonster es : EssenceMonster.values())
-            if(es.gameObjectId == id && !es.excluded(ctx)) return es;
+            if(es.hasGameObjectId(id) && !es.excluded(ctx)) return es;
         return null;
+    }
+
+    public boolean hasGameObjectId(int gameObjectId) {
+        for(int id : this.gameObjectIds) {
+            if(id == gameObjectId) return true;
+        }
+        return false;
     }
 
     public static void siphonMonster(final Npc npc, final ClientContext ctx, Runespan runespan) {
@@ -74,7 +80,7 @@ public enum EssenceMonster {
                     ctx.movement.findPath(npc).traverse();
                 return siphoningMonster;
             }
-        }, 1000, 4);
+        }, 500, 8);
 
         // Wait till siphoning the monster
         Condition.wait(new Callable<Boolean>() {
@@ -85,10 +91,6 @@ public enum EssenceMonster {
         }, 1500, 2);
 
         runespan.triggerAntiBan();
-    }
-
-    public int getGameObjectId() {
-        return this.gameObjectId;
     }
 
     public double getXp() {

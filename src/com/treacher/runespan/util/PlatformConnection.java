@@ -78,7 +78,7 @@ public class PlatformConnection {
                         return false;
                     }
                 }
-            }, 1000, 5);
+            }, 2000, 8);
         }
     }
 
@@ -98,7 +98,7 @@ public class PlatformConnection {
                         && !runespan.getPreviousIsland().onIsland(ctx.players.local().tile())
                         && playerOnPlatform();
             }
-        }, 1500,7);
+        }, 1000,15);
     }
 
     private boolean playerOnPlatform() {
