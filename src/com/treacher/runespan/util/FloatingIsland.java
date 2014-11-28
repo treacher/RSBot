@@ -1,9 +1,12 @@
 package com.treacher.runespan.util;
 
 import com.treacher.runespan.Runespan;
+import com.treacher.runespan.enums.Ladder;
 import com.treacher.runespan.enums.Platform;
+import org.powerbot.script.Filter;
 import org.powerbot.script.Tile;
 import org.powerbot.script.rt6.ClientContext;
+import org.powerbot.script.rt6.GameObject;
 
 import java.awt.*;
 import java.util.*;
@@ -19,6 +22,7 @@ public class FloatingIsland {
     private ClientContext ctx;
     private static int currentFloor;
     private final Runespan runespan;
+    private GameObject ladder;
 
     public FloatingIsland(ClientContext ctx, Runespan runespan) {
         this.connections = new ArrayList<PlatformConnection>();
@@ -63,6 +67,11 @@ public class FloatingIsland {
         return null;
     }
 
+    public GameObject getLadder() {
+        if(ladder == null) return ctx.objects.nil();
+        return ladder;
+    }
+
     public static int floor() {
         return currentFloor;
     }
@@ -95,7 +104,10 @@ public class FloatingIsland {
         if(Platform.hasPlatform(gameObjectId, ctx)) {
             connections.add(new PlatformConnection(Platform.getPlatform(gameObjectId, ctx), tile, ctx, runespan));
             tiles.add(tile);
+        } else if(Ladder.hasLadder(gameObjectId)) {
+            ladder = ctx.objects.nearest().peek();
         }
+
         if(ctx.movement.reachable(ctx.players.local().tile(), tile)) {
             tiles.add(tile);
             floodFillTilesFromTile(new Tile(tile.x() + 1, tile.y(), tile.floor()));

@@ -41,26 +41,9 @@ public class PlatformConnection {
         return platform;
     }
 
-    public Tile getReachableTile(GameObject gameObject) {
-        final Tile gameObjTile = gameObject.tile();
-        Tile[] tiles = new Tile[] {
-                new Tile(gameObjTile.x() + 1, gameObjTile.y() + 1, gameObjTile.floor()),
-                new Tile(gameObjTile.x() + 1, gameObjTile.y(), gameObjTile.floor()),
-                new Tile(gameObjTile.x(), gameObjTile.y() + 1, gameObjTile.floor()),
-                new Tile(gameObjTile.x() - 1, gameObjTile.y() - 1, gameObjTile.floor()),
-                new Tile(gameObjTile.x() - 1, gameObjTile.y(), gameObjTile.floor()),
-                new Tile(gameObjTile.x(), gameObjTile.y() - 1, gameObjTile.floor()),
-        };
-
-        for(Tile tile : tiles)
-            if(ctx.movement.reachable(ctx.players.local().tile(), tile)) return tile;
-
-        return Tile.NIL;
-    }
-
     public void travelToIsland() {
         final GameObject nextPlatform = ctx.objects.select().id(platform.getPlatformId()).at(this.getPlatformTile()).peek();
-        final Tile tile = getReachableTile(nextPlatform);
+        final Tile tile = Runespan.getReachableTile(nextPlatform, ctx);
 
         if(tile != null) {
             ctx.camera.turnTo(nextPlatform);

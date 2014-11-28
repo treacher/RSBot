@@ -10,11 +10,9 @@ import com.treacher.runespan.util.PlatformConnection;
 import com.treacher.tasks.HandleResponse;
 import com.treacher.tasks.SelectOption;
 import com.treacher.util.Task;
-import org.powerbot.script.BotMenuListener;
-import org.powerbot.script.PaintListener;
-import org.powerbot.script.PollingScript;
-import org.powerbot.script.Script;
+import org.powerbot.script.*;
 import org.powerbot.script.rt6.ClientContext;
+import org.powerbot.script.rt6.GameObject;
 
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
@@ -110,6 +108,7 @@ public class Runespan extends PollingScript<ClientContext> implements PaintListe
                         new SelectOption(ctx,"Yes", ctx.widgets.component(1188,14), "Do you want to buy some runes?"),
                         new SelectOption(ctx,"No", ctx.widgets.component(1188,14), "Would you like to subscribe?"),
                         new GenerateFloatingIsland(ctx,this),
+                        new MoveUpALevel(ctx, this),
                         new BuildUpEssence(ctx, this),
                         new CollectRunes(ctx, this),
                         new SearchForBetter(ctx, this),
@@ -180,5 +179,22 @@ public class Runespan extends PollingScript<ClientContext> implements PaintListe
 
     public double getCurrentXpRate() {
         return currentXpRate;
+    }
+
+    public static Tile getReachableTile(GameObject gameObject, ClientContext ctx) {
+        final Tile gameObjTile = gameObject.tile();
+        Tile[] tiles = new Tile[] {
+                new Tile(gameObjTile.x() + 1, gameObjTile.y() + 1, gameObjTile.floor()),
+                new Tile(gameObjTile.x() + 1, gameObjTile.y(), gameObjTile.floor()),
+                new Tile(gameObjTile.x(), gameObjTile.y() + 1, gameObjTile.floor()),
+                new Tile(gameObjTile.x() - 1, gameObjTile.y() - 1, gameObjTile.floor()),
+                new Tile(gameObjTile.x() - 1, gameObjTile.y(), gameObjTile.floor()),
+                new Tile(gameObjTile.x(), gameObjTile.y() - 1, gameObjTile.floor()),
+        };
+
+        for(Tile tile : tiles)
+            if(ctx.movement.reachable(ctx.players.local().tile(), tile)) return tile;
+
+        return Tile.NIL;
     }
 }
