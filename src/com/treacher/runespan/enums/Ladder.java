@@ -44,6 +44,6 @@ public enum Ladder implements Locatable {
     }
 
     private boolean excluded() {
-        return RuneSpan.members() || !this.members;
+        return !RuneSpan.members() && this.members;
     }
 }

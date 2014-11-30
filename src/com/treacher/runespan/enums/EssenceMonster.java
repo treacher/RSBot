@@ -97,8 +97,8 @@ public enum EssenceMonster {
     }
 
     private boolean excluded(ClientContext ctx) {
-        boolean exclude = ctx.skills.level(Constants.SKILLS_RUNECRAFTING) < this.levelRequirement;
-        if(!exclude) exclude = RuneSpan.members() || !this.members;
+        boolean exclude =  this.levelRequirement > ctx.skills.level(Constants.SKILLS_RUNECRAFTING);
+        if(!RuneSpan.members()) exclude = this.members;
         return exclude;
     }
 }
