@@ -19,7 +19,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * Created by Michael Treacher
@@ -35,7 +34,7 @@ public class RuneSpan extends PollingScript<ClientContext> implements PaintListe
     private PlatformConnection previousPlatform;
     private AntiBan antiBan = new AntiBan(ctx);
     private boolean antiBanSwitch = true;
-    private String gameType, changeLevelsOption, hopOption;
+    public static String GAME_TYPE, CHANGE_LEVELS_OPTION, HOP_OPTION;
     private Locatable locatableTarget;
 
     public static String STATE = "Collecting Runes";
@@ -89,11 +88,11 @@ public class RuneSpan extends PollingScript<ClientContext> implements PaintListe
         menu.add(antiBanMenuItem);
     }
 
-    public boolean members() {
-        return gameType.equals("P2P");
+    public static boolean members() {
+        return GAME_TYPE.equals("P2P");
     }
-    public boolean hopping() { return hopOption.equals("Hop"); }
-    public boolean changeLevels() { return changeLevelsOption.equals("Yes"); }
+    public static boolean hopping() { return HOP_OPTION.equals("Hop"); }
+    public static boolean changeLevels() { return CHANGE_LEVELS_OPTION.equals("Yes"); }
 
     @Override
     public void menuDeselected(MenuEvent e) {}
@@ -135,14 +134,6 @@ public class RuneSpan extends PollingScript<ClientContext> implements PaintListe
         floatingIslands.removeAll(floatingIslands);
         log.info("Island count: " + floatingIslands.size());
     }
-
-    public void setGameType(String gameType) {
-        this.gameType = gameType;
-    }
-    public void setHopOption(String hopOption) {
-        this.hopOption = hopOption;
-    }
-    public void setChangeLevelsOption(String changeLevelsOption) { this.changeLevelsOption = changeLevelsOption; }
 
     public void triggerAntiBan() {
         if(antiBanSwitch) antiBan.execute();

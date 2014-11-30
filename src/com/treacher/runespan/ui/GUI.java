@@ -52,9 +52,9 @@ public class GUI extends JFrame {
                 String hopOption = (String) hopOptionComboBox.getSelectedItem();
                 String changeLevelsOption = (String) changeLevelsComboBox.getSelectedItem();
                 Painter.startTime = System.currentTimeMillis();
-                runeSpan.setGameType(gameType);
-                runeSpan.setHopOption(hopOption);
-                runeSpan.setChangeLevelsOption(changeLevelsOption);
+                RuneSpan.GAME_TYPE = gameType;
+                RuneSpan.HOP_OPTION = hopOption;
+                RuneSpan.CHANGE_LEVELS_OPTION = changeLevelsOption;
                 runeSpan.addTasks();
                 dispose();
             }

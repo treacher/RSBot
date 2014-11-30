@@ -46,7 +46,7 @@ public class PlatformConnection {
     }
 
     public void travelToIsland() {
-        final GameObject nextPlatform = ctx.objects.select().id(platform.getPlatformId()).at(this.getPlatformTile()).peek();
+        final GameObject nextPlatform = ctx.objects.select().id(platform.getPlatformIds()).at(this.getPlatformTile()).peek();
         final Tile tile = RuneSpan.getReachableTile(nextPlatform, ctx);
 
         if(tile != null) {
@@ -71,10 +71,6 @@ public class PlatformConnection {
                 }
             }, 750, 15);
         }
-    }
-
-    public int compareTo(PlatformConnection pc) {
-        return Integer.valueOf(this.travelledCount).compareTo(pc.travelledCount);
     }
 
     public String toString() {

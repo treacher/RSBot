@@ -13,33 +13,33 @@ import java.util.concurrent.Callable;
  */
 public enum EssenceMonster {
 
-    AIR_ESSLING(new int[]{15403, 15273}, Rune.AIR, 9.5, 1),
-    MIND_ESSLING(new int[]{15404, 15274}, Rune.MIND, 10, 1),
-    WATER_ESSLING(new int[]{15405, 15275}, Rune.WATER, 12.6, 5),
-    EARTH_ESSLING(new int[]{15406, 15276}, Rune.EARTH, 14.5, 9),
-    FIRE_ESSLING(new int[]{15407}, Rune.FIRE, 17.4, 14),
-    
-    BODY_ESSHOUND(new int[]{15408}, Rune.BODY, 23.13, 20),
-    COSMIC_ESSHOUND(new int[]{15409}, Rune.COSMIC, 26.5, 27),
-    CHAOS_ESSHOUND(new int[]{15410}, Rune.CHAOS, 30.8, 35),
-    ASTRAL_ESSHOUND(new int[]{15411}, Rune.ASTRAL, 35.5, 40),
-    NATURE_ESSHOUND(new int[]{15412}, Rune.NATURE, 43.33, 44),
-    LAW_ESSHOUND(new int[]{15413}, Rune.LAW, 54 , 54),
+    AIR_ESSLING(new int[]{15403, 15273}, 9.5, 1, false),
+    MIND_ESSLING(new int[]{15404, 15274}, 10, 1, false),
+    WATER_ESSLING(new int[]{15405, 15275}, 12.6, 5, false),
+    EARTH_ESSLING(new int[]{15406, 15276}, 14.5, 9, false),
+    FIRE_ESSLING(new int[]{15407}, 17.4, 14, false),
 
-    DEATH_ESSWRAITH(new int[]{15414},Rune.DEATH, 60, 65),
-    BLOOD_ESSWRAITH(new int[]{15415},Rune.BLOOD, 73, 77),
-    SOUL_ESSWRAITH(new int[]{15416},Rune.SOUL, 106.5, 90);
+    BODY_ESSHOUND(new int[]{15408}, 23.13, 20, false),
+    COSMIC_ESSHOUND(new int[]{15409}, 26.5, 27, true),
+    CHAOS_ESSHOUND(new int[]{15410},  30.8, 35, true),
+    ASTRAL_ESSHOUND(new int[]{15411}, 35.5, 40, true),
+    NATURE_ESSHOUND(new int[]{15412}, 43.33, 44, true),
+    LAW_ESSHOUND(new int[]{15413}, 54 , 54, true),
+
+    DEATH_ESSWRAITH(new int[]{15414}, 60, 65, true),
+    BLOOD_ESSWRAITH(new int[]{15415}, 73, 77, true),
+    SOUL_ESSWRAITH(new int[]{15416}, 106.5, 90, true);
 
     private final int[] gameObjectIds;
-    private final Rune rune;
     private final double xp;
     private int levelRequirement;
+    private final boolean members;
 
-    private EssenceMonster(int[] gameObjectIds, Rune rune, double xp, int levelRequirement) {
+    private EssenceMonster(int[] gameObjectIds, double xp, int levelRequirement, boolean members) {
         this.gameObjectIds = gameObjectIds;
-        this.rune = rune;
         this.xp = xp;
         this.levelRequirement = levelRequirement;
+        this.members = members;
     }
 
     public static boolean hasMonster(int id, ClientContext ctx) {
@@ -97,6 +97,8 @@ public enum EssenceMonster {
     }
 
     private boolean excluded(ClientContext ctx) {
-        return ctx.skills.level(Constants.SKILLS_RUNECRAFTING) < this.levelRequirement;
+        boolean exclude = ctx.skills.level(Constants.SKILLS_RUNECRAFTING) < this.levelRequirement;
+        if(!exclude) exclude = RuneSpan.members() || !this.members;
+        return exclude;
     }
 }
