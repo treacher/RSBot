@@ -1,9 +1,8 @@
 package com.treacher.runespan.tasks;
 
-import com.treacher.runespan.Runespan;
+import com.treacher.runespan.RuneSpan;
 import com.treacher.runespan.util.FloatingIsland;
 import com.treacher.runespan.util.PlatformConnection;
-import com.treacher.runespan.util.RunespanQuery;
 import com.treacher.util.Task;
 import org.powerbot.script.rt6.ClientContext;
 
@@ -12,31 +11,28 @@ import org.powerbot.script.rt6.ClientContext;
  */
 public class MoveIslands extends Task<ClientContext> {
 
-    private final Runespan runespan;
+    private final RuneSpan runeSpan;
 
-    public MoveIslands(ClientContext ctx, Runespan runespan) {
+    public MoveIslands(ClientContext ctx, RuneSpan runeSpan) {
         super(ctx);
-        this.runespan = runespan;
+        this.runeSpan = runeSpan;
     }
 
     @Override
     public boolean activate() {
-        final RunespanQuery runespanQuery = new RunespanQuery(ctx, runespan.currentIsland());
-        return !runespanQuery.hasNodes()
-                && !runespanQuery.hasEssenceMonsters()
-                && runespan.currentIsland() != null;
+        return runeSpan.currentIsland() != null && runeSpan.hasTarget();
     }
 
     @Override
     public void execute() {
-        Runespan.STATE = "Moving islands";
-
-        final FloatingIsland currentIsland = runespan.currentIsland();
+        RuneSpan.STATE = "Moving islands";
+        runeSpan.log.info("Moving islands");
+        final FloatingIsland currentIsland = runeSpan.currentIsland();
         final PlatformConnection nextPlatform = currentIsland.nextPlatform();
 
         if(nextPlatform != null) {
-            runespan.setPreviousIsland(currentIsland);
-            runespan.setPreviousPlatform(nextPlatform);
+            runeSpan.setPreviousIsland(currentIsland);
+            runeSpan.setPreviousPlatform(nextPlatform);
             nextPlatform.travelToIsland();
         }
     }

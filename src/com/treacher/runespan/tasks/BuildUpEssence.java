@@ -1,8 +1,8 @@
 package com.treacher.runespan.tasks;
 
-import com.treacher.runespan.Runespan;
+import com.treacher.runespan.RuneSpan;
 import com.treacher.runespan.enums.EssenceMonster;
-import com.treacher.runespan.util.RunespanQuery;
+import com.treacher.runespan.util.RuneSpanQuery;
 import com.treacher.util.Task;
 import org.powerbot.script.rt6.ClientContext;
 
@@ -11,28 +11,30 @@ import org.powerbot.script.rt6.ClientContext;
  */
 public class BuildUpEssence extends Task<ClientContext> {
 
-    private Runespan runespan;
-    private RunespanQuery runespanQuery;
+    private RuneSpan runeSpan;
+    private RuneSpanQuery runeSpanQuery;
 
-    public BuildUpEssence(ClientContext ctx, Runespan runespan) {
+    public BuildUpEssence(ClientContext ctx, RuneSpan runeSpan) {
         super(ctx);
-        this.runespan = runespan;
+        this.runeSpan = runeSpan;
     }
 
     @Override
     public boolean activate() {
-        runespanQuery = new RunespanQuery(ctx, runespan.currentIsland());
-        final boolean hasNoNodes = !runespanQuery.hasNodes();
+        runeSpanQuery = new RuneSpanQuery(ctx, runeSpan);
+        final boolean hasNoNodes = !runeSpanQuery.hasNodes();
         return  ctx.players.local().idle()
-                && runespanQuery.essenceStackSize() > -1
-                && (runespanQuery.essenceStackSize() < 50 || hasNoNodes)
-                && (runespanQuery.hasEssenceMonsters())
-                && !ctx.chat.chatting();
+                && runeSpanQuery.essenceStackSize() > -1
+                && (runeSpanQuery.essenceStackSize() < 50 || hasNoNodes)
+                && (runeSpanQuery.hasEssenceMonsters())
+                && !ctx.chat.chatting()
+                && !runeSpan.hasTarget();
     }
 
     @Override
     public void execute() {
-        Runespan.STATE = "Building up essence";
-        EssenceMonster.siphonMonster(runespanQuery.highestPriorityEssenceMonster(), ctx, runespan);
+        RuneSpan.STATE = "Building up essence";
+        runeSpan.log.info("Building up essence");
+        EssenceMonster.siphonMonster(runeSpanQuery.highestPriorityEssenceMonster(), ctx, runeSpan);
     }
 }

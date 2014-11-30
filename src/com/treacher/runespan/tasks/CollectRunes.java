@@ -1,8 +1,8 @@
 package com.treacher.runespan.tasks;
 
-import com.treacher.runespan.Runespan;
+import com.treacher.runespan.RuneSpan;
 import com.treacher.runespan.enums.ElementalNode;
-import com.treacher.runespan.util.RunespanQuery;
+import com.treacher.runespan.util.RuneSpanQuery;
 import com.treacher.util.Task;
 import org.powerbot.script.rt6.ClientContext;
 
@@ -11,26 +11,27 @@ import org.powerbot.script.rt6.ClientContext;
  */
 public class CollectRunes extends Task<ClientContext> {
 
-    private Runespan runespan;
-    private RunespanQuery runespanQuery;
+    private RuneSpan runeSpan;
+    private RuneSpanQuery runeSpanQuery;
 
-    public CollectRunes(ClientContext ctx, Runespan runespan) {
+    public CollectRunes(ClientContext ctx, RuneSpan runeSpan) {
         super(ctx);
-        this.runespan = runespan;
+        this.runeSpan = runeSpan;
     }
 
     @Override
     public boolean activate() {
-        runespanQuery = new RunespanQuery(ctx, runespan.currentIsland());
+        runeSpanQuery = new RuneSpanQuery(ctx, runeSpan);
         return ctx.players.local().idle()
-                && runespanQuery.essenceStackSize() >= 50
-                && runespanQuery.hasNodes()
-                && !ctx.chat.chatting();
+                && runeSpanQuery.essenceStackSize() >= 50
+                && runeSpanQuery.hasNodes()
+                && !ctx.chat.chatting()
+                && !runeSpan.hasTarget();
     }
 
     @Override
     public void execute() {
-        Runespan.STATE = "Collecting Runes";
-        ElementalNode.siphonNode(runespanQuery.highestPriorityNode(), ctx, runespan);
+        runeSpan.log.info("Collecting runes");
+        ElementalNode.siphonNode(runeSpanQuery.highestPriorityNodeOnIsland(), ctx, runeSpan);
     }
 }

@@ -1,6 +1,6 @@
 package com.treacher.runespan.tasks;
 
-import com.treacher.runespan.Runespan;
+import com.treacher.runespan.RuneSpan;
 import com.treacher.runespan.enums.Rune;
 import com.treacher.util.Task;
 import org.powerbot.script.Condition;
@@ -27,7 +27,7 @@ public class GetEssence extends Task<ClientContext> {
 
     @Override
     public void execute() {
-        Runespan.STATE = "Getting Essence";
+        RuneSpan.STATE = "Getting Essence";
 
         final int floatingEssenceId = 15402;
         final Npc runeEssenceNpc = ctx.npcs.select().id(floatingEssenceId).nearest().peek();

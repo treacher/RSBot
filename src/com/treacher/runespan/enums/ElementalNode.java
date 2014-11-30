@@ -1,53 +1,45 @@
 package com.treacher.runespan.enums;
 
-import com.treacher.runespan.Runespan;
-import com.treacher.runespan.util.FloatingIsland;
+import com.treacher.runespan.RuneSpan;
 import org.powerbot.script.Condition;
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.Constants;
 import org.powerbot.script.rt6.GameObject;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 /**
  * Created by Michael Treacher
  */
 public enum ElementalNode {
-    JUMPER(70466,107.8, new Rune[]{Rune.LAW}, 54),
-    SHIFTER(70465,86.8, new Rune[]{Rune.NATURE}, 44),
-    NEBULA(70464,77, new Rune[]{Rune.COSMIC, Rune.ASTRAL}, 40),
-    CHAOTIC_CLOUD(70463,61.6,new Rune[]{Rune.CHAOS}, 35),
-    FIRE_STORM(70462,35,new Rune[]{Rune.AIR, Rune.FIRE}, 27),
-    FLESHY_GROWTH(70461,46.2, new Rune[]{Rune.BODY}, 20),
-    VINE(70460,30.3, new Rune[]{Rune.WATER, Rune.EARTH}, 17),
-    FIREBALL(70459, 34.8,new Rune[]{Rune.FIRE}, 14),
-    ROCK_FRAGMENT(70458, 28.6,new Rune[]{Rune.EARTH},9),
-    WATER_POOL(70457,25.3, new Rune[]{Rune.WATER},5),
-    MIND_STORM(70456,20, new Rune[]{Rune.MIND},1),
-    CYCLONE(70455,19, new Rune[]{Rune.AIR}, 1),
-    SKULLS(70467,120,new Rune[]{Rune.DEATH}, 65),
-    BLOOD_POOL(70468,146.3,new Rune[]{Rune.BLOOD}, 77),
-    BLOODY_SKULLS(70469,175.5,new Rune[]{Rune.BLOOD, Rune.DEATH}, 83),
-    LIVING_SOUL(70470,213,new Rune[]{Rune.SOUL}, 90),
-    UNDEAD_SOULS(70471,255.5,new Rune[]{Rune.SOUL, Rune.DEATH}, 95);
+    JUMPER(70466,107.8, 54, true),
+    SHIFTER(70465,86.8, 44, true),
+    NEBULA(70464,77, 40, true),
+    CHAOTIC_CLOUD(70463,61.6, 35, true),
+    FIRE_STORM(70462,35, 27, false),
+    FLESHY_GROWTH(70461,46.2, 20, false),
+    VINE(70460,30.3, 17, false),
+    FIREBALL(70459, 34.8, 14, false),
+    ROCK_FRAGMENT(70458, 28.6,9, false),
+    WATER_POOL(70457,25.3,5, false),
+    MIND_STORM(70456,20,1, false),
+    CYCLONE(70455,19, 1, false),
+    SKULLS(70467,120, 65, true),
+    BLOOD_POOL(70468,146.3, 77, true),
+    BLOODY_SKULLS(70469,175.5, 83, true),
+    LIVING_SOUL(70470,213, 90, true),
+    UNDEAD_SOULS(70471,255.5, 95, true);
 
     private final int gameObjectId;
     private final double xp;
-    private final Rune[] runes;
-    private int levelRequirement;
-    private static List<ElementalNode> exceptionNodesLevel1 = Arrays.asList(
-            FLESHY_GROWTH,
-            VINE,
-            FIRE_STORM
-    );
+    private final int levelRequirement;
+    private final boolean members;
 
-    private ElementalNode(int gameObjectId, double xp, Rune[] runes, int levelRequirement) {
+    private ElementalNode(int gameObjectId, double xp, int levelRequirement, boolean members) {
         this.gameObjectId = gameObjectId;
         this.xp = xp;
-        this.runes = runes;
         this.levelRequirement = levelRequirement;
+        this.members = members;
     }
 
     public double getXp() {
@@ -64,13 +56,13 @@ public enum ElementalNode {
         return null;
     }
 
-    public static void siphonNode(final GameObject node, final ClientContext ctx, final Runespan runespan) {
+    public static void siphonNode(final GameObject node, final ClientContext ctx, final RuneSpan runeSpan) {
         if(!node.valid()) return;
 
         final ElementalNode elementalNode = ElementalNode.findNodeByGameObjectId(node.id(), ctx);
 
         if(elementalNode != null)
-            runespan.setCurrentXpRate(elementalNode.getXp());
+            runeSpan.setCurrentXpRate(elementalNode.getXp());
 
         ctx.camera.turnTo(node);
         ctx.camera.pitch(60);
@@ -95,22 +87,12 @@ public enum ElementalNode {
             }
         }, 2000, 2);
 
-        runespan.triggerAntiBan();
+        runeSpan.triggerAntiBan();
     }
 
     private boolean excluded(ClientContext ctx) {
-        boolean excluded = false;
-
-        for(Rune rune : this.runes) {
-            excluded = Runespan.getExclusionList().contains(rune);
-        }
-
-        if(ctx.skills.level(Constants.SKILLS_RUNECRAFTING) < this.levelRequirement) excluded = true;
-
-        if(FloatingIsland.floor() == 1) {
-            if(exceptionNodesLevel1.contains(this))
-                excluded = false;
-        }
-        return excluded;
+        boolean exclude =  this.levelRequirement > ctx.skills.level(Constants.SKILLS_RUNECRAFTING);
+        if(!RuneSpan.members()) exclude = this.members;
+        return exclude;
     }
 }

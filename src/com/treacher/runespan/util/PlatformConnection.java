@@ -1,6 +1,6 @@
 package com.treacher.runespan.util;
 
-import com.treacher.runespan.Runespan;
+import com.treacher.runespan.RuneSpan;
 import com.treacher.runespan.enums.Platform;
 import org.powerbot.script.Condition;
 import org.powerbot.script.Tile;
@@ -19,13 +19,13 @@ public class PlatformConnection {
     private final Tile platformTile;
     private ClientContext ctx;
     private int travelledCount;
-    private Runespan runespan;
+    private RuneSpan runeSpan;
 
-    public PlatformConnection(Platform platform, Tile platformTile, ClientContext ctx, Runespan runespan){
+    public PlatformConnection(Platform platform, Tile platformTile, ClientContext ctx, RuneSpan runeSpan){
         this.platform = platform;
         this.platformTile = platformTile;
         this.ctx = ctx;
-        this.runespan = runespan;
+        this.runeSpan = runeSpan;
         if(ctx.players.local().tile().equals(platformTile)) travelledCount++;
     }
 
@@ -41,22 +41,30 @@ public class PlatformConnection {
         return platform;
     }
 
+    public FloatingIsland getConnection() {
+        return connection;
+    }
+
     public void travelToIsland() {
-        final GameObject nextPlatform = ctx.objects.select().id(platform.getPlatformId()).at(this.getPlatformTile()).peek();
-        final Tile tile = Runespan.getReachableTile(nextPlatform, ctx);
+        final GameObject nextPlatform = ctx.objects.select().id(platform.getPlatformIds()).at(this.getPlatformTile()).peek();
+        final Tile tile = RuneSpan.getReachableTile(nextPlatform, ctx);
 
         if(tile != null) {
             ctx.camera.turnTo(nextPlatform);
+
+            runeSpan.log.info("Travelling to next island using platform: " + nextPlatform.toString());
 
             Condition.wait(new Callable<Boolean>() {
                 @Override
                 public Boolean call() throws Exception {
                     boolean interactHappened = nextPlatform.interact(false, "Use");
                     if(interactHappened) {
+                        runeSpan.log.info("Interacted with platform");
                         waitTillOnNewIsland();
                         travelledCount++;
                         return true;
                     } else {
+                        runeSpan.log.info("Traversing to platform.");
                         ctx.movement.findPath(tile).traverse();
                         return false;
                     }
@@ -65,23 +73,21 @@ public class PlatformConnection {
         }
     }
 
-    public int compareTo(PlatformConnection pc) {
-        return Integer.valueOf(this.travelledCount).compareTo(pc.travelledCount);
-    }
-
     public String toString() {
         return "Platform: " + platform.name() + " TravelledCount: " + travelledCount;
     }
 
     private void waitTillOnNewIsland() {
+        runeSpan.log.info("Waiting till on new island");
         Condition.wait(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
                 return ctx.players.local().idle()
-                        && !runespan.getPreviousIsland().onIsland(ctx.players.local().tile())
+                        && !runeSpan.getPreviousIsland().onIsland(ctx.players.local().tile())
                         && playerOnPlatform();
             }
-        }, 1000,15);
+        }, 500, 30);
+        runeSpan.log.info("On new island");
     }
 
     private boolean playerOnPlatform() {

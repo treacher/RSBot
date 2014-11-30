@@ -1,7 +1,7 @@
 package com.treacher.runespan.ui;
 
 import com.treacher.butlerplankmaker.ui.Painter;
-import com.treacher.runespan.Runespan;
+import com.treacher.runespan.RuneSpan;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -17,14 +17,14 @@ public class GUI extends JFrame {
 
     private final Container contentPane;
     private JPanel centerPanel;
-    private JComboBox logComboBox;
-    private Runespan runespan;
+    private JComboBox logComboBox, changeLevelsComboBox, hopOptionComboBox;
+    private RuneSpan runeSpan;
 
-    public GUI(Runespan runespan) {
+    public GUI(RuneSpan runeSpan) {
         setTitle("treach3rs runespan");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.contentPane = getContentPane();
-        this.runespan = runespan;
+        this.runeSpan = runeSpan;
         buildGUI();
         pack();
         setLocationRelativeTo(null);
@@ -36,6 +36,10 @@ public class GUI extends JFrame {
         buildCenterPanel();
         buildGameTypeLabel();
         buildGameTypeComboBox();
+        buildHopOptionLabel();
+        buildHopOptionComboBox();
+        buildChangeLevelsLabel();
+        buildChangeLevelsComboBox();
         contentPane.add(centerPanel, BorderLayout.CENTER);
     }
 
@@ -45,9 +49,13 @@ public class GUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String gameType = (String) logComboBox.getSelectedItem();
+                String hopOption = (String) hopOptionComboBox.getSelectedItem();
+                String changeLevelsOption = (String) changeLevelsComboBox.getSelectedItem();
                 Painter.startTime = System.currentTimeMillis();
-                runespan.setGameType(gameType);
-                runespan.addTasks();
+                RuneSpan.GAME_TYPE = gameType;
+                RuneSpan.HOP_OPTION = hopOption;
+                RuneSpan.CHANGE_LEVELS_OPTION = changeLevelsOption;
+                runeSpan.addTasks();
                 dispose();
             }
         });
@@ -64,6 +72,32 @@ public class GUI extends JFrame {
         final JLabel logLabel = new JLabel("Game Type: ");
         logLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         centerPanel.add(logLabel);
+    }
+
+    private void buildHopOptionLabel() {
+        final JLabel logLabel = new JLabel("Island hopping: ");
+        logLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        centerPanel.add(logLabel);
+    }
+
+    private void buildChangeLevelsLabel() {
+        final JLabel logLabel = new JLabel("Change levels: ");
+        logLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        centerPanel.add(logLabel);
+    }
+
+    private void buildChangeLevelsComboBox() {
+        changeLevelsComboBox = new JComboBox<String>(new String[]{"Yes", "No"});
+        changeLevelsComboBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+        centerPanel.add(changeLevelsComboBox);
+        centerPanel.add(Box.createVerticalStrut(15));
+    }
+
+    private void buildHopOptionComboBox() {
+        hopOptionComboBox = new JComboBox<String>(new String[]{"Hop", "No hop"});
+        hopOptionComboBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+        centerPanel.add(hopOptionComboBox);
+        centerPanel.add(Box.createVerticalStrut(15));
     }
 
     private void buildGameTypeComboBox() {

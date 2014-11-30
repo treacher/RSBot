@@ -1,63 +1,61 @@
 package com.treacher.runespan.tasks;
 
-import com.treacher.runespan.Runespan;
+import com.treacher.runespan.RuneSpan;
 import com.treacher.runespan.enums.ElementalNode;
-import com.treacher.runespan.enums.EssenceMonster;
-import com.treacher.runespan.util.RunespanQuery;
+import com.treacher.runespan.util.RuneSpanQuery;
 import com.treacher.util.Task;
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.GameObject;
-import org.powerbot.script.rt6.Npc;
 
 /**
  * Created by Michael Treacher
  */
 public class SearchForBetter extends Task<ClientContext> {
 
-    private final Runespan runespan;
+    private final RuneSpan runeSpan;
     private GameObject betterNode;
-    private Npc betterMonster;
     private long lastChecked = System.currentTimeMillis();
-    private RunespanQuery runespanQuery;
+    private RuneSpanQuery runeSpanQuery;
 
-    public SearchForBetter(ClientContext ctx, Runespan runespan) {
+    public SearchForBetter(ClientContext ctx, RuneSpan runeSpan) {
         super(ctx);
-        this.runespan = runespan;
+        this.runeSpan = runeSpan;
     }
 
     @Override
     public boolean activate() {
-        runespanQuery = new RunespanQuery(ctx, runespan.currentIsland());
+        runeSpanQuery = new RuneSpanQuery(ctx, runeSpan);
 
         if((System.currentTimeMillis() - lastChecked) > 6000) {
             lastChecked = System.currentTimeMillis();
 
             return !ctx.players.local().idle()
                     && betterNodeAvailable()
-                    && runespanQuery.essenceStackSize() >= 50
-                    && !ctx.chat.chatting();
+                    && runeSpanQuery.essenceStackSize() >= 50
+                    && !ctx.chat.chatting()
+                    && !runeSpan.hasTarget();
         }
         return false;
     }
 
     @Override
     public void execute() {
-        Runespan.STATE = "Searching for better nodes";
+        RuneSpan.STATE = "Searching for better nodes";
+        runeSpan.log.info("Searching for better nodes");
         if(betterNode != null && betterNode.valid())
-            ElementalNode.siphonNode(betterNode, ctx, runespan);
-        else if(betterMonster != null && betterMonster.valid())
-            EssenceMonster.siphonMonster(betterMonster, ctx, runespan);
+            runeSpan.log.info("Switching to: " + betterNode.name());
+            ElementalNode.siphonNode(betterNode, ctx, runeSpan);
     }
 
     private boolean betterNodeAvailable() {
         // Reset values;
         betterNode = null;
-        betterMonster = null;
 
-        final GameObject potentialNode = runespanQuery.highestPriorityNode();
+        final GameObject potentialNode = runeSpanQuery.highestPriorityNodeOnIsland();
         final ElementalNode potentialElementalNode = ElementalNode.findNodeByGameObjectId(potentialNode.id(), ctx);
+
         if(potentialNode.valid() && potentialElementalNode != null &&
-                potentialElementalNode.getXp() > runespan.getCurrentXpRate()) {
+                potentialElementalNode.getXp() > runeSpan.getCurrentXpRate()) {
             betterNode = potentialNode;
         }
 
