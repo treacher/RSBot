@@ -1,7 +1,7 @@
 package com.treacher.runespan.ui;
 
 import com.treacher.butlerplankmaker.ui.Painter;
-import com.treacher.runespan.Runespan;
+import com.treacher.runespan.RuneSpan;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -18,13 +18,13 @@ public class GUI extends JFrame {
     private final Container contentPane;
     private JPanel centerPanel;
     private JComboBox logComboBox;
-    private Runespan runespan;
+    private RuneSpan runeSpan;
 
-    public GUI(Runespan runespan) {
+    public GUI(RuneSpan runeSpan) {
         setTitle("treach3rs runespan");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.contentPane = getContentPane();
-        this.runespan = runespan;
+        this.runeSpan = runeSpan;
         buildGUI();
         pack();
         setLocationRelativeTo(null);
@@ -46,8 +46,8 @@ public class GUI extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 String gameType = (String) logComboBox.getSelectedItem();
                 Painter.startTime = System.currentTimeMillis();
-                runespan.setGameType(gameType);
-                runespan.addTasks();
+                runeSpan.setGameType(gameType);
+                runeSpan.addTasks();
                 dispose();
             }
         });

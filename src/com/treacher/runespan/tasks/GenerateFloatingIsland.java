@@ -1,14 +1,13 @@
 package com.treacher.runespan.tasks;
 
-import com.treacher.runespan.Runespan;
-import com.treacher.runespan.util.RunespanQuery;
+import com.treacher.runespan.RuneSpan;
+import com.treacher.runespan.util.RuneSpanQuery;
 import com.treacher.util.Task;
 import org.powerbot.script.Condition;
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.GameObject;
 import org.powerbot.script.rt6.Npc;
 
-import javax.swing.plaf.nimbus.State;
 import java.util.concurrent.Callable;
 
 /**
@@ -16,49 +15,55 @@ import java.util.concurrent.Callable;
  */
 public class GenerateFloatingIsland extends Task<ClientContext> {
 
-    private final Runespan runespan;
-    private final RunespanQuery runespanQuery;
+    private final RuneSpan runeSpan;
+    private final RuneSpanQuery runeSpanQuery;
 
-    public GenerateFloatingIsland(ClientContext ctx, Runespan runespan) {
+    public GenerateFloatingIsland(ClientContext ctx, RuneSpan runeSpan) {
         super(ctx);
-        this.runespan = runespan;
-        this.runespanQuery = new RunespanQuery(ctx,runespan.currentIsland());
+        this.runeSpan = runeSpan;
+        this.runeSpanQuery = new RuneSpanQuery(ctx, runeSpan);
     }
 
     @Override
     public boolean activate() {
-        return ctx.players.local().idle() && runespan.currentIsland() == null && !ctx.chat.chatting();
+        return ctx.players.local().idle() && runeSpan.currentIsland() == null && !ctx.chat.chatting();
     }
 
     @Override
     public void execute() {
-        siphonNearestObject();
-        runespan.triggerAntiBan();
-        runespan.buildIsland();
+//        siphonNearestObject();
+        runeSpan.triggerAntiBan();
+        long startTime = System.currentTimeMillis();
+        runeSpan.buildIsland();
+        long endTime = System.currentTimeMillis();
+        runeSpan.log.info("Time taken: " + ((endTime - startTime) / 1000.0));
     }
 
     private void siphonNearestObject() {
-        if(runespanQuery.essenceStackSize() <= 0) return;
-        Runespan.STATE = "Collecting Runes";
+        if(runeSpanQuery.essenceStackSize() <= 0) return;
+
+        RuneSpan.STATE = "Collecting Runes";
+
+        runeSpan.log.info("Generating island");
+
+        runeSpan.log.info("Choosing the nearest thing to siphon till we generate island");
         // Fake it till you make it. Choose the nearest thing to extract runes from while we build the island
-        final GameObject nearestNode = runespanQuery.nearestHighestPriorityNode();
+        final GameObject nearestNode = runeSpanQuery.nearestHighestPriorityNode();
 
         if(nearestNode.valid() && ctx.movement.reachable(ctx.players.local().tile(), nearestNode)) {
+            runeSpan.log.info("Found a node to siphon: " + nearestNode.name());
+            ctx.camera.turnTo(nearestNode);
+            ctx.camera.pitch(60);
             nearestNode.interact("Siphon");
         } else {
-            final Npc nearestMonster = runespanQuery.nearestHighestPriorityMonster();
+            final Npc nearestMonster = runeSpanQuery.nearestHighestPriorityMonster();
             if(nearestMonster.valid() && ctx.movement.reachable(ctx.players.local().tile(), nearestMonster)) {
+                runeSpan.log.info("Found a monster to siphon: " + nearestMonster.name());
+                ctx.camera.turnTo(nearestMonster);
+                ctx.camera.pitch(60);
                 nearestMonster.interact("Siphon");
             }
         }
-
-        // Wait till siphoning
-        Condition.wait(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return !ctx.players.local().idle();
-            }
-        }, 2000, 2);
     }
 
 

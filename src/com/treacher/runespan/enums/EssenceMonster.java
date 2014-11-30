@@ -1,6 +1,6 @@
 package com.treacher.runespan.enums;
 
-import com.treacher.runespan.Runespan;
+import com.treacher.runespan.RuneSpan;
 import org.powerbot.script.Condition;
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.Constants;
@@ -18,7 +18,6 @@ public enum EssenceMonster {
     WATER_ESSLING(new int[]{15405, 15275}, Rune.WATER, 12.6, 5),
     EARTH_ESSLING(new int[]{15406, 15276}, Rune.EARTH, 14.5, 9),
     FIRE_ESSLING(new int[]{15407}, Rune.FIRE, 17.4, 14),
-
 
     BODY_ESSHOUND(new int[]{15408}, Rune.BODY, 23.13, 20),
     COSMIC_ESSHOUND(new int[]{15409}, Rune.COSMIC, 26.5, 27),
@@ -60,13 +59,13 @@ public enum EssenceMonster {
         return false;
     }
 
-    public static void siphonMonster(final Npc npc, final ClientContext ctx, Runespan runespan) {
+    public static void siphonMonster(final Npc npc, final ClientContext ctx, RuneSpan runeSpan) {
         if(!npc.valid()) return;
 
         final EssenceMonster essenceMonster = EssenceMonster.findMonsterByGameObjectId(npc.id(), ctx);
 
         if(essenceMonster != null)
-            runespan.setCurrentXpRate(essenceMonster.getXp());
+            runeSpan.setCurrentXpRate(essenceMonster.getXp());
 
         ctx.camera.turnTo(npc);
         ctx.camera.pitch(60);
@@ -90,7 +89,7 @@ public enum EssenceMonster {
             }
         }, 1500, 2);
 
-        runespan.triggerAntiBan();
+        runeSpan.triggerAntiBan();
     }
 
     public double getXp() {
@@ -98,7 +97,7 @@ public enum EssenceMonster {
     }
 
     private boolean excluded(ClientContext ctx) {
-        boolean excluded = Runespan.getExclusionList().contains(rune);
+        boolean excluded = false;
 
         if(ctx.skills.level(Constants.SKILLS_RUNECRAFTING) < this.levelRequirement) excluded = true;
 

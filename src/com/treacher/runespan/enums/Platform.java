@@ -10,7 +10,7 @@ import org.powerbot.script.rt6.Constants;
 public enum Platform {
 
     EARTH_PLATFORM_FLOOR_0(70478, new int[]{Rune.EARTH.getGameObjectId()}, 9),
-    FLOAT_PLATFORM_FLOOR_0(70479, new int[]{Rune.AIR.getGameObjectId()}, 1),
+    FLOAT_PLATFORM_FLOOR_0(70476, new int[]{Rune.AIR.getGameObjectId()}, 1),
     ICE_PLATFORM_FLOOR_0(70480, new int[]{Rune.AIR.getGameObjectId(), Rune.WATER.getGameObjectId()}, 15),
     SMALL_MISSILE_FLOOR_0(70481, new int[]{Rune.MIND.getGameObjectId()}, 20),
 

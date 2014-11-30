@@ -1,6 +1,7 @@
 package com.treacher.runespan.tasks;
 
-import com.treacher.runespan.Runespan;
+import com.treacher.runespan.RuneSpan;
+import com.treacher.runespan.enums.Ladder;
 import com.treacher.runespan.util.FloatingIsland;
 import com.treacher.util.Task;
 import org.powerbot.script.Condition;
@@ -11,25 +12,25 @@ import org.powerbot.script.rt6.GameObject;
 import java.util.concurrent.Callable;
 
 /**
- * Created by treach3r on 28/11/14.
+ * Created by Michael Treacher
  */
 public class MoveUpALevel extends Task<ClientContext> {
 
-    private Runespan runespan;
+    private RuneSpan runeSpan;
     private FloatingIsland currentIsland;
 
-    public MoveUpALevel(ClientContext ctx, Runespan runespan){
+    public MoveUpALevel(ClientContext ctx, RuneSpan runeSpan){
         super(ctx);
-        this.runespan = runespan;
+        this.runeSpan = runeSpan;
     }
     @Override
     public boolean activate() {
-        currentIsland = runespan.currentIsland();
-        if(currentIsland != null && currentIsland.getLadder().valid()) {
-            if (FloatingIsland.floor() == 0) {
-                return ctx.skills.level(Constants.SKILLS_RUNECRAFTING) >= 33;
-            } else if (FloatingIsland.floor() == 1 && runespan.members()) {
-                return ctx.skills.level(Constants.SKILLS_RUNECRAFTING) >= 66;
+        currentIsland = runeSpan.currentIsland();
+        if(currentIsland != null) {
+            final GameObject gameObj = currentIsland.getLadder();
+            if (gameObj.valid()) {
+                final Ladder ladder = Ladder.findLadder(gameObj.id());
+                return ladder.playerHasReqLevelToUse(ctx.skills.level(Constants.SKILLS_RUNECRAFTING));
             }
         }
         return false;
@@ -37,35 +38,37 @@ public class MoveUpALevel extends Task<ClientContext> {
 
     @Override
     public void execute() {
-        Runespan.STATE = "Climb ladder";
+        final int originalFloor = FloatingIsland.floor();
 
-        climbLadder();
-        waitTillOnNextFloor();
+        Condition.wait(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                climbLadder();
+                return FloatingIsland.floor() != originalFloor;
+            }
+        }, 1000, 3);
+
+        // Remove all targets
+        runeSpan.removeAllIslands();
+        runeSpan.setLocatableTarget(null);
     }
 
     private void climbLadder() {
         final GameObject ladder =  currentIsland.getLadder();
 
         ctx.camera.turnTo(ladder);
+        ctx.camera.pitch(60);
 
         Condition.wait(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                boolean interacting = ladder.interact(false, "Climb Up");
+                runeSpan.log.info("attempting to Climb ladder");
+                boolean interacting = ladder.interact("Climb Up");
                 if (!interacting)
-                    System.out.println(ctx.movement.findPath(ladder).valid());
-                    ctx.movement.findPath(Runespan.getReachableTile(ladder, ctx)).traverse();
+                    ctx.movement.findPath(RuneSpan.getReachableTile(ladder, ctx)).traverse();
                 return interacting;
             }
-        }, 1500, 6);
-    }
-
-    private void waitTillOnNextFloor() {
-        Condition.wait(new Callable<Boolean>() {
-            @Override
-            public Boolean call() throws Exception {
-                return currentIsland == null;
-            }
-        });
+        }, 1000, 5);
+        runeSpan.log.info("Finished with ladder");
     }
 }

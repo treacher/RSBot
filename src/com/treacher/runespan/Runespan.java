@@ -21,12 +21,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
 import java.util.List;
+import java.util.logging.Logger;
 
 /**
  * Created by Michael Treacher
  */
 @Script.Manifest(name = "Runespan", description = "Trains rune crafting in the Runepan.", properties = "topic=1229948")
-public class Runespan extends PollingScript<ClientContext> implements PaintListener, BotMenuListener{
+public class RuneSpan extends PollingScript<ClientContext> implements PaintListener, BotMenuListener{
 
     private List<FloatingIsland> floatingIslands = new ArrayList<FloatingIsland>();
     private List<Task<ClientContext>> taskList = new ArrayList<Task<ClientContext>>();
@@ -38,6 +39,8 @@ public class Runespan extends PollingScript<ClientContext> implements PaintListe
     private AntiBan antiBan = new AntiBan(ctx);
     private boolean antiBanSwitch = true;
     private String gameType;
+    private Locatable locatableTarget;
+    private Queue<Tile> blackListedTiles = new LinkedList<Tile>();
 
     public static String STATE = "Collecting Runes";
 
@@ -45,7 +48,7 @@ public class Runespan extends PollingScript<ClientContext> implements PaintListe
     public void start() {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                new GUI(Runespan.this);
+                new GUI(RuneSpan.this);
             }
         });
     }
@@ -101,6 +104,8 @@ public class Runespan extends PollingScript<ClientContext> implements PaintListe
     public void menuCanceled(MenuEvent e) {}
 
     public void addTasks() {
+        log.info("Adding tasks");
+
         taskList.addAll(
                 Arrays.asList(
                         new BuyRunes(ctx),
@@ -108,10 +113,13 @@ public class Runespan extends PollingScript<ClientContext> implements PaintListe
                         new SelectOption(ctx,"Yes", ctx.widgets.component(1188,14), "Do you want to buy some runes?"),
                         new SelectOption(ctx,"No", ctx.widgets.component(1188,14), "Would you like to subscribe?"),
                         new GenerateFloatingIsland(ctx,this),
+                        new SearchForLadder(ctx, this),
                         new MoveUpALevel(ctx, this),
                         new BuildUpEssence(ctx, this),
                         new CollectRunes(ctx, this),
                         new SearchForBetter(ctx, this),
+                        new SearchForBetterAbroad(ctx, this),
+                        new FindTarget(ctx, this),
                         new GetEssence(ctx),
                         new ExcludeAndIncludeRunes(ctx, this),
                         new MoveIslands(ctx, this)
@@ -119,12 +127,13 @@ public class Runespan extends PollingScript<ClientContext> implements PaintListe
         );
     }
 
-    public void setGameType(String gameType) {
-        this.gameType = gameType;
+    public void removeAllIslands() {
+        floatingIslands.removeAll(floatingIslands);
+        log.info("Island count: " + floatingIslands.size());
     }
 
-    public ClientContext getContext() {
-        return ctx;
+    public void setGameType(String gameType) {
+        this.gameType = gameType;
     }
 
     public void triggerAntiBan() {
@@ -164,6 +173,8 @@ public class Runespan extends PollingScript<ClientContext> implements PaintListe
     }
 
     public void buildIsland() {
+        log.info("Building Island");
+
         final PlatformConnection prevPlatform = getPreviousPlatform();
         final FloatingIsland newIsland = new FloatingIsland(ctx, this);
 
@@ -171,6 +182,8 @@ public class Runespan extends PollingScript<ClientContext> implements PaintListe
             prevPlatform.setConnection(newIsland);
 
         floatingIslands.add(newIsland);
+
+        log.info("Island Built");
     }
 
     public void setCurrentXpRate(double xpRate) {
@@ -181,8 +194,20 @@ public class Runespan extends PollingScript<ClientContext> implements PaintListe
         return currentXpRate;
     }
 
-    public static Tile getReachableTile(GameObject gameObject, ClientContext ctx) {
-        final Tile gameObjTile = gameObject.tile();
+    public void setLocatableTarget(Locatable target) {
+        this.locatableTarget = target;
+    }
+
+    public Locatable getLocatableTarget() {
+        return this.locatableTarget;
+    }
+
+    public boolean hasTarget() {
+        return this.locatableTarget != null;
+    }
+
+    public static Tile getReachableTile(Locatable locatable, ClientContext ctx) {
+        final Tile gameObjTile = locatable.tile();
         Tile[] tiles = new Tile[] {
                 new Tile(gameObjTile.x() + 1, gameObjTile.y() + 1, gameObjTile.floor()),
                 new Tile(gameObjTile.x() + 1, gameObjTile.y(), gameObjTile.floor()),
@@ -197,4 +222,23 @@ public class Runespan extends PollingScript<ClientContext> implements PaintListe
 
         return Tile.NIL;
     }
+
+    public void addToBlacklistedTiles(Tile tile) {
+        log.info("Adding Tile: " + tile.toString() + " to blacklist");
+
+        blackListedTiles.add(tile);
+;    }
+
+    public void removeBlackListedTile() {
+        blackListedTiles.poll();
+    }
+
+    public Queue<Tile> getBlackListedTiles() {
+        return blackListedTiles;
+    }
+
+    public Logger log() {
+        return log;
+    }
+
 }

@@ -1,9 +1,11 @@
 package com.treacher.runespan.util;
 
+import com.treacher.runespan.RuneSpan;
 import com.treacher.runespan.enums.ElementalNode;
 import com.treacher.runespan.enums.EssenceMonster;
 import com.treacher.runespan.enums.Rune;
 import org.powerbot.script.Filter;
+import org.powerbot.script.Tile;
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.GameObject;
 import org.powerbot.script.rt6.MobileIdNameQuery;
@@ -14,14 +16,16 @@ import java.util.Comparator;
 /**
  * Created by Michael Treacher
  */
-public class RunespanQuery {
+public class RuneSpanQuery {
 
     private final ClientContext ctx;
     private final FloatingIsland currentIsland;
+    private final RuneSpan runeSpan;
 
-    public RunespanQuery(ClientContext ctx, FloatingIsland currentIsland) {
+    public RuneSpanQuery(ClientContext ctx, RuneSpan runeSpan) {
         this.ctx = ctx;
-        this.currentIsland = currentIsland;
+        this.runeSpan = runeSpan;
+        this.currentIsland = runeSpan.currentIsland();
     }
     public Npc highestPriorityEssenceMonster() {
         return highestPriorityEssenceMonsterOnIslandQuery().peek();
@@ -44,19 +48,25 @@ public class RunespanQuery {
         return essenceStackSize() > 200;
     }
 
-    public GameObject highestPriorityNode() {
+    public GameObject highestPriorityNodeOnIsland() {
         return highestPriorityNodeOnIslandQuery().peek();
     }
+    public GameObject highestPriorityNode() {
+        return highestPriorityNodeQuery().peek();
+    }
+
 
     public boolean hasNodes() {
         return !highestPriorityNodeOnIslandQuery().isEmpty();
     }
 
-    public GameObject nearestHighestPriorityNode() {
+    public MobileIdNameQuery<GameObject> highestPriorityNodeQuery() {
         return ctx.objects.select().select(new Filter<GameObject>() {
             @Override
             public boolean accept(GameObject gameObject) {
-                return ElementalNode.hasNode(gameObject.id(), ctx);
+                final Tile playerTile = ctx.players.local().tile();
+                return ElementalNode.hasNode(gameObject.id(), ctx)
+                        && distanceToDestination(playerTile, gameObject.tile()) <= 50;
             }
         }).sort(new Comparator<GameObject>() {
             @Override
@@ -65,7 +75,7 @@ public class RunespanQuery {
                 ElementalNode n2 = ElementalNode.findNodeByGameObjectId(o2.id(), ctx);
                 return new Double(n2.getXp()).compareTo(n1.getXp());
             }
-        }).nearest().peek();
+        });
     }
 
     public Npc nearestHighestPriorityMonster() {
@@ -82,6 +92,14 @@ public class RunespanQuery {
                 return new Double(m2.getXp()).compareTo(m1.getXp());
             }
         }).nearest().peek();
+    }
+
+    public GameObject nearestHighestPriorityNode() {
+        return highestPriorityNodeQuery().nearest().peek();
+    }
+
+    private int distanceToDestination(Tile origin, Tile destination) {
+        return (Math.abs(origin.x() - destination.x())) + Math.abs((origin.y() - destination.y()));
     }
 
     private MobileIdNameQuery<GameObject> highestPriorityNodeOnIslandQuery() {

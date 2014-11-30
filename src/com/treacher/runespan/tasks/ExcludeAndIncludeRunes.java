@@ -1,6 +1,6 @@
 package com.treacher.runespan.tasks;
 
-import com.treacher.runespan.Runespan;
+import com.treacher.runespan.RuneSpan;
 import com.treacher.runespan.enums.Rune;
 import com.treacher.util.Task;
 import org.powerbot.script.rt6.ClientContext;
@@ -12,12 +12,12 @@ public class ExcludeAndIncludeRunes extends Task<ClientContext> {
 
     private long lastChecked = System.currentTimeMillis();
     private boolean firstCheck = true;
-    private Runespan runespan;
+    private RuneSpan runeSpan;
 
-    public ExcludeAndIncludeRunes(ClientContext ctx, Runespan runespan)
+    public ExcludeAndIncludeRunes(ClientContext ctx, RuneSpan runeSpan)
     {
         super(ctx);
-        this.runespan = runespan;
+        this.runeSpan = runeSpan;
     }
 
     @Override
@@ -31,13 +31,13 @@ public class ExcludeAndIncludeRunes extends Task<ClientContext> {
         lastChecked = System.currentTimeMillis();
 
         for(Rune rune : Rune.values()) {
-            if(!rune.removable(runespan)) continue;
+            if(!rune.removable(runeSpan)) continue;
             final int stackSize = ctx.backpack.select().id(rune.getGameObjectId()).poll().stackSize();
 
-            if(stackSize >= 10 || !runespan.members()) {
-                runespan.addRuneToExclusionList(rune);
+            if(stackSize >= 10 || !runeSpan.members()) {
+                runeSpan.addRuneToExclusionList(rune);
             } else {
-                runespan.removeRuneFromExclusionList(rune);
+                runeSpan.removeRuneFromExclusionList(rune);
             }
         }
     }
