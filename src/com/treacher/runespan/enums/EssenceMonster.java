@@ -18,7 +18,7 @@ public enum EssenceMonster {
     WATER_ESSLING(new int[]{15405, 15275}, Rune.WATER, 12.6, 5),
     EARTH_ESSLING(new int[]{15406, 15276}, Rune.EARTH, 14.5, 9),
     FIRE_ESSLING(new int[]{15407}, Rune.FIRE, 17.4, 14),
-
+    
     BODY_ESSHOUND(new int[]{15408}, Rune.BODY, 23.13, 20),
     COSMIC_ESSHOUND(new int[]{15409}, Rune.COSMIC, 26.5, 27),
     CHAOS_ESSHOUND(new int[]{15410}, Rune.CHAOS, 30.8, 35),
@@ -97,10 +97,6 @@ public enum EssenceMonster {
     }
 
     private boolean excluded(ClientContext ctx) {
-        boolean excluded = false;
-
-        if(ctx.skills.level(Constants.SKILLS_RUNECRAFTING) < this.levelRequirement) excluded = true;
-
-        return excluded;
+        return ctx.skills.level(Constants.SKILLS_RUNECRAFTING) < this.levelRequirement;
     }
 }

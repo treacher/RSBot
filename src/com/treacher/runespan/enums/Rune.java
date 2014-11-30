@@ -28,32 +28,6 @@ public enum Rune {
     SOUL(24226);
 
     private final int gameObjectId;
-    private static final List<Rune> highPriorityRunes = new ArrayList<Rune>(
-            Arrays.asList(
-                    SOUL,
-                    BLOOD,
-                    DEATH,
-                    ASTRAL,
-                    LAW,
-                    NATURE,
-                    CHAOS
-            )
-    );
-
-    private static final List<Rune> membersRunes = new ArrayList<Rune>(
-            Arrays.asList(
-                    SOUL,
-                    BLOOD,
-                    DEATH,
-                    ASTRAL,
-                    LAW,
-                    NATURE,
-                    CHAOS,
-                    NATURE,
-                    COSMIC,
-                    ASTRAL
-            )
-    );
 
     private Rune(int gameObjectId) {
         this.gameObjectId = gameObjectId;
@@ -61,19 +35,5 @@ public enum Rune {
 
     public int getGameObjectId() {
         return gameObjectId;
-    }
-
-    public boolean removable(RuneSpan runeSpan) {
-        final FloatingIsland currentIsland = runeSpan.currentIsland();
-
-        if(currentIsland != null) {
-            if(runeSpan.members()) {
-                return FloatingIsland.floor() != 0 && !highPriorityRunes.contains(this);
-            } else {
-                return membersRunes.contains(this);
-            }
-        } else {
-            return false;
-        }
     }
 }

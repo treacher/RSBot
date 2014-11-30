@@ -5,6 +5,7 @@ import com.treacher.runespan.enums.ElementalNode;
 import com.treacher.runespan.util.RuneSpanQuery;
 import com.treacher.util.Task;
 import org.powerbot.script.rt6.ClientContext;
+import org.powerbot.script.rt6.GameObject;
 
 /**
  * Created by Michael Treacher

@@ -17,7 +17,7 @@ public class GUI extends JFrame {
 
     private final Container contentPane;
     private JPanel centerPanel;
-    private JComboBox logComboBox;
+    private JComboBox logComboBox, changeLevelsComboBox, hopOptionComboBox;
     private RuneSpan runeSpan;
 
     public GUI(RuneSpan runeSpan) {
@@ -36,6 +36,10 @@ public class GUI extends JFrame {
         buildCenterPanel();
         buildGameTypeLabel();
         buildGameTypeComboBox();
+        buildHopOptionLabel();
+        buildHopOptionComboBox();
+        buildChangeLevelsLabel();
+        buildChangeLevelsComboBox();
         contentPane.add(centerPanel, BorderLayout.CENTER);
     }
 
@@ -45,8 +49,12 @@ public class GUI extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String gameType = (String) logComboBox.getSelectedItem();
+                String hopOption = (String) hopOptionComboBox.getSelectedItem();
+                String changeLevelsOption = (String) changeLevelsComboBox.getSelectedItem();
                 Painter.startTime = System.currentTimeMillis();
                 runeSpan.setGameType(gameType);
+                runeSpan.setHopOption(hopOption);
+                runeSpan.setChangeLevelsOption(changeLevelsOption);
                 runeSpan.addTasks();
                 dispose();
             }
@@ -64,6 +72,32 @@ public class GUI extends JFrame {
         final JLabel logLabel = new JLabel("Game Type: ");
         logLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         centerPanel.add(logLabel);
+    }
+
+    private void buildHopOptionLabel() {
+        final JLabel logLabel = new JLabel("Island hopping: ");
+        logLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        centerPanel.add(logLabel);
+    }
+
+    private void buildChangeLevelsLabel() {
+        final JLabel logLabel = new JLabel("Change levels: ");
+        logLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        centerPanel.add(logLabel);
+    }
+
+    private void buildChangeLevelsComboBox() {
+        changeLevelsComboBox = new JComboBox<String>(new String[]{"Yes", "No"});
+        changeLevelsComboBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+        centerPanel.add(changeLevelsComboBox);
+        centerPanel.add(Box.createVerticalStrut(15));
+    }
+
+    private void buildHopOptionComboBox() {
+        hopOptionComboBox = new JComboBox<String>(new String[]{"Hop", "No hop"});
+        hopOptionComboBox.setAlignmentX(Component.LEFT_ALIGNMENT);
+        centerPanel.add(hopOptionComboBox);
+        centerPanel.add(Box.createVerticalStrut(15));
     }
 
     private void buildGameTypeComboBox() {

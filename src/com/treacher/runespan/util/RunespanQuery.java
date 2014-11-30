@@ -20,11 +20,9 @@ public class RuneSpanQuery {
 
     private final ClientContext ctx;
     private final FloatingIsland currentIsland;
-    private final RuneSpan runeSpan;
 
     public RuneSpanQuery(ClientContext ctx, RuneSpan runeSpan) {
         this.ctx = ctx;
-        this.runeSpan = runeSpan;
         this.currentIsland = runeSpan.currentIsland();
     }
     public Npc highestPriorityEssenceMonster() {
@@ -32,20 +30,11 @@ public class RuneSpanQuery {
     }
 
     public boolean hasEssenceMonsters() {
-        return (!hasTooMuchEssence() && !highestPriorityEssenceMonsterOnIslandQuery().isEmpty()) || needLawRunes();
+        return !highestPriorityEssenceMonsterOnIslandQuery().isEmpty();
     }
 
     public int essenceStackSize() {
         return ctx.backpack.select().id(Rune.ESSENCE.getGameObjectId()).poll().stackSize();
-    }
-
-    public boolean needLawRunes() {
-        return EssenceMonster.LAW_ESSHOUND.hasGameObjectId(highestPriorityEssenceMonster().id())
-                && ctx.backpack.select().id(Rune.LAW.getGameObjectId()).poll().stackSize() <= 10;
-    }
-
-    public boolean hasTooMuchEssence() {
-        return essenceStackSize() > 200;
     }
 
     public GameObject highestPriorityNodeOnIsland() {
@@ -54,7 +43,6 @@ public class RuneSpanQuery {
     public GameObject highestPriorityNode() {
         return highestPriorityNodeQuery().peek();
     }
-
 
     public boolean hasNodes() {
         return !highestPriorityNodeOnIslandQuery().isEmpty();
@@ -66,7 +54,7 @@ public class RuneSpanQuery {
             public boolean accept(GameObject gameObject) {
                 final Tile playerTile = ctx.players.local().tile();
                 return ElementalNode.hasNode(gameObject.id(), ctx)
-                        && distanceToDestination(playerTile, gameObject.tile()) <= 50;
+                        && distanceToDestination(playerTile, gameObject.tile()) < 100;
             }
         }).sort(new Comparator<GameObject>() {
             @Override
@@ -76,26 +64,6 @@ public class RuneSpanQuery {
                 return new Double(n2.getXp()).compareTo(n1.getXp());
             }
         });
-    }
-
-    public Npc nearestHighestPriorityMonster() {
-        return ctx.npcs.select().select(new Filter<Npc>() {
-            @Override
-            public boolean accept(Npc npc) {
-                return EssenceMonster.hasMonster(npc.id(), ctx) && npc.animation() == -1;
-            }
-        }).sort(new Comparator<Npc>() {
-            @Override
-            public int compare(Npc o1, Npc o2) {
-                EssenceMonster m1 = EssenceMonster.findMonsterByGameObjectId(o1.id(), ctx);
-                EssenceMonster m2 = EssenceMonster.findMonsterByGameObjectId(o2.id(), ctx);
-                return new Double(m2.getXp()).compareTo(m1.getXp());
-            }
-        }).nearest().peek();
-    }
-
-    public GameObject nearestHighestPriorityNode() {
-        return highestPriorityNodeQuery().nearest().peek();
     }
 
     private int distanceToDestination(Tile origin, Tile destination) {

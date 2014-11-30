@@ -2,12 +2,10 @@ package com.treacher.runespan.tasks;
 
 import com.treacher.runespan.RuneSpan;
 import com.treacher.runespan.enums.ElementalNode;
-import com.treacher.runespan.enums.EssenceMonster;
 import com.treacher.runespan.util.RuneSpanQuery;
 import com.treacher.util.Task;
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.GameObject;
-import org.powerbot.script.rt6.Npc;
 
 /**
  * Created by Michael Treacher

@@ -1,6 +1,5 @@
 package com.treacher.runespan;
 
-import com.treacher.runespan.enums.Rune;
 import com.treacher.runespan.tasks.*;
 import com.treacher.runespan.ui.GUI;
 import com.treacher.runespan.ui.Painter;
@@ -12,7 +11,6 @@ import com.treacher.tasks.SelectOption;
 import com.treacher.util.Task;
 import org.powerbot.script.*;
 import org.powerbot.script.rt6.ClientContext;
-import org.powerbot.script.rt6.GameObject;
 
 import javax.swing.*;
 import javax.swing.event.MenuEvent;
@@ -31,16 +29,14 @@ public class RuneSpan extends PollingScript<ClientContext> implements PaintListe
 
     private List<FloatingIsland> floatingIslands = new ArrayList<FloatingIsland>();
     private List<Task<ClientContext>> taskList = new ArrayList<Task<ClientContext>>();
-    private static Set<Rune> runesToExclude = new HashSet<Rune>();
     private double currentXpRate;
     private Painter painter = new Painter(ctx, this);
     private FloatingIsland previousIsland;
     private PlatformConnection previousPlatform;
     private AntiBan antiBan = new AntiBan(ctx);
     private boolean antiBanSwitch = true;
-    private String gameType;
+    private String gameType, changeLevelsOption, hopOption;
     private Locatable locatableTarget;
-    private Queue<Tile> blackListedTiles = new LinkedList<Tile>();
 
     public static String STATE = "Collecting Runes";
 
@@ -96,6 +92,8 @@ public class RuneSpan extends PollingScript<ClientContext> implements PaintListe
     public boolean members() {
         return gameType.equals("P2P");
     }
+    public boolean hopping() { return hopOption.equals("Hop"); }
+    public boolean changeLevels() { return changeLevelsOption.equals("Yes"); }
 
     @Override
     public void menuDeselected(MenuEvent e) {}
@@ -107,24 +105,30 @@ public class RuneSpan extends PollingScript<ClientContext> implements PaintListe
         log.info("Adding tasks");
 
         taskList.addAll(
-                Arrays.asList(
-                        new BuyRunes(ctx),
-                        new HandleResponse(ctx),
-                        new SelectOption(ctx,"Yes", ctx.widgets.component(1188,14), "Do you want to buy some runes?"),
-                        new SelectOption(ctx,"No", ctx.widgets.component(1188,14), "Would you like to subscribe?"),
-                        new GenerateFloatingIsland(ctx,this),
-                        new SearchForLadder(ctx, this),
-                        new MoveUpALevel(ctx, this),
-                        new BuildUpEssence(ctx, this),
-                        new CollectRunes(ctx, this),
-                        new SearchForBetter(ctx, this),
-                        new SearchForBetterAbroad(ctx, this),
-                        new FindTarget(ctx, this),
-                        new GetEssence(ctx),
-                        new ExcludeAndIncludeRunes(ctx, this),
-                        new MoveIslands(ctx, this)
-                )
+            Arrays.asList(
+                    new BuyRunes(ctx),
+                    new HandleResponse(ctx),
+                    new SelectOption(ctx,"Yes", ctx.widgets.component(1188,14), "Do you want to buy some runes?"),
+                    new SelectOption(ctx,"No", ctx.widgets.component(1188,14), "Would you like to subscribe?"),
+                    new GenerateFloatingIsland(ctx,this),
+                    new MoveUpALevel(ctx, this),
+                    new BuildUpEssence(ctx, this),
+                    new CollectRunes(ctx, this),
+                    new SearchForBetter(ctx, this),
+                    new FindTarget(ctx, this),
+                    new GetEssence(ctx),
+                    new MoveIslands(ctx, this)
+            )
         );
+
+        if(hopping()) {
+            log.info("Adding island hopping task");
+            taskList.add(new SearchForBetterAbroad(ctx, this));
+        }
+        if(changeLevels()) {
+            log.info("Adding level changing task");
+            new SearchForLadder(ctx, this);
+        }
     }
 
     public void removeAllIslands() {
@@ -135,6 +139,10 @@ public class RuneSpan extends PollingScript<ClientContext> implements PaintListe
     public void setGameType(String gameType) {
         this.gameType = gameType;
     }
+    public void setHopOption(String hopOption) {
+        this.hopOption = hopOption;
+    }
+    public void setChangeLevelsOption(String changeLevelsOption) { this.changeLevelsOption = changeLevelsOption; }
 
     public void triggerAntiBan() {
         if(antiBanSwitch) antiBan.execute();
@@ -142,18 +150,6 @@ public class RuneSpan extends PollingScript<ClientContext> implements PaintListe
 
     public boolean getAntiBanSwitch() {
         return antiBanSwitch;
-    }
-
-    public void addRuneToExclusionList(Rune rune) {
-        runesToExclude.add(rune);
-    }
-
-    public void removeRuneFromExclusionList(Rune rune) {
-        runesToExclude.remove(rune);
-    }
-
-    public static Set<Rune> getExclusionList() {
-        return runesToExclude;
     }
 
     public void setPreviousIsland(FloatingIsland floatingIsland) {
@@ -222,23 +218,4 @@ public class RuneSpan extends PollingScript<ClientContext> implements PaintListe
 
         return Tile.NIL;
     }
-
-    public void addToBlacklistedTiles(Tile tile) {
-        log.info("Adding Tile: " + tile.toString() + " to blacklist");
-
-        blackListedTiles.add(tile);
-;    }
-
-    public void removeBlackListedTile() {
-        blackListedTiles.poll();
-    }
-
-    public Queue<Tile> getBlackListedTiles() {
-        return blackListedTiles;
-    }
-
-    public Logger log() {
-        return log;
-    }
-
 }

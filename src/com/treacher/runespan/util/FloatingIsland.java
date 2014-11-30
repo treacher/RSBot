@@ -45,12 +45,7 @@ public class FloatingIsland {
     }
 
     public PlatformConnection nextPlatform() {
-        // We have a target so we want to find it.
-        if(runeSpan.hasTarget()) {
-            return findPlatformForTarget();
-        } else {
-            return randomFindPlatform();
-        }
+        return findPlatformForTarget();
     }
 
     public GameObject getLadder() {
@@ -89,36 +84,9 @@ public class FloatingIsland {
                     }
                 }
             }
-            runeSpan.addToBlacklistedTiles(target.tile());
-            runeSpan.setLocatableTarget(null);
         }
-        return null;
-    }
-
-    private PlatformConnection randomFindPlatform() {
-        runeSpan.log.info("Randomly finding the next platform");
-        // Only add platforms we can use.
-        List<PlatformConnection> hasRequiredRunesPlatforms = new ArrayList<PlatformConnection>();
-
-        for(PlatformConnection con : connections)
-            if(hasRequiredRunes(con)) hasRequiredRunesPlatforms.add(con);
-
-        Collections.sort(hasRequiredRunesPlatforms, new Comparator<PlatformConnection>() {
-            @Override
-            public int compare(PlatformConnection o1, PlatformConnection o2) {
-                return o1.compareTo(o2);
-            }
-        });
-
-        if(!hasRequiredRunesPlatforms.isEmpty()) {
-            PlatformConnection candidateConnection = hasRequiredRunesPlatforms.get(0);
-            if(runeSpan.getPreviousPlatform() != null
-                    && runeSpan.getPreviousPlatform().equals(candidateConnection)
-                    && hasRequiredRunesPlatforms.size() > 1)
-                candidateConnection = hasRequiredRunesPlatforms.get(1);
-            runeSpan.log.info("Chose the connection: " + candidateConnection);
-            return candidateConnection;
-        }
+        runeSpan.log.info("Issue finding platform. Removing target.");
+        runeSpan.setLocatableTarget(null);
         return null;
     }
 

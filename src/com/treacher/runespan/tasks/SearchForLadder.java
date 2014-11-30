@@ -4,10 +4,8 @@ import com.treacher.runespan.RuneSpan;
 import com.treacher.runespan.enums.Ladder;
 import com.treacher.runespan.util.FloatingIsland;
 import com.treacher.util.Task;
-import org.powerbot.bot.rt6.client.RSObject;
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.Constants;
-import org.powerbot.script.rt6.GameObject;
 
 /**
  * Created by Michael Treacher

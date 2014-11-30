@@ -3,7 +3,6 @@ package com.treacher.runespan.tasks;
 import com.treacher.runespan.RuneSpan;
 import com.treacher.runespan.util.FloatingIsland;
 import com.treacher.runespan.util.PlatformConnection;
-import com.treacher.runespan.util.RuneSpanQuery;
 import com.treacher.util.Task;
 import org.powerbot.script.rt6.ClientContext;
 
@@ -21,8 +20,7 @@ public class MoveIslands extends Task<ClientContext> {
 
     @Override
     public boolean activate() {
-        final RuneSpanQuery runeSpanQuery = new RuneSpanQuery(ctx, runeSpan);
-        return runeSpan.currentIsland() != null && (runeSpan.hasTarget() || (!runeSpanQuery.hasNodes() && !runeSpanQuery.hasEssenceMonsters()));
+        return runeSpan.currentIsland() != null && runeSpan.hasTarget();
     }
 
     @Override

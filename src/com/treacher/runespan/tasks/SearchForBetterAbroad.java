@@ -16,6 +16,7 @@ public class SearchForBetterAbroad extends Task<ClientContext> {
     private RuneSpan runeSpan;
     private GameObject betterNode;
     private long lastRan = System.currentTimeMillis();
+    private long idleTime = 0;
 
     public SearchForBetterAbroad(ClientContext ctx, RuneSpan runeSpan) {
         super(ctx);
@@ -24,26 +25,26 @@ public class SearchForBetterAbroad extends Task<ClientContext> {
 
     @Override
     public boolean activate() {
-        if((System.currentTimeMillis() - lastRan) < 60000) return false;
+        if(ctx.players.local().idle() && idleTime == 0) idleTime = System.currentTimeMillis();
 
-        lastRan = System.currentTimeMillis();
+        if(ctx.players.local().idle() && (System.currentTimeMillis() - idleTime) > 5000
+                || (System.currentTimeMillis() - lastRan) >= 60000) {
 
-        final FloatingIsland currentIsland = runeSpan.currentIsland();
+            idleTime = 0;
+            lastRan = System.currentTimeMillis();
 
-        if(currentIsland != null && !ctx.players.local().idle() && !runeSpan.hasTarget()) {
+            final FloatingIsland currentIsland = runeSpan.currentIsland();
 
-            final RuneSpanQuery runeSpanQuery = new RuneSpanQuery(ctx, runeSpan);
+            if (currentIsland != null && !ctx.players.local().idle() && !runeSpan.hasTarget()) {
 
-            betterNode = runeSpanQuery.highestPriorityNode();
+                final RuneSpanQuery runeSpanQuery = new RuneSpanQuery(ctx, runeSpan);
 
-            if (!currentIsland.onIsland(betterNode.tile()) && runeSpanQuery.essenceStackSize() >= 50) {
-                // If the tile the object is on has been black listed return false
-                if(runeSpan.getBlackListedTiles().contains(betterNode.tile())) return false;
-                final ElementalNode elementalNode = ElementalNode.findNodeByGameObjectId(betterNode.id(), ctx);
+                betterNode = runeSpanQuery.highestPriorityNode();
 
-                if(elementalNode != null) return elementalNode.getXp() > runeSpan.getCurrentXpRate();
-
-                return false;
+                if (!currentIsland.onIsland(betterNode.tile()) && runeSpanQuery.essenceStackSize() >= 50) {
+                    final ElementalNode elementalNode = ElementalNode.findNodeByGameObjectId(betterNode.id(), ctx);
+                    return elementalNode != null && elementalNode.getXp() > runeSpan.getCurrentXpRate();
+                }
             }
         }
 
