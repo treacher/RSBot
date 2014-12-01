@@ -27,7 +27,7 @@ public class SearchForLadder extends Task<ClientContext> {
         if(BuyRunes.boughtRunes && runeSpan.currentIsland() != null && FloatingIsland.floor() != 2) {
             if (ctx.skills.level(Constants.SKILLS_RUNECRAFTING) >= 33 && FloatingIsland.floor() == 0) {
                 ladder = Ladder.VINE_LADDER;
-            } else if (ctx.skills.level(Constants.SKILLS_RUNECRAFTING) >= 66 && FloatingIsland.floor() == 1) {
+            } else if (ctx.skills.level(Constants.SKILLS_RUNECRAFTING) >= 66 && FloatingIsland.floor() == 1 && RuneSpan.members()) {
                 ladder = Ladder.BONE_LADDER;
             }
         }

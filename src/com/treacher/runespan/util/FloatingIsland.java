@@ -7,6 +7,7 @@ import org.powerbot.script.Locatable;
 import org.powerbot.script.Tile;
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.CollisionFlag;
+import org.powerbot.script.rt6.CollisionMap;
 import org.powerbot.script.rt6.GameObject;
 
 import java.util.*;
@@ -86,6 +87,8 @@ public class FloatingIsland {
             }
         }
         runeSpan.log.info("Issue finding platform. Removing target.");
+        runeSpan.setPreviousIsland(null);
+        runeSpan.setPreviousPlatform(null);
         runeSpan.setLocatableTarget(null);
         return null;
     }
@@ -156,8 +159,13 @@ public class FloatingIsland {
         }
 
         final Tile base = ctx.game.mapOffset();
+        int x = tile.x() - base.x();
+        int y = tile.y() - base.y();
+        final CollisionMap map = ctx.movement.collisionMap();
+        // bounds check
+        if(x < 0 && y < 0 && x < map.width() && y < map.height()) return;
 
-        final CollisionFlag flag = ctx.movement.collisionMap().flagAt(tile.x() - base.x(), tile.y() - base.y());
+        final CollisionFlag flag = map.flagAt(x, y);
 
         if(flag.getType() == 0 || ctx.players.local().tile().equals(tile)) {
             tiles.add(tile);

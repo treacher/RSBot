@@ -27,7 +27,7 @@ public class SearchForBetterAbroad extends Task<ClientContext> {
     public boolean activate() {
         if(ctx.players.local().idle() && idleTime == 0) idleTime = System.currentTimeMillis();
 
-        if(ctx.players.local().idle() && (System.currentTimeMillis() - idleTime) > 5000
+        if((ctx.players.local().idle() && (System.currentTimeMillis() - idleTime) > 5000)
                 || (System.currentTimeMillis() - lastRan) >= 30000) {
 
             idleTime = 0;
@@ -35,13 +35,13 @@ public class SearchForBetterAbroad extends Task<ClientContext> {
 
             final FloatingIsland currentIsland = runeSpan.currentIsland();
 
-            if (currentIsland != null && !ctx.players.local().idle() && !runeSpan.hasTarget()) {
+            if (currentIsland != null && !runeSpan.hasTarget()) {
 
                 final RuneSpanQuery runeSpanQuery = new RuneSpanQuery(ctx, runeSpan);
 
                 betterNode = runeSpanQuery.highestPriorityNode();
 
-                if (!currentIsland.onIsland(betterNode.tile()) && runeSpanQuery.essenceStackSize() >= 50) {
+                if (runeSpanQuery.essenceStackSize() >= 50) {
                     final ElementalNode elementalNode = ElementalNode.findNodeByGameObjectId(betterNode.id(), ctx);
                     return elementalNode != null && elementalNode.getXp() > runeSpan.getCurrentXpRate();
                 }

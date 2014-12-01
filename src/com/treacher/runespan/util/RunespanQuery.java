@@ -41,7 +41,7 @@ public class RuneSpanQuery {
         return highestPriorityNodeOnIslandQuery().peek();
     }
     public GameObject highestPriorityNode() {
-        return highestPriorityNodeQuery().peek();
+        return highestPriorityNodeQuery().nearest().peek();
     }
 
     public boolean hasNodes() {
@@ -53,7 +53,9 @@ public class RuneSpanQuery {
             @Override
             public boolean accept(GameObject gameObject) {
                 final Tile playerTile = ctx.players.local().tile();
-                return ElementalNode.hasNode(gameObject.id(), ctx)
+                return currentIsland != null
+                        && !currentIsland.onIsland(gameObject.tile())
+                        && ElementalNode.hasNode(gameObject.id(), ctx)
                         && distanceToDestination(playerTile, gameObject.tile()) < 100;
             }
         }).sort(new Comparator<GameObject>() {

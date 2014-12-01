@@ -126,7 +126,7 @@ public class RuneSpan extends PollingScript<ClientContext> implements PaintListe
         }
         if(changeLevels()) {
             log.info("Adding level changing task");
-            new SearchForLadder(ctx, this);
+            taskList.add(new SearchForLadder(ctx, this));
         }
     }
 
