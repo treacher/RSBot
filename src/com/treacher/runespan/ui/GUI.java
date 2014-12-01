@@ -1,7 +1,7 @@
 package com.treacher.runespan.ui;
 
 import com.treacher.butlerplankmaker.ui.Painter;
-import com.treacher.runespan.RuneSpan;
+import com.treacher.runespan.Runespan;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -18,13 +18,13 @@ public class GUI extends JFrame {
     private final Container contentPane;
     private JPanel centerPanel;
     private JComboBox logComboBox, changeLevelsComboBox, hopOptionComboBox;
-    private RuneSpan runeSpan;
+    private Runespan runespan;
 
-    public GUI(RuneSpan runeSpan) {
+    public GUI(Runespan runespan) {
         setTitle("treach3rs runespan");
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         this.contentPane = getContentPane();
-        this.runeSpan = runeSpan;
+        this.runespan = runespan;
         buildGUI();
         pack();
         setLocationRelativeTo(null);
@@ -52,10 +52,10 @@ public class GUI extends JFrame {
                 String hopOption = (String) hopOptionComboBox.getSelectedItem();
                 String changeLevelsOption = (String) changeLevelsComboBox.getSelectedItem();
                 Painter.startTime = System.currentTimeMillis();
-                RuneSpan.GAME_TYPE = gameType;
-                RuneSpan.HOP_OPTION = hopOption;
-                RuneSpan.CHANGE_LEVELS_OPTION = changeLevelsOption;
-                runeSpan.addTasks();
+                Runespan.GAME_TYPE = gameType;
+                Runespan.HOP_OPTION = hopOption;
+                Runespan.CHANGE_LEVELS_OPTION = changeLevelsOption;
+                runespan.addTasks();
                 dispose();
             }
         });

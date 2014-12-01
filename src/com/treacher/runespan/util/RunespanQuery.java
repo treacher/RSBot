@@ -1,6 +1,6 @@
 package com.treacher.runespan.util;
 
-import com.treacher.runespan.RuneSpan;
+import com.treacher.runespan.Runespan;
 import com.treacher.runespan.enums.ElementalNode;
 import com.treacher.runespan.enums.EssenceMonster;
 import com.treacher.runespan.enums.Rune;
@@ -16,14 +16,14 @@ import java.util.Comparator;
 /**
  * Created by Michael Treacher
  */
-public class RuneSpanQuery {
+public class RunespanQuery {
 
     private final ClientContext ctx;
     private final FloatingIsland currentIsland;
 
-    public RuneSpanQuery(ClientContext ctx, RuneSpan runeSpan) {
+    public RunespanQuery(ClientContext ctx, Runespan runespan) {
         this.ctx = ctx;
-        this.currentIsland = runeSpan.currentIsland();
+        this.currentIsland = runespan.currentIsland();
     }
     public Npc highestPriorityEssenceMonster() {
         return highestPriorityEssenceMonsterOnIslandQuery().peek();

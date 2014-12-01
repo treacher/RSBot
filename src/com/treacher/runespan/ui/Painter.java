@@ -1,7 +1,7 @@
 package com.treacher.runespan.ui;
 
 
-import com.treacher.runespan.RuneSpan;
+import com.treacher.runespan.Runespan;
 import org.powerbot.script.PaintListener;
 import org.powerbot.script.Random;
 import org.powerbot.script.rt6.ClientContext;
@@ -22,15 +22,15 @@ public class Painter implements PaintListener {
 
     private final int startXp;
 
-    private final RuneSpan runeSpan;
+    private final Runespan runespan;
 
     private final MouseTrail mousetrail = new MouseTrail();
 
-    public Painter(ClientContext ctx, RuneSpan runeSpan)
+    public Painter(ClientContext ctx, Runespan runespan)
     {
         this.ctx = ctx;
         this.startXp = ctx.skills.experience(Constants.SKILLS_RUNECRAFTING);
-        this.runeSpan = runeSpan;
+        this.runespan = runespan;
     }
 
     @Override
@@ -42,8 +42,8 @@ public class Painter implements PaintListener {
         g.drawString("Runtime: \t" + formatTime(millisElapsed()), 20, 490);
         g.drawString("XP gained: \t " + xpGained(),20, 510);
         g.drawString("XP per hour: \t " + xpPerHour(), 20, 530);
-        g.drawString("Last State: \t " + RuneSpan.STATE, 20, 550);
-        g.drawString("AntiBan: \t " + (runeSpan.getAntiBanSwitch() ? "enabled" : "disabled"), 20, 570);
+        g.drawString("Last State: \t " + Runespan.STATE, 20, 550);
+        g.drawString("AntiBan: \t " + (runespan.getAntiBanSwitch() ? "enabled" : "disabled"), 20, 570);
         mousetrail.add(ctx.input.getLocation());
         mousetrail.draw(g);
         drawMouse(g);

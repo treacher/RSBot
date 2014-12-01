@@ -1,6 +1,6 @@
 package com.treacher.runespan.util;
 
-import com.treacher.runespan.RuneSpan;
+import com.treacher.runespan.Runespan;
 import com.treacher.runespan.enums.Ladder;
 import com.treacher.runespan.enums.Platform;
 import org.powerbot.script.Locatable;
@@ -22,17 +22,17 @@ public class FloatingIsland {
     private Set<Tile> tiles = new HashSet<Tile>();
     private ClientContext ctx;
     private static int currentFloor;
-    private final RuneSpan runeSpan;
+    private final Runespan runespan;
     private GameObject ladder;
 
-    public FloatingIsland(ClientContext ctx, RuneSpan runeSpan) {
+    public FloatingIsland(ClientContext ctx, Runespan runespan) {
         this.connections = new ArrayList<PlatformConnection>();
         this.ctx = ctx;
-        this.runeSpan = runeSpan;
+        this.runespan = runespan;
         currentFloor = setCurrentFloor();
         floodFillTilesFromTile(ctx.players.local().tile());
-        runeSpan.log.info(tiles.size() + " <- tiles");
-        runeSpan.log.info(connections.size() + "<- connections");
+        runespan.log.info(tiles.size() + " <- tiles");
+        runespan.log.info(connections.size() + "<- connections");
     }
 
     public boolean onIsland(Tile tile) {
@@ -59,44 +59,44 @@ public class FloatingIsland {
     }
 
     private PlatformConnection findPlatformForTarget() {
-        runeSpan.log.info("We have a target!");
+        runespan.log.info("We have a target!");
 
-        final Locatable target = runeSpan.getLocatableTarget();
+        final Locatable target = runespan.getLocatableTarget();
         final PlatformConnection platform = closestPlatformToTarget(target);
 
         if(target != null && platform != null && target.tile() != Tile.NIL) {
             final FloatingIsland nextIsland = platform.getConnection();
-            if(runeSpan.getPreviousIsland() == null || !runeSpan.getPreviousIsland().equals(platform.getConnection())) {
+            if(runespan.getPreviousIsland() == null || !runespan.getPreviousIsland().equals(platform.getConnection())) {
                 if (nextIsland != null) {
-                    runeSpan.log.info("We have been to the island we are heading to before. We can make a smarter decision about heading to it.");
+                    runespan.log.info("We have been to the island we are heading to before. We can make a smarter decision about heading to it.");
                     if (nextIsland.connections.size() > 1 || nextIsland.onIsland(target.tile())) {
-                        runeSpan.log.info("Found a connection that will get us closer to the target.");
+                        runespan.log.info("Found a connection that will get us closer to the target.");
                         return platform;
                     } else {
-                        runeSpan.log.info("Heading to a size 1 island that does not have the target. This causes a deadlock. Let's not go there.");
+                        runespan.log.info("Heading to a size 1 island that does not have the target. This causes a deadlock. Let's not go there.");
                     }
                 } else {
-                    runeSpan.log.info("Never been to the island we are heading too.");
+                    runespan.log.info("Never been to the island we are heading too.");
                     if (hasRequiredRunes(platform)) {
-                        runeSpan.log.info("Found a connection that will get us closer to the target.");
+                        runespan.log.info("Found a connection that will get us closer to the target.");
                         return platform;
                     } else {
-                        runeSpan.log.info("We don't have what we need to find target. Removing target");
+                        runespan.log.info("We don't have what we need to find target. Removing target");
                     }
                 }
             }
         }
-        runeSpan.log.info("Issue finding platform. Removing target.");
-        runeSpan.setPreviousIsland(null);
-        runeSpan.setPreviousPlatform(null);
-        runeSpan.setLocatableTarget(null);
+        runespan.log.info("Issue finding platform. Removing target.");
+        runespan.setPreviousIsland(null);
+        runespan.setPreviousPlatform(null);
+        runespan.setLocatableTarget(null);
         return null;
     }
 
     private PlatformConnection closestPlatformToTarget(Locatable target) {
         if(target != null){
-            runeSpan.log.info("Finding closest platform to target");
-            runeSpan.log.info("Connections: " + connections);
+            runespan.log.info("Finding closest platform to target");
+            runespan.log.info("Connections: " + connections);
 
             final Stack<PlatformConnection> platforms = new Stack<PlatformConnection>();
             platforms.addAll(connections);
@@ -111,11 +111,11 @@ public class FloatingIsland {
                 if(closestPlatformCost > nextPlatformCost) closest = nextPlatform;
             }
 
-            runeSpan.log.info("Closest platform is: " + closest);
+            runespan.log.info("Closest platform is: " + closest);
             return closest;
         } else {
-            runeSpan.log.info("Invalid target. Setting target to null.");
-            runeSpan.setLocatableTarget(null);
+            runespan.log.info("Invalid target. Setting target to null.");
+            runespan.setLocatableTarget(null);
         }
 
         return null;
@@ -152,7 +152,7 @@ public class FloatingIsland {
         final int gameObjectId = ctx.objects.select().at(tile).peek().id();
 
         if(Platform.hasPlatform(gameObjectId, ctx)) {
-            connections.add(new PlatformConnection(Platform.getPlatform(gameObjectId, ctx), tile, ctx, runeSpan));
+            connections.add(new PlatformConnection(Platform.getPlatform(gameObjectId, ctx), tile, ctx, runespan));
             tiles.add(tile);
         } else if(Ladder.hasLadder(gameObjectId)) {
             ladder = ctx.objects.nearest().peek();

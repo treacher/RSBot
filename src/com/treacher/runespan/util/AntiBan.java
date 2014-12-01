@@ -1,6 +1,6 @@
 package com.treacher.runespan.util;
 
-import com.treacher.runespan.RuneSpan;
+import com.treacher.runespan.Runespan;
 import org.powerbot.script.Condition;
 import org.powerbot.script.Random;
 import org.powerbot.script.rt6.ClientContext;
@@ -35,7 +35,7 @@ public class AntiBan {
     }
 
     private void triggerMouseEvent() {
-        RuneSpan.STATE = "Anti Ban: Moving Mouse";
+        Runespan.STATE = "Anti Ban: Moving Mouse";
 
         lastTimeMovingMouse = System.currentTimeMillis();
 
@@ -55,7 +55,7 @@ public class AntiBan {
 
     // Don't really want to go AFK all that often.
     private void goAFK(){
-        RuneSpan.STATE = "Anti Ban: AFK";
+        Runespan.STATE = "Anti Ban: AFK";
         lastTimeAFKing = System.currentTimeMillis();
         Condition.sleep(Random.nextInt(60000, 120000));
     }

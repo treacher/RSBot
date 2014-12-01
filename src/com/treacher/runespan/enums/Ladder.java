@@ -1,6 +1,6 @@
 package com.treacher.runespan.enums;
 
-import com.treacher.runespan.RuneSpan;
+import com.treacher.runespan.Runespan;
 import org.powerbot.script.Locatable;
 import org.powerbot.script.Tile;
 
@@ -44,6 +44,6 @@ public enum Ladder implements Locatable {
     }
 
     private boolean excluded() {
-        return !RuneSpan.members() && this.members;
+        return !Runespan.members() && this.members;
     }
 }

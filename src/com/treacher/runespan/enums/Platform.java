@@ -1,6 +1,6 @@
 package com.treacher.runespan.enums;
 
-import com.treacher.runespan.RuneSpan;
+import com.treacher.runespan.Runespan;
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.Constants;
 
@@ -70,7 +70,7 @@ public enum Platform {
 
     private boolean excluded(ClientContext ctx) {
         boolean exclude =  this.levelRequirement > ctx.skills.level(Constants.SKILLS_RUNECRAFTING);
-        if(!RuneSpan.members()) exclude = this.members;
+        if(!Runespan.members()) exclude = this.members;
         return exclude;
     }
 

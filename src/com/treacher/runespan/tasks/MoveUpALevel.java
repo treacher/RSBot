@@ -1,6 +1,6 @@
 package com.treacher.runespan.tasks;
 
-import com.treacher.runespan.RuneSpan;
+import com.treacher.runespan.Runespan;
 import com.treacher.runespan.enums.Ladder;
 import com.treacher.runespan.util.FloatingIsland;
 import com.treacher.util.Task;
@@ -16,16 +16,16 @@ import java.util.concurrent.Callable;
  */
 public class MoveUpALevel extends Task<ClientContext> {
 
-    private RuneSpan runeSpan;
+    private Runespan runespan;
     private FloatingIsland currentIsland;
 
-    public MoveUpALevel(ClientContext ctx, RuneSpan runeSpan){
+    public MoveUpALevel(ClientContext ctx, Runespan runespan){
         super(ctx);
-        this.runeSpan = runeSpan;
+        this.runespan = runespan;
     }
     @Override
     public boolean activate() {
-        currentIsland = runeSpan.currentIsland();
+        currentIsland = runespan.currentIsland();
         if(currentIsland != null) {
             final GameObject gameObj = currentIsland.getLadder();
             if (gameObj.valid()) {
@@ -49,8 +49,8 @@ public class MoveUpALevel extends Task<ClientContext> {
         }, 1000, 3);
 
         // Remove all targets
-        runeSpan.removeAllIslands();
-        runeSpan.setLocatableTarget(null);
+        runespan.removeAllIslands();
+        runespan.setLocatableTarget(null);
     }
 
     private void climbLadder() {
@@ -62,13 +62,13 @@ public class MoveUpALevel extends Task<ClientContext> {
         Condition.wait(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                runeSpan.log.info("attempting to Climb ladder");
+                runespan.log.info("attempting to Climb ladder");
                 boolean interacting = ladder.interact("Climb Up");
                 if (!interacting)
-                    ctx.movement.findPath(RuneSpan.getReachableTile(ladder, ctx)).traverse();
+                    ctx.movement.findPath(Runespan.getReachableTile(ladder, ctx)).traverse();
                 return interacting;
             }
         }, 1000, 5);
-        runeSpan.log.info("Finished with ladder");
+        runespan.log.info("Finished with ladder");
     }
 }

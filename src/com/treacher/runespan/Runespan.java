@@ -24,7 +24,7 @@ import java.util.List;
  * Created by Michael Treacher
  */
 @Script.Manifest(name = "Runespan", description = "Trains rune crafting in the Runepan.", properties = "topic=1229948")
-public class RuneSpan extends PollingScript<ClientContext> implements PaintListener, BotMenuListener{
+public class Runespan extends PollingScript<ClientContext> implements PaintListener, BotMenuListener{
 
     private List<FloatingIsland> floatingIslands = new ArrayList<FloatingIsland>();
     private List<Task<ClientContext>> taskList = new ArrayList<Task<ClientContext>>();
@@ -43,7 +43,7 @@ public class RuneSpan extends PollingScript<ClientContext> implements PaintListe
     public void start() {
         SwingUtilities.invokeLater(new Runnable() {
             public void run() {
-                new GUI(RuneSpan.this);
+                new GUI(Runespan.this);
             }
         });
     }

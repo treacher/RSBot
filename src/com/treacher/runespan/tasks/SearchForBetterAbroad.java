@@ -1,10 +1,10 @@
 package com.treacher.runespan.tasks;
 
 import com.treacher.util.Task;
-import com.treacher.runespan.RuneSpan;
+import com.treacher.runespan.Runespan;
 import com.treacher.runespan.enums.ElementalNode;
 import com.treacher.runespan.util.FloatingIsland;
-import com.treacher.runespan.util.RuneSpanQuery;
+import com.treacher.runespan.util.RunespanQuery;
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.GameObject;
 
@@ -13,14 +13,14 @@ import org.powerbot.script.rt6.GameObject;
  */
 public class SearchForBetterAbroad extends Task<ClientContext> {
 
-    private RuneSpan runeSpan;
+    private Runespan runespan;
     private GameObject betterNode;
     private long lastRan = System.currentTimeMillis();
     private long idleTime = 0;
 
-    public SearchForBetterAbroad(ClientContext ctx, RuneSpan runeSpan) {
+    public SearchForBetterAbroad(ClientContext ctx, Runespan runespan) {
         super(ctx);
-        this.runeSpan = runeSpan;
+        this.runespan = runespan;
     }
 
     @Override
@@ -33,17 +33,17 @@ public class SearchForBetterAbroad extends Task<ClientContext> {
             idleTime = 0;
             lastRan = System.currentTimeMillis();
 
-            final FloatingIsland currentIsland = runeSpan.currentIsland();
+            final FloatingIsland currentIsland = runespan.currentIsland();
 
-            if (currentIsland != null && !runeSpan.hasTarget()) {
+            if (currentIsland != null && !runespan.hasTarget()) {
 
-                final RuneSpanQuery runeSpanQuery = new RuneSpanQuery(ctx, runeSpan);
+                final RunespanQuery runespanQuery = new RunespanQuery(ctx, runespan);
 
-                betterNode = runeSpanQuery.highestPriorityNode();
+                betterNode = runespanQuery.highestPriorityNode();
 
-                if (runeSpanQuery.essenceStackSize() >= 50) {
+                if (runespanQuery.essenceStackSize() >= 50) {
                     final ElementalNode elementalNode = ElementalNode.findNodeByGameObjectId(betterNode.id(), ctx);
-                    return elementalNode != null && elementalNode.getXp() > runeSpan.getCurrentXpRate();
+                    return elementalNode != null && elementalNode.getXp() > runespan.getCurrentXpRate();
                 }
             }
         }
@@ -53,8 +53,8 @@ public class SearchForBetterAbroad extends Task<ClientContext> {
 
     @Override
     public void execute() {
-        runeSpan.log.info("Looking for better node on another island.");
-        runeSpan.log.info("Found: " + betterNode.name() +  " on another island. Setting it as target");
-        runeSpan.setLocatableTarget(betterNode);
+        runespan.log.info("Looking for better node on another island.");
+        runespan.log.info("Found: " + betterNode.name() +  " on another island. Setting it as target");
+        runespan.setLocatableTarget(betterNode);
     }
 }

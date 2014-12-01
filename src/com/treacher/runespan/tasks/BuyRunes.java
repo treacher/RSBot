@@ -1,6 +1,6 @@
 package com.treacher.runespan.tasks;
 
-import com.treacher.runespan.RuneSpan;
+import com.treacher.runespan.Runespan;
 import com.treacher.util.Task;
 import org.powerbot.script.Condition;
 import org.powerbot.script.rt6.ClientContext;
@@ -23,7 +23,7 @@ public class BuyRunes extends Task<ClientContext> {
 
     @Override
     public void execute() {
-        RuneSpan.STATE = "Buying Runes";
+        Runespan.STATE = "Buying Runes";
         ctx.npcs.select().id(wizardId).poll().interact("Buy runes");
         Condition.wait(new Callable<Boolean>() {
             @Override

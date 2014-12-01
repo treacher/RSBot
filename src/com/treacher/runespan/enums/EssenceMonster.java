@@ -1,6 +1,6 @@
 package com.treacher.runespan.enums;
 
-import com.treacher.runespan.RuneSpan;
+import com.treacher.runespan.Runespan;
 import org.powerbot.script.Condition;
 import org.powerbot.script.rt6.ClientContext;
 import org.powerbot.script.rt6.Constants;
@@ -59,13 +59,13 @@ public enum EssenceMonster {
         return false;
     }
 
-    public static void siphonMonster(final Npc npc, final ClientContext ctx, RuneSpan runeSpan) {
+    public static void siphonMonster(final Npc npc, final ClientContext ctx, Runespan runespan) {
         if(!npc.valid()) return;
 
         final EssenceMonster essenceMonster = EssenceMonster.findMonsterByGameObjectId(npc.id(), ctx);
 
         if(essenceMonster != null)
-            runeSpan.setCurrentXpRate(essenceMonster.getXp());
+            runespan.setCurrentXpRate(essenceMonster.getXp());
 
         ctx.camera.turnTo(npc);
         ctx.camera.pitch(60);
@@ -89,7 +89,7 @@ public enum EssenceMonster {
             }
         }, 1500, 2);
 
-        runeSpan.triggerAntiBan();
+        runespan.triggerAntiBan();
     }
 
     public double getXp() {
@@ -98,7 +98,7 @@ public enum EssenceMonster {
 
     private boolean excluded(ClientContext ctx) {
         boolean exclude =  this.levelRequirement > ctx.skills.level(Constants.SKILLS_RUNECRAFTING);
-        if(!RuneSpan.members()) exclude = this.members;
+        if(!Runespan.members()) exclude = this.members;
         return exclude;
     }
 }

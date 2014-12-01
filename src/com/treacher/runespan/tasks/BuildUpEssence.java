@@ -1,8 +1,8 @@
 package com.treacher.runespan.tasks;
 
-import com.treacher.runespan.RuneSpan;
+import com.treacher.runespan.Runespan;
 import com.treacher.runespan.enums.EssenceMonster;
-import com.treacher.runespan.util.RuneSpanQuery;
+import com.treacher.runespan.util.RunespanQuery;
 import com.treacher.util.Task;
 import org.powerbot.script.rt6.ClientContext;
 
@@ -11,30 +11,30 @@ import org.powerbot.script.rt6.ClientContext;
  */
 public class BuildUpEssence extends Task<ClientContext> {
 
-    private RuneSpan runeSpan;
-    private RuneSpanQuery runeSpanQuery;
+    private Runespan runespan;
+    private RunespanQuery runespanQuery;
 
-    public BuildUpEssence(ClientContext ctx, RuneSpan runeSpan) {
+    public BuildUpEssence(ClientContext ctx, Runespan runespan) {
         super(ctx);
-        this.runeSpan = runeSpan;
+        this.runespan = runespan;
     }
 
     @Override
     public boolean activate() {
-        runeSpanQuery = new RuneSpanQuery(ctx, runeSpan);
-        final boolean hasNoNodes = !runeSpanQuery.hasNodes();
+        runespanQuery = new RunespanQuery(ctx, runespan);
+        final boolean hasNoNodes = !runespanQuery.hasNodes();
         return  ctx.players.local().idle()
-                && runeSpanQuery.essenceStackSize() > -1
-                && (runeSpanQuery.essenceStackSize() < 50 || hasNoNodes)
-                && (runeSpanQuery.hasEssenceMonsters())
+                && runespanQuery.essenceStackSize() > -1
+                && (runespanQuery.essenceStackSize() < 50 || hasNoNodes)
+                && (runespanQuery.hasEssenceMonsters())
                 && !ctx.chat.chatting()
-                && !runeSpan.hasTarget();
+                && !runespan.hasTarget();
     }
 
     @Override
     public void execute() {
-        RuneSpan.STATE = "Building up essence";
-        runeSpan.log.info("Building up essence");
-        EssenceMonster.siphonMonster(runeSpanQuery.highestPriorityEssenceMonster(), ctx, runeSpan);
+        Runespan.STATE = "Building up essence";
+        runespan.log.info("Building up essence");
+        EssenceMonster.siphonMonster(runespanQuery.highestPriorityEssenceMonster(), ctx, runespan);
     }
 }

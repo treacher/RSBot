@@ -1,6 +1,6 @@
 package com.treacher.runespan.tasks;
 
-import com.treacher.runespan.RuneSpan;
+import com.treacher.runespan.Runespan;
 import com.treacher.util.Task;
 import org.powerbot.script.rt6.ClientContext;
 
@@ -9,24 +9,24 @@ import org.powerbot.script.rt6.ClientContext;
  */
 public class GenerateFloatingIsland extends Task<ClientContext> {
 
-    private final RuneSpan runeSpan;
+    private final Runespan runespan;
 
-    public GenerateFloatingIsland(ClientContext ctx, RuneSpan runeSpan) {
+    public GenerateFloatingIsland(ClientContext ctx, Runespan runespan) {
         super(ctx);
-        this.runeSpan = runeSpan;
+        this.runespan = runespan;
     }
 
     @Override
     public boolean activate() {
-        return ctx.players.local().idle() && runeSpan.currentIsland() == null && !ctx.chat.chatting();
+        return ctx.players.local().idle() && runespan.currentIsland() == null && !ctx.chat.chatting();
     }
 
     @Override
     public void execute() {
-        runeSpan.triggerAntiBan();
+        runespan.triggerAntiBan();
         long startTime = System.currentTimeMillis();
-        runeSpan.buildIsland();
+        runespan.buildIsland();
         long endTime = System.currentTimeMillis();
-        runeSpan.log.info("Time taken: " + ((endTime - startTime) / 1000.0));
+        runespan.log.info("Time taken: " + ((endTime - startTime) / 1000.0));
     }
 }
