@@ -25,6 +25,7 @@ public class MoveUpALevel extends Task<ClientContext> {
     }
     @Override
     public boolean activate() {
+        if(!Runespan.changeLevels()) return false;
         currentIsland = runespan.currentIsland();
         if(currentIsland != null) {
             final GameObject gameObj = currentIsland.getLadder();
