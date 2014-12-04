@@ -28,7 +28,7 @@ public class SearchForBetterAbroad extends Task<ClientContext> {
         if(ctx.players.local().idle() && idleTime == 0) idleTime = System.currentTimeMillis();
 
         if((ctx.players.local().idle() && (System.currentTimeMillis() - idleTime) > 5000)
-                || (System.currentTimeMillis() - lastRan) >= 15000) {
+                || (System.currentTimeMillis() - lastRan) >= 30000) {
 
             idleTime = 0;
             lastRan = System.currentTimeMillis();
