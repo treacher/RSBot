@@ -28,7 +28,7 @@ public class Runespan extends PollingScript<ClientContext> implements PaintListe
 
     private List<FloatingIsland> floatingIslands = new ArrayList<FloatingIsland>();
     private List<Task<ClientContext>> taskList = new ArrayList<Task<ClientContext>>();
-    private double currentXpRate;
+    private double currentXpRate = 0;
     private Painter painter = new Painter(ctx, this);
     private FloatingIsland previousIsland;
     private PlatformConnection previousPlatform;
@@ -74,10 +74,13 @@ public class Runespan extends PollingScript<ClientContext> implements PaintListe
     @Override
     public void menuSelected(MenuEvent e) {
         final JMenu menu = (JMenu) e.getSource();
-        final String switchState = antiBanSwitch ? "Off" : "On";
+        final String antiBanSwitchState = antiBanSwitch ? "Off" : "On";
+        final String paintToggleSwitchState = painter.paintToggle() ? "Show" : "Hide";
         final JCheckBoxMenuItem antiBanMenuItem = new JCheckBoxMenuItem("Turn off anti-ban");
+        final JCheckBoxMenuItem paintMenuItem = new JCheckBoxMenuItem("Hide paint");
 
-        antiBanMenuItem.setText("Turn anti-ban " + switchState);
+        antiBanMenuItem.setText("Turn anti-ban " + antiBanSwitchState);
+        paintMenuItem.setText(paintToggleSwitchState + " paint");
 
         antiBanMenuItem.addActionListener(new ActionListener() {
             @Override
@@ -85,7 +88,14 @@ public class Runespan extends PollingScript<ClientContext> implements PaintListe
                 antiBanSwitch = !antiBanSwitch;
             }
         });
+        paintMenuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                painter.togglePaint();
+            }
+        });
         menu.add(antiBanMenuItem);
+        menu.add(paintMenuItem);
     }
 
     public static boolean members() {
