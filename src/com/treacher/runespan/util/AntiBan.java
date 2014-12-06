@@ -21,17 +21,13 @@ public class AntiBan {
     }
 
     public void execute() {
-        if(timeForMouseMovement()) triggerMouseEvent();
+        triggerMouseEvent();
         if(timeForAFK()) goAFK();
     }
 
     // AFK every 60 minutes
     private boolean timeForAFK() {
         return (System.currentTimeMillis() - lastTimeAFKing) > (Random.nextInt(50000,70000) * 60);
-    }
-
-    private boolean timeForMouseMovement() {
-        return (System.currentTimeMillis() - lastTimeMovingMouse) > (Random.nextInt(50000,70000) * 2.5);
     }
 
     private void triggerMouseEvent() {
