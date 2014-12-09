@@ -36,15 +36,11 @@ public class SearchForBetterAbroad extends Task<ClientContext> {
             final FloatingIsland currentIsland = runespan.currentIsland();
 
             if (currentIsland != null && !runespan.hasTarget()) {
-
                 final RunespanQuery runespanQuery = new RunespanQuery(ctx, runespan);
-
                 betterNode = runespanQuery.highestPriorityNode();
 
-                if (runespanQuery.essenceStackSize() >= 50) {
-                    final ElementalNode elementalNode = ElementalNode.findNodeByGameObjectId(betterNode.id(), ctx);
-                    return elementalNode != null && elementalNode.getXp() > runespan.getCurrentXpRate();
-                }
+                final ElementalNode elementalNode = ElementalNode.findNodeByGameObjectId(betterNode.id(), ctx);
+                return elementalNode != null && elementalNode.getXp() > runespan.getCurrentXpRate();
             }
         }
 
